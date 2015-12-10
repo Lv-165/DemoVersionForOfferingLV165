@@ -18,7 +18,6 @@
 #import "Place.h"
 #import "HMMapAnnotation.h"
 #import "SVGeocoder.h"
-#import "HMCommentsTableViewController.h"
 
 @interface HMMapViewController ()
 
@@ -34,9 +33,8 @@
 @property (assign, nonatomic) NSInteger ratingOfPoints;
 @property (assign, nonatomic) BOOL pointHasComments;
 
-@property (strong, nonatomic) NSArray *placeArray;
-@end
 
+@end
 static NSString* kSettingsComments         = @"comments";
 static NSString* kSettingsRating           = @"rating";
 
@@ -75,11 +73,11 @@ static bool isMainRoute;
     [[NSOperationQueue new] addOperationWithBlock:^{
         double scale =
         _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
-       //NSArray *annotations = [self.clusteringManager clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect  withZoomScale:scale];
+        //NSArray *annotations = [self.clusteringManager clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect  withZoomScale:scale];
         
         self.clusteringManager = [[FBClusteringManager alloc]initWithAnnotations:_clusteredAnnotations];
         [self.clusteringManager displayAnnotations:_clusteredAnnotations onMapView:_mapView];
-
+        
     }];
     
     // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
@@ -87,11 +85,11 @@ static bool isMainRoute;
         [self.locationManager requestWhenInUseAuthorization];
     }
     UIBarButtonItem *flexibleItem = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
-//    flexibleItem.
+    //    flexibleItem.
     
     UIButton *yourCurrentLocation = [UIButton buttonWithType:UIButtonTypeCustom];
     [yourCurrentLocation setBackgroundImage:[UIImage imageNamed:@"compass"]
-                           forState:UIControlStateNormal];
+                                   forState:UIControlStateNormal];
     [yourCurrentLocation addTarget:self action:@selector(showYourCurrentLocation:) forControlEvents:UIControlEventTouchUpInside];
     yourCurrentLocation.frame = CGRectMake(0, 0, 30, 30);
     yourCurrentLocation.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin;
@@ -101,7 +99,7 @@ static bool isMainRoute;
     
     UIButton *moveToSettingsController = [UIButton buttonWithType:UIButtonTypeCustom];
     [moveToSettingsController setBackgroundImage:[UIImage imageNamed:@"tools"]
-                                  forState:UIControlStateNormal];
+                                        forState:UIControlStateNormal];
     [moveToSettingsController addTarget:self action:@selector(moveToToolsController:) forControlEvents:UIControlEventTouchUpInside];
     moveToSettingsController.frame = CGRectMake(0, 0, 30, 30);
     moveToSettingsController.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin;
@@ -111,26 +109,26 @@ static bool isMainRoute;
     
     UIButton *searchButton = [UIButton buttonWithType:UIButtonTypeCustom];
     [searchButton setBackgroundImage:[UIImage imageNamed:@"Lupa"]
-                                      forState:UIControlStateNormal];
+                            forState:UIControlStateNormal];
     [searchButton addTarget:self action:@selector(buttonSearch:) forControlEvents:UIControlEventTouchUpInside];
     searchButton.frame = CGRectMake(0, 0, 30, 30);
     searchButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin;
     UIView *viewForSearchButton = [[UIView alloc] initWithFrame:CGRectMake(0, 30, 30, 30)];
     [viewForSearchButton addSubview:searchButton];
     UIBarButtonItem *buttonSearchButton = [[UIBarButtonItem alloc] initWithCustomView:viewForSearchButton];
-
+    
     
     
     UIButton *moveToFilterController = [UIButton buttonWithType:UIButtonTypeCustom];
     [moveToFilterController setBackgroundImage:[UIImage imageNamed:@"filter"]
-                                       forState:UIControlStateNormal];
+                                      forState:UIControlStateNormal];
     [moveToFilterController addTarget:self action:@selector(moveToFilterController:) forControlEvents:UIControlEventTouchUpInside];
     moveToFilterController.frame = CGRectMake(0, 0, 30, 30);
     moveToFilterController.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin;
     UIView *viewForMoveToFilterController = [[UIView alloc] initWithFrame:CGRectMake(0, 30, 30, 30)];
     [viewForMoveToFilterController addSubview:moveToFilterController];
     UIBarButtonItem *buttonForMoveToFilterController = [[UIBarButtonItem alloc] initWithCustomView:viewForMoveToFilterController];
-
+    
     
     NSArray *buttons = @[ buttonForShowCurrentLocation ,flexibleItem , buttonSearchButton , flexibleItem , buttonForMoveToFilterController , flexibleItem, buttonForMoveToSettingsController ];
     
@@ -139,9 +137,9 @@ static bool isMainRoute;
     self.mapView.showsUserLocation = YES;
     
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                              selector:@selector(receiveChangeMapTypeNotification:)
-                                                  name:@"ChangeMapTypeNotification"
-                                                object:nil];
+                                             selector:@selector(receiveChangeMapTypeNotification:)
+                                                 name:@"ChangeMapTypeNotification"
+                                               object:nil];
     
     [self printPointWithContinent];
     
@@ -150,7 +148,27 @@ static bool isMainRoute;
                                               inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
     
+    [self loadSettings];
+    
 }
+
+- (void) saveSettings {
+    
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    [userDefaults setInteger:self.mapView.mapType forKey:@"kMapType"];
+    
+    [userDefaults synchronize];
+}
+
+- (void) loadSettings {
+    
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    self.mapView.mapType = [userDefaults integerForKey:@"kMapType"];
+    
+}
+
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
@@ -209,53 +227,47 @@ static bool isMainRoute;
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
     
-    if ([segue.identifier isEqualToString:@"showSettingsViewController"]) {
-        
-        HMSettingsViewController *destViewController = segue.destinationViewController;
-        
-        switch (self.mapView.mapType) {
-            case MKMapTypeStandard:
-
-                destViewController.mapType = [NSNumber numberWithInt:MKMapTypeStandard];
-                
-                break;
-                
-            case MKMapTypeSatellite:
-                
-                destViewController.mapType = [NSNumber numberWithInt:MKMapTypeSatellite];
-                
-                break;
-            
-            case MKMapTypeHybrid:
-                
-                destViewController.mapType = [NSNumber numberWithInt:MKMapTypeHybrid];
-                
-                break;
-                
-            default:
-                break;
-        }
-        
-        
-    } else
-        if ([segue.identifier isEqualToString:@"showFilterViewController"]) {
-            
-            HMFiltersViewController *destViewController = segue.destinationViewController;
-            
-        }
-    else
-        if ([segue.identifier isEqualToString:@"showSearchViewController"]) {
-            
-            HMFiltersViewController *destViewController = segue.destinationViewController;
-            
-        } else if ([[segue identifier] isEqualToString:@"Comments"]) {
-            
-            Place  *place = [self.placeArray objectAtIndex:0];
-            
-            HMCommentsTableViewController* createViewController = segue.destinationViewController;
-            createViewController.create = place;
-        }
-
+    //    if ([segue.identifier isEqualToString:@"showSettingsViewController"]) {
+    //
+    //        HMSettingsViewController *destViewController = segue.destinationViewController;
+    //
+    //        switch (self.mapView.mapType) {
+    //            case MKMapTypeStandard:
+    //
+    //                destViewController.mapType = [NSNumber numberWithInt:MKMapTypeStandard];
+    //
+    //                break;
+    //
+    //            case MKMapTypeSatellite:
+    //
+    //                destViewController.mapType = [NSNumber numberWithInt:MKMapTypeSatellite];
+    //
+    //                break;
+    //
+    //            case MKMapTypeHybrid:
+    //
+    //                destViewController.mapType = [NSNumber numberWithInt:MKMapTypeHybrid];
+    //
+    //                break;
+    //
+    //            default:
+    //                break;
+    //        }
+    //
+    //
+    //    } else
+    //        if ([segue.identifier isEqualToString:@"showFilterViewController"]) {
+    //
+    //            HMFiltersViewController *destViewController = segue.destinationViewController;
+    //
+    //        }
+    //    else
+    //        if ([segue.identifier isEqualToString:@"showSearchViewController"]) {
+    //
+    //            HMFiltersViewController *destViewController = segue.destinationViewController;
+    //
+    //        }
+    
     
 }
 
@@ -265,11 +277,15 @@ static bool isMainRoute;
     
     if ([[notification name] isEqualToString:@"ChangeMapTypeNotification"])  {
         
-        NSLog(@"Successfully received ChangeMapTypeNotification notification!");
+        //        NSLog(@"Successfully received ChangeMapTypeNotification notification!");
+        //
+        //        self.mapView.mapType = [[notification.userInfo objectForKey:@"value"] intValue];
         
-        self.mapView.mapType = [[notification.userInfo objectForKey:@"value"] intValue];
-          
+        [self loadSettings];
+        
     }
+    
+    
     
 }
 
@@ -290,7 +306,7 @@ static bool isMainRoute;
         FBAnnotationCluster *cluster = (FBAnnotationCluster *)annotation;
         NSLog(@"Annotation is cluster. Number of annotations in cluster: %lu",
               (unsigned long)cluster.annotations.count);
-    } 
+    }
     
     MKPinAnnotationView* pin = (MKPinAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
     
@@ -470,22 +486,47 @@ static bool isMainRoute;
 #pragma mark Action to pin button
 
 - (void) actionDescription:(UIButton*) sender {
-
+    
     MKAnnotationView* annotationView = [sender superAnnotationView];
     
-    NSString *str = [NSString stringWithFormat:@"%@",
-                     annotationView.annotation.title];
-
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id LIKE %@", str];
+    if (!annotationView) {
+        return;
+    }
     
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Place"];
+    CLGeocoder* geoCoder = [[CLGeocoder alloc] init];
+    CLLocationCoordinate2D coordinate = annotationView.annotation.coordinate;
     
-    request.predicate = predicate;
+    CLLocation* location = [[CLLocation alloc] initWithLatitude:coordinate.latitude
+                                                      longitude:coordinate.longitude];
     
-    self.placeArray = [[self managedObjectContext] executeFetchRequest:request
-                                                                 error:nil];
+    if ([geoCoder isGeocoding]) {
+        [geoCoder cancelGeocode];
+    }
     
-    [self performSegueWithIdentifier:@"Comments" sender:self];
+    [geoCoder
+     reverseGeocodeLocation:location
+     completionHandler:^(NSArray *placemarks, NSError *error) {
+         
+         NSString* message = nil;
+         
+         if (error) {
+             message = [error localizedDescription];
+             
+         } else {
+             
+             if ([placemarks count] > 0) {
+                 
+                 MKPlacemark* placeMark = [placemarks firstObject];
+                 message = [placeMark.addressDictionary description];
+                 
+             } else {
+                 message = @"No Placemarks Found";
+             }
+         }
+         
+         [self actionWithTitle:@"OK" alertTitle:@"Location" alertMessage:message];
+     }];
+    
 }
 
 - (void) actionDirection:(UIButton*) sender {
@@ -578,7 +619,7 @@ static bool isMainRoute;
         } else {
             annotation.ratingForColor = goodRaing;
         }
-     
+        
         annotation.coordinate = coordinate;
         annotation.title = [NSString stringWithFormat:@"%@", place.id];
         annotation.subtitle = [NSString stringWithFormat:@"%.5g, %.5g",
@@ -589,9 +630,9 @@ static bool isMainRoute;
         
         [self.mapView addAnnotation:annotation];
     }
-
+    
     self.clusteringManager = [[FBClusteringManager alloc] initWithAnnotations:_clusteredAnnotations];
-
+    
 }
 
 #pragma mark - methods for Notification

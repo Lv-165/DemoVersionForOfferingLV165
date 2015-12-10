@@ -20,10 +20,10 @@
     
     [[self navigationController] setNavigationBarHidden:NO animated:YES];
     
-    self.segmentedControlForMapType.selectedSegmentIndex = [self.mapType intValue];
+    [self loadSettings];
     
     // Initialize Data
-    self.dataSource = [NSArray arrayWithObjects:@"EN",@"GB",@"FR",@"UA", nil];
+    self.dataSource = [NSArray arrayWithObjects:@"English", @"Ukrainian", @"Russian", @"German", @"French", nil];
     // Connect data
     self.languagePickerView.delegate = self;
     self.languagePickerView.dataSource = self;
@@ -35,17 +35,36 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (void) saveSettings {
+    
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    [userDefaults setInteger:self.segmentedControlForMapType.selectedSegmentIndex forKey:@"kMapType"];
+    
+    [userDefaults synchronize];
+}
+
+- (void) loadSettings {
+    
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    self.segmentedControlForMapType.selectedSegmentIndex = [userDefaults integerForKey:@"kMapType"];
+    
+}
+
 #pragma mark - Segmented Control For Map Type
 
 - (IBAction)segmentedControlForMapTypeValueChanged:(id)sender {
-
-    self.mapType = [NSNumber numberWithLong:self.segmentedControlForMapType.selectedSegmentIndex];
     
-    NSDictionary *dictionary = @{@"value" : self.mapType};
+    [self saveSettings];
+    
+    NSDictionary *dictionary = @{@"value" : [NSNumber numberWithLong:self.segmentedControlForMapType.selectedSegmentIndex]};
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"ChangeMapTypeNotification"
                                                         object:self
                                                       userInfo:dictionary];
+    
+    
     
 }
 
@@ -78,14 +97,14 @@ numberOfRowsInComponent:(NSInteger)component
 }
 
 /*
-#pragma mark - Navigation
-
-// In a storyboard-based application, you will often want to do a little preparation before navigation
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    // Get the new view controller using [segue destinationViewController].
-    // Pass the selected object to the new view controller.
-}
-*/
+ #pragma mark - Navigation
+ 
+ // In a storyboard-based application, you will often want to do a little preparation before navigation
+ - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+ // Get the new view controller using [segue destinationViewController].
+ // Pass the selected object to the new view controller.
+ }
+ */
 
 
 @end
