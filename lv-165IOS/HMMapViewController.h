@@ -11,7 +11,7 @@
 #import "HMCoreDataManager.h"
 #import "HMServerManager.h"
 
-@interface HMMapViewController : UIViewController <MKMapViewDelegate>
+@interface HMMapViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIToolbar *downToolBar;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;

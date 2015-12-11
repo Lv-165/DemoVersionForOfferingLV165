@@ -534,11 +534,11 @@
 		C01442E01C0333A5000F8F6F /* lv-165IOS */ = {
 			isa = PBXGroup;
 			children = (
+				308D19031C19FC2D007CC26E /* HMAppDelegate */,
 				308D190E1C19FE17007CC26E /* Controllers */,
 				308D190D1C19FDF9007CC26E /* Managers */,
 				308D190B1C19FD9A007CC26E /* MapAnnotation */,
 				308D19061C19FCE7007CC26E /* Custom Cell */,
-				308D19031C19FC2D007CC26E /* HMAppDelegate */,
 				7FA55BE21C0DAFCD00B99CC1 /* Download Countries */,
 				C01442E11C0333A5000F8F6F /* Supporting Files */,
 				C01442EA1C0333A5000F8F6F /* Main.storyboard */,

@@ -604,7 +604,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="remont" width="340" height="480"/>
+        <image name="remont" width="300" height="200"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="ST5-gB-6jr"/>

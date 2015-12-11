@@ -195,6 +195,10 @@
         NSError* error = nil;
         if (![[self managedObjectContext] save:&error]) {
             NSLog(@"%@", [error localizedDescription]);
+        }else {
+            for (Countries* countries in self.arrayOfContries ) {
+                [[self managedObjectContext] refreshObject:countries mergeChanges:NO];
+            }
         }
     }
 }

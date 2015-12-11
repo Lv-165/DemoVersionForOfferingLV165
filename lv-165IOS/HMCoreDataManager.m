@@ -43,9 +43,9 @@
     
     NSLog(@"saveContinentsToCoreDataWithNSArray");
 
-    for (NSDictionary* dict in countryArray) {
+    for (NSDictionary *dict in countryArray) {
         
-        Countries* countries =
+        Countries *countries =
         [NSEntityDescription insertNewObjectForEntityForName:@"Countries"
                                       inManagedObjectContext:[self managedObjectContext]];
         
@@ -55,7 +55,7 @@
         countries.places = [NSNumber numberWithInteger:tempInteger];
     }
     
-    NSError* error = nil;
+    NSError *error = nil;
     if (![[self managedObjectContext] save:&error]) {
         NSLog(@"%@", [error localizedDescription]);
     }
@@ -97,7 +97,7 @@
     user.name = [userDictionary valueForKey:@"name"];
     place.user = user;
     
-    Description* description = [NSEntityDescription insertNewObjectForEntityForName:@"Description"
+    Description *description = [NSEntityDescription insertNewObjectForEntityForName:@"Description"
                                                              inManagedObjectContext:[self managedObjectContext]];
 
     //description.language = [NSString stringWithFormat:@"%@", [[placeNSDictionary objectForKey:@"description"] allKeys]];

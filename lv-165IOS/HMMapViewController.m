@@ -34,6 +34,8 @@
 
 @property (strong, nonatomic) NSArray *placeArray;
 
+@property (weak, nonatomic) MKAnnotationView *userLocationPin;
+
 @end
 
 static NSString* kSettingsComments = @"comments";
@@ -123,6 +125,14 @@ static bool isMainRoute;
                                              selector:@selector(receiveChangeMapTypeNotification:)
                                                  name:@"ChangeMapTypeNotification"
                                                object:nil];
+    
+    [self loadSettings];
+    
+    self.locationManager.delegate = self;
+    
+    [self startHeadingEvents];
+    
+    [self.locationManager startUpdatingHeading];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -131,6 +141,7 @@ static bool isMainRoute;
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
     self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
+    [self.mapView removeAnnotations:self.mapView.annotations];
     [self printPointWithContinent];
     
     NSLog(@" Points in map array %lu",(unsigned long)[self.mapPointArray count]);
@@ -184,28 +195,8 @@ static bool isMainRoute;
     
     if ([segue.identifier isEqualToString:@"showSettingsViewController"]) {
         
-        HMSettingsViewController *destViewController = segue.destinationViewController;
+        // sending smth to destinationViewController
         
-        switch (self.mapView.mapType) {
-                
-            case MKMapTypeStandard:
-            {
-                destViewController.mapType = [NSNumber numberWithInt:MKMapTypeStandard];
-                break;
-            }
-            case MKMapTypeSatellite:
-            {
-                destViewController.mapType = [NSNumber numberWithInt:MKMapTypeSatellite];
-                break;
-            }
-            case MKMapTypeHybrid:
-            {
-                destViewController.mapType = [NSNumber numberWithInt:MKMapTypeHybrid];
-                break;
-            }
-            default:
-                break;
-        }
     } else if ([[segue identifier] isEqualToString:@"Comments"]) {
         Place  *place = [self.placeArray objectAtIndex:0];
         HMCommentsTableViewController *createViewController = segue.destinationViewController;
@@ -217,8 +208,9 @@ static bool isMainRoute;
 
 - (void) receiveChangeMapTypeNotification:(NSNotification *) notification {
     if ([[notification name] isEqualToString:@"ChangeMapTypeNotification"])  {
-        NSLog(@"Successfully received ChangeMapTypeNotification notification!");
-        self.mapView.mapType = [[notification.userInfo objectForKey:@"value"] intValue];
+        
+        [self loadSettings];
+        
     }
 }
 
@@ -235,8 +227,23 @@ static bool isMainRoute;
     static NSString* identifier = @"Annotation";
     MKPinAnnotationView* pin = (MKPinAnnotationView*)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
     if ([annotation isKindOfClass:[MKUserLocation class]]) {
-        return nil;
+        
+        NSString *identifier = @"UserAnnotation";
+        
+        MKAnnotationView *pin = (MKAnnotationView *)[mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+        if (!pin) {
+        
+            pin = [[MKAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
+            
+        pin.canShowCallout = YES;
+        pin.image = [UIImage imageNamed:@"UserArrow"];
+    } else {
+        pin.annotation = annotation;
     }
+    
+    self.userLocationPin = pin;
+    return pin;
+}
     if (!pin) {
         pin = [[MKPinAnnotationView alloc] initWithAnnotation:annotation reuseIdentifier:identifier];
     }
@@ -377,7 +384,7 @@ static bool isMainRoute;
     MKAnnotationView* annotationView = [sender superAnnotationView];
     NSString *str = [NSString stringWithFormat:@"%ld",
                      (long)((HMMapAnnotation *)annotationView.annotation).idPlace];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id LIKE %@", str];
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id == %@", str];
     NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Place"];
     request.predicate = predicate;
     self.placeArray = [[self managedObjectContext] executeFetchRequest:request
@@ -488,5 +495,47 @@ static bool isMainRoute;
     [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
 }
 
+#pragma mark - Map Type Saving
+
+- (void)saveSettings {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    [userDefaults setInteger:self.mapView.mapType forKey:@"kMapType"];
+    
+    [userDefaults synchronize];
+}
+
+- (void)loadSettings {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    self.mapView.mapType = [userDefaults integerForKey:@"kMapType"];
+}
+
+#pragma mark - Heading Update
+
+- (void)startHeadingEvents {
+    
+    if (!self.locationManager) {
+        CLLocationManager *theManager = [[CLLocationManager alloc] init];
+        self.locationManager = theManager;
+        self.locationManager.delegate = self;
+    }
+    
+    self.locationManager.distanceFilter = 1000;
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
+    [self.locationManager startUpdatingLocation];
+    
+    if ([CLLocationManager headingAvailable]) {
+        self.locationManager.headingFilter = 5;
+        [self.locationManager startUpdatingHeading];
+    }
+    
+}
+
+- (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
+    
+    self.userLocationPin.transform = CGAffineTransformMakeRotation((manager.heading.trueHeading*M_PI)/180.f);
+    
+}
 
 @end
