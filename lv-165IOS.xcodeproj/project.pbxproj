@@ -283,9 +283,8 @@
 		302A119C1C037143002F8FF0 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				308D19051C19FCC7007CC26E /* Reachability */,
 				308A5CD51C1735F4009DD439 /* SVGeocoder */,
-				CE4CC4881C14EB6F002C4358 /* Reachability.h */,
-				CE4CC4891C14EB6F002C4358 /* Reachability.m */,
 				0C93B26C1C11DB840032A3AE /* FBAnnotationClustering */,
 				C09A7CF51C0A1ED300F6DEBC /* CoreData.framework */,
 				302A11A11C0371C2002F8FF0 /* AFNetworking */,
@@ -358,27 +357,123 @@
 			path = SVGeocoder;
 			sourceTree = "<group>";
 		};
-		30E661A01C0B17C50076EBAC /* HPServer Manager */ = {
+		308D19031C19FC2D007CC26E /* HMAppDelegate */ = {
 			isa = PBXGroup;
 			children = (
+				7FE6FF3D1C105F43005C6CB0 /* HMMapAnnotation.h */,
+				7FE6FF3E1C105F43005C6CB0 /* HMMapAnnotation.m */,
+				C01442E41C0333A5000F8F6F /* HMAppDelegate.h */,
+				C01442E51C0333A5000F8F6F /* HMAppDelegate.m */,
 			);
-			name = "HPServer Manager";
+			name = HMAppDelegate;
 			sourceTree = "<group>";
 		};
-		30E661A11C0B17DF0076EBAC /* Managers */ = {
+		308D19041C19FC50007CC26E /* HMMapViewController */ = {
 			isa = PBXGroup;
 			children = (
-				30E661A21C0B17F00076EBAC /* HMCoreDate Manager */,
-				30E661A01C0B17C50076EBAC /* HPServer Manager */,
+				C01442E71C0333A5000F8F6F /* HMMapViewController.h */,
+				C01442E81C0333A5000F8F6F /* HMMapViewController.m */,
+			);
+			name = HMMapViewController;
+			sourceTree = "<group>";
+		};
+		308D19051C19FCC7007CC26E /* Reachability */ = {
+			isa = PBXGroup;
+			children = (
+				CE4CC4881C14EB6F002C4358 /* Reachability.h */,
+				CE4CC4891C14EB6F002C4358 /* Reachability.m */,
+			);
+			name = Reachability;
+			sourceTree = "<group>";
+		};
+		308D19061C19FCE7007CC26E /* Custom Cell */ = {
+			isa = PBXGroup;
+			children = (
+				308A5CDC1C173620009DD439 /* UICellForInfo.h */,
+				308A5CDD1C173620009DD439 /* UICellForInfo.m */,
+				7FA55BDF1C0DAFC700B99CC1 /* HMDownloadCellTableViewCell.h */,
+				7FA55BE01C0DAFC700B99CC1 /* HMDownloadCellTableViewCell.m */,
+				7FA55BE61C0DB08200B99CC1 /* UIView+HMUItableViewCell.h */,
+				7FA55BE71C0DB08200B99CC1 /* UIView+HMUItableViewCell.m */,
+			);
+			name = "Custom Cell";
+			sourceTree = "<group>";
+		};
+		308D19071C19FD44007CC26E /* ServerManager */ = {
+			isa = PBXGroup;
+			children = (
+				3018962E1C0895DC00178A04 /* HMServerManager.h */,
+				3018962F1C0895DC00178A04 /* HMServerManager.m */,
+			);
+			name = ServerManager;
+			sourceTree = "<group>";
+		};
+		308D19081C19FD55007CC26E /* Core Date Manager */ = {
+			isa = PBXGroup;
+			children = (
+				C0E7DA8D1C08B4DB00541E5E /* HMCoreDataManager.h */,
+				C0E7DA8E1C08B4DB00541E5E /* HMCoreDataManager.m */,
+			);
+			name = "Core Date Manager";
+			sourceTree = "<group>";
+		};
+		308D19091C19FD6E007CC26E /* SettingsController */ = {
+			isa = PBXGroup;
+			children = (
+				A1C5EDE11C0CA7C900F94400 /* HMSettingsViewController.h */,
+				A1C5EDE21C0CA7C900F94400 /* HMSettingsViewController.m */,
+			);
+			name = SettingsController;
+			sourceTree = "<group>";
+		};
+		308D190A1C19FD83007CC26E /* FiltersController */ = {
+			isa = PBXGroup;
+			children = (
+				C0E1A8161C18504500F0DF00 /* HMFiltersViewController.h */,
+				C0E1A8171C18504500F0DF00 /* HMFiltersViewController.m */,
+			);
+			name = FiltersController;
+			sourceTree = "<group>";
+		};
+		308D190B1C19FD9A007CC26E /* MapAnnotation */ = {
+			isa = PBXGroup;
+			children = (
+				A10299271C0F1A7800BA5896 /* UIView+MKAnnotationView.h */,
+				A10299281C0F1A7800BA5896 /* UIView+MKAnnotationView.m */,
+				A10299241C0F153E00BA5896 /* HMMapAnnotation.h */,
+				A10299251C0F153E00BA5896 /* HMMapAnnotation.m */,
+			);
+			name = MapAnnotation;
+			sourceTree = "<group>";
+		};
+		308D190C1C19FDBA007CC26E /* SearchController */ = {
+			isa = PBXGroup;
+			children = (
+				A1C5EDE91C0CC4D500F94400 /* HMSearchViewController.h */,
+				A1C5EDEA1C0CC4D500F94400 /* HMSearchViewController.m */,
+			);
+			name = SearchController;
+			sourceTree = "<group>";
+		};
+		308D190D1C19FDF9007CC26E /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				308D19081C19FD55007CC26E /* Core Date Manager */,
+				308D19071C19FD44007CC26E /* ServerManager */,
 			);
 			name = Managers;
 			sourceTree = "<group>";
 		};
-		30E661A21C0B17F00076EBAC /* HMCoreDate Manager */ = {
+		308D190E1C19FE17007CC26E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				843905881C18E65F00450FA8 /* CommentsController */,
+				308D190C1C19FDBA007CC26E /* SearchController */,
+				308D190A1C19FD83007CC26E /* FiltersController */,
+				308D19091C19FD6E007CC26E /* SettingsController */,
+				308D19041C19FC50007CC26E /* HMMapViewController */,
 			);
-			name = "HMCoreDate Manager";
+			name = Controllers;
 			sourceTree = "<group>";
 		};
 		7FA55BE21C0DAFCD00B99CC1 /* Download Countries */ = {
@@ -388,10 +483,6 @@
 				C0729E3F1C09FBF700ADF283 /* HMCountriesViewController.m */,
 				C0729E861C09FD9200ADF283 /* HMCoreDataViewController.h */,
 				C0729E871C09FD9200ADF283 /* HMCoreDataViewController.m */,
-				7FA55BDF1C0DAFC700B99CC1 /* HMDownloadCellTableViewCell.h */,
-				7FA55BE01C0DAFC700B99CC1 /* HMDownloadCellTableViewCell.m */,
-				7FA55BE61C0DB08200B99CC1 /* UIView+HMUItableViewCell.h */,
-				7FA55BE71C0DB08200B99CC1 /* UIView+HMUItableViewCell.m */,
 			);
 			name = "Download Countries";
 			sourceTree = "<group>";
@@ -403,9 +494,10 @@
 				7FE4EC601C0F12160075C9AC /* NSNumber+HMNumber.m */,
 			);
 			name = Extensions;
+			path = ..;
 			sourceTree = "<group>";
 		};
-		843905881C18E65F00450FA8 /* Comments */ = {
+		843905881C18E65F00450FA8 /* CommentsController */ = {
 			isa = PBXGroup;
 			children = (
 				843905821C18E3DC00450FA8 /* HMDynamicTableViewCell.h */,
@@ -414,15 +506,14 @@
 				843905851C18E3DC00450FA8 /* HMCommentsTableViewController.m */,
 				7F8A95901C19AFA800ECDD88 /* HMAnnotationView.h */,
 			);
-			name = Comments;
+			name = CommentsController;
 			sourceTree = "<group>";
 		};
 		C01442D51C0333A5000F8F6F = {
 			isa = PBXGroup;
 			children = (
-				7FE4EC5E1C0F11AD0075C9AC /* Extensions */,
-				C0E7DA8C1C08B3AA00541E5E /* Models */,
 				302A119C1C037143002F8FF0 /* Libs */,
+				C0E7DA8C1C08B3AA00541E5E /* Models */,
 				C01442E01C0333A5000F8F6F /* lv-165IOS */,
 				C01442FD1C0333A6000F8F6F /* lv-165IOSTests */,
 				C01443081C0333A6000F8F6F /* lv-165IOSUITests */,
@@ -443,36 +534,19 @@
 		C01442E01C0333A5000F8F6F /* lv-165IOS */ = {
 			isa = PBXGroup;
 			children = (
-				843905881C18E65F00450FA8 /* Comments */,
+				308D190E1C19FE17007CC26E /* Controllers */,
+				308D190D1C19FDF9007CC26E /* Managers */,
+				308D190B1C19FD9A007CC26E /* MapAnnotation */,
+				308D19061C19FCE7007CC26E /* Custom Cell */,
+				308D19031C19FC2D007CC26E /* HMAppDelegate */,
 				7FA55BE21C0DAFCD00B99CC1 /* Download Countries */,
-				C01442E41C0333A5000F8F6F /* HMAppDelegate.h */,
-				C01442E51C0333A5000F8F6F /* HMAppDelegate.m */,
-				C01442E71C0333A5000F8F6F /* HMMapViewController.h */,
-				C01442E81C0333A5000F8F6F /* HMMapViewController.m */,
-				7FE6FF3D1C105F43005C6CB0 /* HMMapAnnotation.h */,
-				7FE6FF3E1C105F43005C6CB0 /* HMMapAnnotation.m */,
 				C01442E11C0333A5000F8F6F /* Supporting Files */,
 				C01442EA1C0333A5000F8F6F /* Main.storyboard */,
 				C01442F01C0333A5000F8F6F /* Assets.xcassets */,
 				C01442F21C0333A5000F8F6F /* LaunchScreen.storyboard */,
-				308A5CDC1C173620009DD439 /* UICellForInfo.h */,
-				308A5CDD1C173620009DD439 /* UICellForInfo.m */,
 				C01442F51C0333A5000F8F6F /* Info.plist */,
 				C01442ED1C0333A5000F8F6F /* lv_165IOS.xcdatamodeld */,
-				3018962E1C0895DC00178A04 /* HMServerManager.h */,
-				3018962F1C0895DC00178A04 /* HMServerManager.m */,
-				C0E7DA8D1C08B4DB00541E5E /* HMCoreDataManager.h */,
-				C0E7DA8E1C08B4DB00541E5E /* HMCoreDataManager.m */,
-				A1C5EDE11C0CA7C900F94400 /* HMSettingsViewController.h */,
-				A1C5EDE21C0CA7C900F94400 /* HMSettingsViewController.m */,
-				C0E1A8161C18504500F0DF00 /* HMFiltersViewController.h */,
-				C0E1A8171C18504500F0DF00 /* HMFiltersViewController.m */,
-				A10299241C0F153E00BA5896 /* HMMapAnnotation.h */,
-				A10299251C0F153E00BA5896 /* HMMapAnnotation.m */,
-				A1C5EDE91C0CC4D500F94400 /* HMSearchViewController.h */,
-				A1C5EDEA1C0CC4D500F94400 /* HMSearchViewController.m */,
-				A10299271C0F1A7800BA5896 /* UIView+MKAnnotationView.h */,
-				A10299281C0F1A7800BA5896 /* UIView+MKAnnotationView.m */,
+				7FE4EC5E1C0F11AD0075C9AC /* Extensions */,
 			);
 			path = "lv-165IOS";
 			sourceTree = "<group>";
@@ -480,7 +554,6 @@
 		C01442E11C0333A5000F8F6F /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
-				30E661A11C0B17DF0076EBAC /* Managers */,
 				C01442E21C0333A5000F8F6F /* main.m */,
 			);
 			name = "Supporting Files";

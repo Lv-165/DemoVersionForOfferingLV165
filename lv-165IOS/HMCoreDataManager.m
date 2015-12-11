@@ -45,24 +45,20 @@
 
     for (NSDictionary* dict in countryArray) {
         
-        Countries* countries = [NSEntityDescription insertNewObjectForEntityForName:@"Countries"
-                                                              inManagedObjectContext:[self managedObjectContext]];
+        Countries* countries =
+        [NSEntityDescription insertNewObjectForEntityForName:@"Countries"
+                                      inManagedObjectContext:[self managedObjectContext]];
         
         countries.iso = [dict objectForKey:@"iso"];
         countries.name = [dict objectForKey:@"name"];
         NSInteger tempInteger = [[dict valueForKey:@"places"] doubleValue];
         countries.places = [NSNumber numberWithInteger:tempInteger];
-        
-        NSLog(@"%@  AND %@ PLACES",countries.name, countries.places);
-        
     }
     
     NSError* error = nil;
-    
     if (![[self managedObjectContext] save:&error]) {
         NSLog(@"%@", [error localizedDescription]);
     }
-
 }
 
 - (void) savePlaceToCoreDataWithNSArray:(NSDictionary*) placeNSDictionary
@@ -83,8 +79,6 @@
     
     NSInteger ratCountInteger = [[placeNSDictionary valueForKey:@"rating_count"] integerValue];
     place.rating_count = [NSNumber numberWithInteger:ratCountInteger];
-
-    //place.elevation = [NSNumber numberFromValue:placeNSDictionary[@"elevation"]];
     
     double lonDounble = [[placeNSDictionary valueForKey:@"lon"] doubleValue];
      place.lon = [NSNumber numberWithDouble:lonDounble];
@@ -92,8 +86,9 @@
     double latDounble = [[placeNSDictionary valueForKey:@"lat"] doubleValue];
     place.lat = [NSNumber numberWithDouble:latDounble];
     
-    User* user = [NSEntityDescription insertNewObjectForEntityForName:@"User"
-                                                             inManagedObjectContext:[self managedObjectContext]];
+    User* user =
+    [NSEntityDescription insertNewObjectForEntityForName:@"User"
+                                  inManagedObjectContext:[self managedObjectContext]];
     
     NSDictionary *userDictionary = [placeNSDictionary objectForKey:@"user"];
     
@@ -113,7 +108,8 @@
         
         NSArray *array = [placeNSDictionary objectForKey:@"comments"];
         for (NSDictionary *coment in array) {
-            Comments *comment = [NSEntityDescription insertNewObjectForEntityForName:@"Comments"
+            Comments *comment =
+            [NSEntityDescription insertNewObjectForEntityForName:@"Comments"
                                                               inManagedObjectContext:[self managedObjectContext]];
             comment.comment = [coment valueForKey:@"comment"];
             NSInteger commentId = [[placeNSDictionary valueForKey:@"comments_count"] integerValue];
@@ -131,8 +127,7 @@
             [place addCommentsObject:comment];
         }
     }
-    
-    
+
     DescriptionInfo *descriptionInfo = [NSEntityDescription insertNewObjectForEntityForName:@"DescriptionInfo"
                                                                      inManagedObjectContext:[self managedObjectContext]];
     
@@ -196,7 +191,6 @@
     return resultArray;
 }
 
-
 - (NSURL *)applicationDocumentsDirectory {
     // The directory the application uses to store the Core Data store file. This code uses a directory named "com.lv_165IOS" in the application's documents directory.
     return [[[NSFileManager defaultManager] URLsForDirectory:NSDocumentDirectory inDomains:NSUserDomainMask] lastObject];
@@ -240,7 +234,6 @@
     
     return _persistentStoreCoordinator;
 }
-
 
 - (NSManagedObjectContext *)managedObjectContext {
     // Returns the managed object context for the application (which is already bound to the persistent store coordinator for the application.)

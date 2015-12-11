@@ -24,7 +24,6 @@ typedef enum : NSUInteger {
 @property (nonatomic, copy) NSString *subtitle;
 
 @property (nonatomic, assign) NSInteger idPlace;
-
 @property (nonatomic, assign)RatingForPin ratingForColor;
 
 @end

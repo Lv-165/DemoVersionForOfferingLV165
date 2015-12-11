@@ -13,8 +13,8 @@
 @end
 
 
-static NSString* kSettingsComments         = @"comments";
-static NSString* kSettingsRating           = @"rating";
+static NSString* kSettingsComments = @"comments";
+static NSString* kSettingsRating   = @"rating";
 static NSString* kSettingsCommentsLanguage = @"commentsLanguage";
 
 
@@ -37,31 +37,27 @@ static NSString* kSettingsCommentsLanguage = @"commentsLanguage";
     // Connect data
     self.pickerView.delegate = self;
     self.pickerView.dataSource = self;
-    
 }
+
 - (void)viewDidUnload
 {
     [super viewDidUnload];
     self.pickerView = nil;
 }
 
-
 #pragma mark PickerView DataSource
 
-- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)thePickerView
-{
+- (NSInteger)numberOfComponentsInPickerView:(UIPickerView *)thePickerView {
     return 1;
 }
 
-- (NSInteger)pickerView:(UIPickerView *)thePickerView numberOfRowsInComponent:(NSInteger)component
-{
+- (NSInteger)pickerView:(UIPickerView *)thePickerView numberOfRowsInComponent:(NSInteger)component {
     return self.dataSource.count;
 }
 
 - (NSString *)pickerView:(UIPickerView *)thePickerView
              titleForRow:(NSInteger)row
-            forComponent:(NSInteger)component
-{
+            forComponent:(NSInteger)component {
     return [self.dataSource objectAtIndex:row];
 }
 
@@ -86,8 +82,6 @@ static NSString* kSettingsCommentsLanguage = @"commentsLanguage";
     self.commentsSwitch.on = [userDefaults boolForKey:kSettingsComments];
     self.ratingControl.selectedSegmentIndex = [userDefaults integerForKey:kSettingsRating];
     //self.pickerView. =[userDefaults integerForKey:kSettingsCommentsLanguage];//picker data downloading
-    
-    
 }
 
 #pragma mark - Actions

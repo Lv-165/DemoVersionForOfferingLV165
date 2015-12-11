@@ -85,8 +85,6 @@
     
 }    
 
-
-
 - (void)controllerWillChangeContent:(NSFetchedResultsController *)controller
 {
     [self.tableView beginUpdates];

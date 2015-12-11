@@ -105,12 +105,10 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
         if (count >= 3) {
             break;
         }
-        
         if (dataOfLocality) {
             [str appendFormat:@", %@",dataOfLocality];
             count ++;
         }
-        
     }
     [str deleteCharactersInRange:NSMakeRange(0, 1)];
     cell.infoLabel.text = [NSString stringWithString:str];
@@ -123,7 +121,6 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     cell.accessoryType = UITableViewCellAccessoryNone;
-    //[tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 
@@ -135,8 +132,6 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     [[NSNotificationCenter defaultCenter] postNotificationName:showPlaceNotificationCenter
                                                         object:nil
                                                       userInfo:dictionary];
-
-    
 }
 
 

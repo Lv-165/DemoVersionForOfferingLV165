@@ -59,8 +59,6 @@
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         [[HMServerManager sharedManager]getCountriesWithonSuccess:^(NSArray *continents) {
             
-#warning MAIN QUEUE            //we need save only in main queue? c асинхронной вроде быстрей
-            
             dispatch_async(dispatch_get_main_queue(), ^{
                 [[HMCoreDataManager sharedManager] saveCountriesToCoreDataWithNSArray:continents];
                 self.fetchedResultsController = nil;

@@ -19,14 +19,12 @@
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
-//- (void) printArray:(NSArray*) array;
 - (void) printCountryA;
 - (void) deleteAllObjects;
 
 + (HMCoreDataManager*) sharedManager;
 
 - (void) saveCountriesToCoreDataWithNSArray:(NSArray*) countryArray;
-
 - (void) savePlaceToCoreDataWithNSArray:(NSDictionary*) placeNSDictionary
                                contries:(Countries*)countries;
 

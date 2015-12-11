@@ -16,11 +16,9 @@
     if ([self isKindOfClass:[MKAnnotationView class]]) {
         return (MKAnnotationView*)self;
     }
-    
     if (!self.superview) {
         return nil;
     }
-    
     return [self.superview superAnnotationView];
 }
 

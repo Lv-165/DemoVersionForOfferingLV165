@@ -13,21 +13,12 @@
 
 @interface HMAppDelegate ()
 
-
-
 @end
 
 @implementation HMAppDelegate
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-   
-//    HMCountriesViewController* vc = [[HMCountriesViewController alloc] initWithStyle:UITableViewStylePlain];
-//    
-//    UINavigationController* nav = [[UINavigationController alloc]initWithRootViewController:vc];
-//    
-//    self.window.rootViewController = nav;
-
     
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
   
@@ -44,7 +35,7 @@
         NSString * storyboardName = @"Main";
         UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
         UIViewController * vc = [storyboard instantiateInitialViewController];
-//        [storyboard instantiateViewControllerWithIdentifier:@"mainVC"];
+        
         self.window.rootViewController = vc;
     }
     

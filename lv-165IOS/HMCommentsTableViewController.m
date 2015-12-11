@@ -68,8 +68,7 @@ static NSString* const CellIdentifier = @"DynamicTableViewCell";
     if (section == 0) {
         if (self.create.user.name == nil) {
             return @"Anonym";
-        }
-        else {
+        } else {
             return self.create.user.name;
         }
     }
@@ -77,15 +76,12 @@ static NSString* const CellIdentifier = @"DynamicTableViewCell";
         Comments *comments = [self.commentsArray objectAtIndex:(section-1)];
         if (comments.user.name == nil) {
             return @"Anonym";
-        }
-        else {
+        } else {
             return comments.user.name;
         }
-    }
-    else {
+    } else {
         return @"";
     }
-    
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
