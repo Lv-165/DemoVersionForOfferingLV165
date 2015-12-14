@@ -145,7 +145,7 @@ static bool isMainRoute;
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
     self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
-    [self.mapView removeAnnotations:self.mapView.annotations];
+   // [self.mapView removeAnnotations:self.mapView.annotations];
     [self printPointWithContinent];
     
     NSLog(@" Points in map array %lu",(unsigned long)[self.mapPointArray count]);
