@@ -9,8 +9,9 @@
 #import <Foundation/Foundation.h>
 
 #ifndef _FBANNOTATIONCLUSTERING_
-    #define _FBANNOTATIONCLUSTERING_
+#define _FBANNOTATIONCLUSTERING_
 
-    #import "FBClusteringManager.h"
-    #import "FBAnnotationCluster.h"
+#import "FBAnnotationCluster.h"
+#import "FBAnnotationClusterView.h"
+#import "FBClusteringManager.h"
 #endif /* _FBANNOTATIONCLUSTERING_ */
