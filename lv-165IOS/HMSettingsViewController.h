@@ -10,7 +10,6 @@
 
 @interface HMSettingsViewController : UITableViewController
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControlForMapType;
-@property (weak, nonatomic) IBOutlet UIPickerView *languagePickerView;
 @property (strong, nonatomic) NSArray *dataSource;
 
 - (IBAction)segmentedControlForMapTypeValueChanged:(id)sender;

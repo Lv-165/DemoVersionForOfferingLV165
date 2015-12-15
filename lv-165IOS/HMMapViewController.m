@@ -121,11 +121,6 @@ static bool isMainRoute;
     
     self.mapView.showsUserLocation = YES;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(receiveChangeMapTypeNotification:)
-                                                 name:@"ChangeMapTypeNotification"
-                                               object:nil];
-    
     [self loadSettings];
     
     self.locationManager.delegate = self;
@@ -148,6 +143,8 @@ static bool isMainRoute;
     NSLog(@" point has comments %@",self.pointHasComments ? @"Yes" : @"No");
     
     [[self navigationController] setNavigationBarHidden:YES animated:YES];
+    
+    [self loadSettings];
 }
 
 #pragma mark - buttons on Tool Bar
@@ -201,16 +198,6 @@ static bool isMainRoute;
         Place  *place = [self.placeArray objectAtIndex:0];
         HMCommentsTableViewController *createViewController = segue.destinationViewController;
         createViewController.create = place;
-    }
-}
-
-#pragma mark - Notifications
-
-- (void) receiveChangeMapTypeNotification:(NSNotification *) notification {
-    if ([[notification name] isEqualToString:@"ChangeMapTypeNotification"])  {
-        
-        [self loadSettings];
-        
     }
 }
 
