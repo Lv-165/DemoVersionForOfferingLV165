@@ -1,0 +1,60 @@
+
+/* Class = "UITableViewSection"; headerTitle = "Інформація для фільтрування"; ObjectID = "1he-BZ-6DA"; */
+"1he-BZ-6DA.headerTitle" = "Інформація для фільтрування";
+
+/* Class = "UITableViewSection"; headerTitle = "Тип карти"; ObjectID = "KXa-2g-xuL"; */
+"KXa-2g-xuL.headerTitle" = "Тип карти";
+
+/* Class = "UISegmentedControl"; PNs-sP-vwo.segmentTitles[0] = "Карта"; ObjectID = "PNs-sP-vwo"; */
+"PNs-sP-vwo.segmentTitles[0]" = "Карта";
+
+/* Class = "UISegmentedControl"; PNs-sP-vwo.segmentTitles[1] = "Супутник"; ObjectID = "PNs-sP-vwo"; */
+"PNs-sP-vwo.segmentTitles[1]" = "Супутник";
+
+/* Class = "UISegmentedControl"; PNs-sP-vwo.segmentTitles[2] = "Гібрид"; ObjectID = "PNs-sP-vwo"; */
+"PNs-sP-vwo.segmentTitles[2]" = "Гібрид";
+
+/* Class = "UITableViewSection"; headerTitle = "Завантажити точки"; ObjectID = "SIC-DY-KAb"; */
+"SIC-DY-KAb.headerTitle" = "Завантажити точки";
+
+/* Class = "UILabel"; text = "Рейтинг точки"; ObjectID = "TYM-LU-XEq"; */
+"TYM-LU-XEq.text" = "Рейтинг точки";
+
+/* Class = "UILabel"; text = "Показувати точки з коментарями"; ObjectID = "VB6-dX-xF5"; */
+"VB6-dX-xF5.text" = "Показувати точки з коментарями";
+
+/* Class = "UILabel"; text = "Label"; ObjectID = "VFo-Xz-HI8"; */
+"VFo-Xz-HI8.text" = "Label";
+
+/* Class = "UISegmentedControl"; ZXk-XC-mhQ.segmentTitles[0] = "Усі"; ObjectID = "ZXk-XC-mhQ"; */
+"ZXk-XC-mhQ.segmentTitles[0]" = "Усі";
+
+/* Class = "UISegmentedControl"; ZXk-XC-mhQ.segmentTitles[1] = "Погані"; ObjectID = "ZXk-XC-mhQ"; */
+"ZXk-XC-mhQ.segmentTitles[1]" = "Погані";
+
+/* Class = "UISegmentedControl"; ZXk-XC-mhQ.segmentTitles[2] = "Найкращі"; ObjectID = "ZXk-XC-mhQ"; */
+"ZXk-XC-mhQ.segmentTitles[2]" = "Найкращі";
+
+/* Class = "UILabel"; text = "18511"; ObjectID = "fEH-Sh-DkC"; */
+"fEH-Sh-DkC.text" = "18511";
+
+/* Class = "UIBarButtonItem"; title = "Готово"; ObjectID = "fKa-qV-98M"; */
+"fKa-qV-98M.title" = "Готово";
+
+/* Class = "UILabel"; text = "Мова коментарів"; ObjectID = "gNs-Ua-5lr"; */
+"gNs-Ua-5lr.text" = "Мова коментарів";
+
+/* Class = "UISearchBar"; placeholder = "Шукати назву"; ObjectID = "l9M-5f-jrj"; */
+"l9M-5f-jrj.placeholder" = "Шукати назву";
+
+/* Class = "UILabel"; text = "Континент"; ObjectID = "meP-3h-9RX"; */
+"meP-3h-9RX.text" = "Континент";
+
+/* Class = "UIButton"; normalTitle = "Завантаження країни"; ObjectID = "s3P-QN-Zz2"; */
+"s3P-QN-Zz2.normalTitle" = "Завантаження країни";
+
+/* Class = "UITableViewSection"; headerTitle = "Мова"; ObjectID = "vZZ-dZ-Yda"; */
+"vZZ-dZ-Yda.headerTitle" = "Мова";
+
+/* Class = "UINavigationItem"; title = "Завантажити континент"; ObjectID = "vyu-4J-y9J"; */
+"vyu-4J-y9J.title" = "Завантажити континент";

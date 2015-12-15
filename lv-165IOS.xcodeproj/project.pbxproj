@@ -58,6 +58,7 @@
 		843905871C18E3DC00450FA8 /* HMCommentsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 843905851C18E3DC00450FA8 /* HMCommentsTableViewController.m */; };
 		A10299261C0F153E00BA5896 /* HMMapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = A10299251C0F153E00BA5896 /* HMMapAnnotation.m */; };
 		A10299291C0F1A7800BA5896 /* UIView+MKAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = A10299281C0F1A7800BA5896 /* UIView+MKAnnotationView.m */; };
+		A14DBDF51C2087BB004446EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A14DBDF71C2087BB004446EA /* Localizable.strings */; };
 		A1C5EDE41C0CA7C900F94400 /* HMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C5EDE21C0CA7C900F94400 /* HMSettingsViewController.m */; };
 		A1C5EDEB1C0CC4D500F94400 /* HMSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C5EDEA1C0CC4D500F94400 /* HMSearchViewController.m */; };
 		C01442E31C0333A5000F8F6F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C01442E21C0333A5000F8F6F /* main.m */; };
@@ -203,6 +204,10 @@
 		A10299251C0F153E00BA5896 /* HMMapAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMMapAnnotation.m; sourceTree = "<group>"; };
 		A10299271C0F1A7800BA5896 /* UIView+MKAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MKAnnotationView.h"; sourceTree = "<group>"; };
 		A10299281C0F1A7800BA5896 /* UIView+MKAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MKAnnotationView.m"; sourceTree = "<group>"; };
+		A14DBDF31C2087AB004446EA /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Main.strings; sourceTree = "<group>"; };
+		A14DBDF41C2087AC004446EA /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
+		A14DBDF61C2087BB004446EA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A14DBDF81C2087BD004446EA /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A1C5EDE11C0CA7C900F94400 /* HMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMSettingsViewController.h; sourceTree = "<group>"; };
 		A1C5EDE21C0CA7C900F94400 /* HMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMSettingsViewController.m; sourceTree = "<group>"; };
 		A1C5EDE91C0CC4D500F94400 /* HMSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMSearchViewController.h; sourceTree = "<group>"; };
@@ -542,6 +547,7 @@
 				7FA55BE21C0DAFCD00B99CC1 /* Download Countries */,
 				C01442E11C0333A5000F8F6F /* Supporting Files */,
 				C01442EA1C0333A5000F8F6F /* Main.storyboard */,
+				A14DBDF71C2087BB004446EA /* Localizable.strings */,
 				C01442F01C0333A5000F8F6F /* Assets.xcassets */,
 				C01442F21C0333A5000F8F6F /* LaunchScreen.storyboard */,
 				C01442F51C0333A5000F8F6F /* Info.plist */,
@@ -706,6 +712,7 @@
 			knownRegions = (
 				en,
 				Base,
+				uk,
 			);
 			mainGroup = C01442D51C0333A5000F8F6F;
 			productRefGroup = C01442DF1C0333A5000F8F6F /* Products */;
@@ -725,6 +732,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				C01442F41C0333A5000F8F6F /* LaunchScreen.storyboard in Resources */,
+				A14DBDF51C2087BB004446EA /* Localizable.strings in Resources */,
 				C01442F11C0333A5000F8F6F /* Assets.xcassets in Resources */,
 				C01442EC1C0333A5000F8F6F /* Main.storyboard in Resources */,
 			);
@@ -847,10 +855,20 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
+		A14DBDF71C2087BB004446EA /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A14DBDF61C2087BB004446EA /* en */,
+				A14DBDF81C2087BD004446EA /* uk */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		C01442EA1C0333A5000F8F6F /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				C01442EB1C0333A5000F8F6F /* Base */,
+				A14DBDF31C2087AB004446EA /* uk */,
 			);
 			name = Main.storyboard;
 			sourceTree = "<group>";
@@ -859,6 +877,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				C01442F31C0333A5000F8F6F /* Base */,
+				A14DBDF41C2087AC004446EA /* uk */,
 			);
 			name = LaunchScreen.storyboard;
 			sourceTree = "<group>";
