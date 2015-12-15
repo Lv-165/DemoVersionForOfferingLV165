@@ -32,13 +32,12 @@
 
 @implementation FBAnnotationClusterView
 
-
 - (void)divideAnnotationsByRating {
-    _annotationsWithoutRating = [NSMutableArray new];
-    _annotationsWithBadRating = [NSMutableArray new];
-    _annotationsWithGoodRating = [NSMutableArray new];
-    
-    for (HMMapAnnotation *annotation in self.annotation.annotations) {
+  _annotationsWithoutRating = [NSMutableArray new];
+  _annotationsWithBadRating = [NSMutableArray new];
+  _annotationsWithGoodRating = [NSMutableArray new];
+
+  for (HMMapAnnotation *annotation in self.annotation.annotations) {
 
     switch (annotation.ratingForColor) {
     case senseLess:
@@ -56,15 +55,13 @@
   }
 }
 
+- (void)countAnnotationsByRating:(FBAnnotationCluster *)clusterAnnotation {
 
-- (void)countAnnotationsByRating:
-    (FBAnnotationCluster *)clusterAnnotation {
+  //    [self enumerateAnnotationsForRating];
+  //    _numOfAnnotationsWithoutRating = _annotationsWithoutRating.count;
+  //    _numOfAnnotationsWithBadRating = _annotationsWithBadRating.count;
+  //    _numOfAnnotationsWithGoodRating = _annotationsWithGoodRating.count;
 
-//    [self enumerateAnnotationsForRating];
-//    _numOfAnnotationsWithoutRating = _annotationsWithoutRating.count;
-//    _numOfAnnotationsWithBadRating = _annotationsWithBadRating.count;
-//    _numOfAnnotationsWithGoodRating = _annotationsWithGoodRating.count;
-    
   _numOfAnnotationsWithoutRating = 0;
   _numOfAnnotationsWithBadRating = 0;
   _numOfAnnotationsWithGoodRating = 0;
@@ -99,10 +96,9 @@
   if (self != nil) {
 
     FBAnnotationCluster *clusterAnnotation = (FBAnnotationCluster *)annotation;
-    
-    //ClusterViewPieChart *pieChartView = [ClusterViewPieChart alloc];
 
-      
+    // ClusterViewPieChart *pieChartView = [ClusterViewPieChart alloc];
+
     self.image = [ClusterViewPieChart constructPieChartImage];
 
     // self.annotationLabel =[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 35,
@@ -135,8 +131,7 @@
   return self;
 }
 
-
-//MARK: UIGraphicsBeginImageContext
+// MARK: UIGraphicsBeginImageContext
 
 //+ (void)drawCircle:(CGRect)rect {
 //
@@ -156,8 +151,6 @@
 //
 //  self.imageView.image = roundedImage;
 //}
-
-
 
 // clipping image
 
@@ -191,8 +184,6 @@
 //
 //  return maskedImage;
 //}
-
-
 
 + (UIImage *)drawInContext:(CGContextRef)context {
 
@@ -284,22 +275,18 @@
 //    [self.image drawInRect:self.bounds];
 //}
 
-
-
-
 #pragma mark - PIECHART SUBVIEW
 
--(void)didAddSubview:(UIView *)subview{
-    
+- (void)didAddSubview:(UIView *)subview {
 }
 
--(void)addSubview:(UIView *)view{
-    
-//}
-//
-//#pragma mark - PIECHART DEMO
-//
-//- (void)viewDidLoad {
+- (void)addSubview:(UIView *)view {
+
+  //}
+  //
+  //#pragma mark - PIECHART DEMO
+  //
+  //- (void)viewDidLoad {
   self.slices = [NSMutableArray arrayWithCapacity:10];
 
   for (int i = 0; i < 5; i++) {
@@ -388,7 +375,6 @@
 //  // Return YES for supported orientations
 //  return UIInterfaceOrientationIsLandscape(interfaceOrientation);
 //}
-
 
 - (IBAction)SliceNumChanged:(id)sender {
   UIButton *btn = (UIButton *)sender;

@@ -20,10 +20,9 @@
 @property(nonatomic) FBAnnotationCluster *annotation;
 #pragma clang diagnostic pop
 
-
-@property(nonatomic,strong)NSMutableArray * annotationsWithoutRating;
-@property(nonatomic,strong)NSMutableArray * annotationsWithGoodRating;
-@property(nonatomic,strong)NSMutableArray * annotationsWithBadRating;
+@property(nonatomic, strong) NSMutableArray *annotationsWithoutRating;
+@property(nonatomic, strong) NSMutableArray *annotationsWithGoodRating;
+@property(nonatomic, strong) NSMutableArray *annotationsWithBadRating;
 
 @property(nonatomic) NSUInteger numOfAnnotationsWithoutRating;
 @property(nonatomic) NSUInteger numOfAnnotationsWithGoodRating;

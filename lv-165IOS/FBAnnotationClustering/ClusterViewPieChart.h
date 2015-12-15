@@ -43,8 +43,8 @@
 @property(nonatomic, assign) CGFloat selectedSliceOffsetRadius;
 @property(nonatomic, assign) BOOL showPercentage;
 
-+(UIImage *)constructPieChartImage;
-+(UIView *)constructPieChartView;
++ (UIImage *)constructPieChartImage;
++ (UIView *)constructPieChartView;
 
 - (id)initWithFrame:(CGRect)frame Center:(CGPoint)center Radius:(CGFloat)radius;
 - (void)reloadData;

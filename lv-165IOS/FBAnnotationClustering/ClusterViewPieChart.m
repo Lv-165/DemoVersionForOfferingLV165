@@ -18,10 +18,10 @@
 
 @implementation SliceLayer
 
-
 //- (NSString *)description {
 //  return [NSString
-//      stringWithFormat:@"value:%f, percentage:%0.0f, start:%f, end:%f", _value,
+//      stringWithFormat:@"value:%f, percentage:%0.0f, start:%f, end:%f",
+//      _value,
 //                       _percentage, _startAngle / M_PI * 180,
 //                       _endAngle / M_PI * 180];
 //}
@@ -100,10 +100,10 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius,
 - (id)initWithFrame:(CGRect)frame {
   self = [super initWithFrame:frame];
   if (self) {
-      
+
     self.backgroundColor = [UIColor clearColor];
     _pieView = [[UIView alloc] initWithFrame:frame];
-      
+
     [_pieView setBackgroundColor:[UIColor clearColor]];
     [self addSubview:_pieView];
 
@@ -155,7 +155,8 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius,
 //
 //    CGRect bounds = [[self layer] bounds];
 //    self.pieRadius = MIN(bounds.size.width / 2, bounds.size.height / 2) - 10;
-//    self.pieCenter = CGPointMake(bounds.size.width / 2, bounds.size.height / 2);
+//    self.pieCenter = CGPointMake(bounds.size.width / 2, bounds.size.height /
+//    2);
 //    self.labelFont =
 //        [UIFont boldSystemFontOfSize:MAX((int)self.pieRadius / 10, 5)];
 //    _labelColor = [UIColor whiteColor];
@@ -189,34 +190,30 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius,
   [_pieView setBackgroundColor:color];
 }
 
-
 #pragma mark - Factories
 
-+(UIImage *)constructPieChartImage{
-    CGContextRef currentContext =UIGraphicsGetCurrentContext();
-    /* Set the width for the line */
-    CGContextSetLineWidth(currentContext,5.0f);
-    /* Start the line at this point */
-    CGContextMoveToPoint(currentContext,50.0f, 10.0f);
-    /* And end it at this point */
-    CGContextAddLineToPoint(currentContext,100.0f, 200.0f);
-    /* Use the context's current color to draw the line */
-    CGContextStrokePath(currentContext);
-    
-    UIImage * image = [UIImage new];
-    return  image;
++ (UIImage *)constructPieChartImage {
+  CGContextRef currentContext = UIGraphicsGetCurrentContext();
+  /* Set the width for the line */
+  CGContextSetLineWidth(currentContext, 5.0f);
+  /* Start the line at this point */
+  CGContextMoveToPoint(currentContext, 50.0f, 10.0f);
+  /* And end it at this point */
+  CGContextAddLineToPoint(currentContext, 100.0f, 200.0f);
+  /* Use the context's current color to draw the line */
+  CGContextStrokePath(currentContext);
+
+  UIImage *image = [UIImage new];
+  return image;
 }
 
++ (UIView *)constructPieChartView {
 
-+(UIView *)constructPieChartView{
-    
-    //TODO: for IPad add animated view with pie chart, and clickable pie segments
-    
-    UIView * view = [UIView new];
-    return  view;
+  // TODO: for IPad add animated view with pie chart, and clickable pie segments
+
+  UIView *view = [UIView new];
+  return view;
 }
-
-
 
 #pragma mark - Pie Reload Data With Animation
 
@@ -599,28 +596,28 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius,
   CATextLayer *textLayer = [CATextLayer layer];
   textLayer.contentsScale = [[UIScreen mainScreen] scale];
   CGFontRef font = nil;
-  
-   font = CGFontCreateCopyWithVariations((__bridge CGFontRef)(self.labelFont),
-                                          (__bridge CFDictionaryRef)(@{}));
-  
+
+  font = CGFontCreateCopyWithVariations((__bridge CGFontRef)(self.labelFont),
+                                        (__bridge CFDictionaryRef)(@{}));
+
   if (font) {
     [textLayer setFont:font];
     CFRelease(font);
   }
-    
+
   [textLayer setFontSize:self.labelFont.pointSize];
   [textLayer setAnchorPoint:CGPointMake(0.5, 0.5)];
   [textLayer setAlignmentMode:kCAAlignmentCenter];
   [textLayer setBackgroundColor:[UIColor clearColor].CGColor];
   [textLayer setForegroundColor:self.labelColor.CGColor];
-    
+
   if (self.labelShadowColor) {
     [textLayer setShadowColor:self.labelShadowColor.CGColor];
     [textLayer setShadowOffset:CGSizeZero];
     [textLayer setShadowOpacity:1.0f];
     [textLayer setShadowRadius:2.0f];
   }
-    
+
   CGSize size = [@"0" sizeWithFont:self.labelFont];
   [CATransaction setDisableActions:YES];
   [textLayer setFrame:CGRectMake(0, 0, size.width, size.height)];
@@ -669,7 +666,8 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius,
 //      label = [NSString stringWithFormat:@"%0.0f", layer.percentage * 100];
 //    else
 //      label = (layer.text) ? layer.text
-//                           : [NSString stringWithFormat:@"%0.0f", layer.value];
+//                           : [NSString stringWithFormat:@"%0.0f",
+//                           layer.value];
 //    CGSize size = [label sizeWithFont:self.labelFont];
 //
 //    if (M_PI * 2 * _labelRadius * layer.percentage <
@@ -681,6 +679,5 @@ static CGPathRef CGPathCreateArc(CGPoint center, CGFloat radius,
 //    }
 //  }
 //}
-
 
 @end

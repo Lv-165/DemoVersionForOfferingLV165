@@ -13,6 +13,7 @@
 		0C93B2821C11DECB0032A3AE /* FBQuadTreeNode.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C93B27E1C11DECB0032A3AE /* FBQuadTreeNode.m */; };
 		0CB5FF931C1EFA6B009B1209 /* ClusterViewPieChart.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CB5FF921C1EFA6B009B1209 /* ClusterViewPieChart.m */; };
 		0CB9D9491C1EEB3700D00678 /* FBAnnotationClusterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CB9D9481C1EEB3700D00678 /* FBAnnotationClusterView.m */; };
+		0CF4B1301C209AF30096ABE3 /* ClusterOverlayView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0CF4B12F1C209AF30096ABE3 /* ClusterOverlayView.m */; };
 		301896301C0895DC00178A04 /* HMServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3018962F1C0895DC00178A04 /* HMServerManager.m */; };
 		302A11C81C0371C3002F8FF0 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11A31C0371C3002F8FF0 /* AFHTTPRequestOperation.m */; };
 		302A11C91C0371C3002F8FF0 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11A51C0371C3002F8FF0 /* AFHTTPRequestOperationManager.m */; };
@@ -110,6 +111,8 @@
 		0CB5FF921C1EFA6B009B1209 /* ClusterViewPieChart.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ClusterViewPieChart.m; path = FBAnnotationClustering/ClusterViewPieChart.m; sourceTree = "<group>"; };
 		0CB9D9471C1EEB3700D00678 /* FBAnnotationClusterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBAnnotationClusterView.h; path = FBAnnotationClustering/FBAnnotationClusterView.h; sourceTree = "<group>"; };
 		0CB9D9481C1EEB3700D00678 /* FBAnnotationClusterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBAnnotationClusterView.m; path = FBAnnotationClustering/FBAnnotationClusterView.m; sourceTree = "<group>"; };
+		0CF4B12E1C209AF30096ABE3 /* ClusterOverlayView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ClusterOverlayView.h; sourceTree = "<group>"; };
+		0CF4B12F1C209AF30096ABE3 /* ClusterOverlayView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ClusterOverlayView.m; sourceTree = "<group>"; };
 		3018962E1C0895DC00178A04 /* HMServerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HMServerManager.h; path = HMServerManager/HMServerManager.h; sourceTree = "<group>"; };
 		3018962F1C0895DC00178A04 /* HMServerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HMServerManager.m; path = HMServerManager/HMServerManager.m; sourceTree = "<group>"; };
 		302A11A21C0371C3002F8FF0 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -275,6 +278,8 @@
 			children = (
 				0CB5FF911C1EFA6B009B1209 /* ClusterViewPieChart.h */,
 				0CB5FF921C1EFA6B009B1209 /* ClusterViewPieChart.m */,
+				0CF4B12E1C209AF30096ABE3 /* ClusterOverlayView.h */,
+				0CF4B12F1C209AF30096ABE3 /* ClusterOverlayView.m */,
 				0CB9D9471C1EEB3700D00678 /* FBAnnotationClusterView.h */,
 				0CB9D9481C1EEB3700D00678 /* FBAnnotationClusterView.m */,
 				0C93B2761C11DECB0032A3AE /* FBAnnotationCluster.h */,
@@ -775,6 +780,7 @@
 				841135661C124399004AEDCA /* Country+CoreDataProperties.m in Sources */,
 				841135621C124399004AEDCA /* Place+CoreDataProperties.m in Sources */,
 				CE4CC48A1C14EB6F002C4358 /* Reachability.m in Sources */,
+				0CF4B1301C209AF30096ABE3 /* ClusterOverlayView.m in Sources */,
 				302A11D41C0371C3002F8FF0 /* UIButton+AFNetworking.m in Sources */,
 				841135631C124399004AEDCA /* Place.m in Sources */,
 				8411355F1C124399004AEDCA /* User.m in Sources */,
