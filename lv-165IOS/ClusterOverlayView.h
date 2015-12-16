@@ -8,16 +8,22 @@
 
 #import <MapKit/MapKit.h>
 
-@interface ClusterOverlayView : MKCircleRenderer <UIGestureRecognizerDelegate>
+@interface ClusterOverlayView : MKCircleRenderer
 
+// You can subclass MKOverlayRenderer to create overlays based on custom shapes,
+// content, or drawing techniques. The only method subclasses are expected to
+// override is the
 
+// drawMapRect:zoomScale:inContext: method. However, if your class contains
+// content that may not be ready for drawing right away, you should also
+// override the canDrawMapRect:zoomScale: method and use it to report when your
+// class is ready and able to draw.
 
-//You can subclass MKOverlayRenderer to create overlays based on custom shapes, content, or drawing techniques. The only method subclasses are expected to override is the
+// TODO: implement rating display here - pie chart
 
-//drawMapRect:zoomScale:inContext: method. However, if your class contains content that may not be ready for drawing right away, you should also override the canDrawMapRect:zoomScale: method and use it to report when your class is ready and able to draw.
-
-//TODO: implement rating display here - pie chart 
-
-//The map view may tile large overlays and distribute the rendering of each tile to separate threads. Therefore, the implementation of your drawMapRect:zoomScale:inContext: method must be safe to run from background threads and from multiple threads simultaneously.
+// The map view may tile large overlays and distribute the rendering of each
+// tile to separate threads. Therefore, the implementation of your
+// drawMapRect:zoomScale:inContext: method must be safe to run from background
+// threads and from multiple threads simultaneously.
 
 @end

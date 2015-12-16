@@ -41,7 +41,7 @@
 
 @property(strong, nonatomic) NSMutableArray *clusteredAnnotations;
 @property(strong, nonatomic) FBClusteringManager *clusteringManager;
-@property(strong, nonatomic) NSMutableArray * circleOverlayViews;
+@property(strong, nonatomic) NSMutableArray *circleOverlayViews;
 
 @end
 
@@ -400,50 +400,48 @@ static bool isMainRoute;
 
     return polygonView;
   } else if ([overlay isKindOfClass:[MKCircle class]]) {
-      
-      MKCircleRenderer * circleRenderer = [[MKCircleRenderer alloc]initWithCircle:overlay];
-      
-      //TODO: implement rating display (pie chart) here or in subclassed MKCircleRenderer
 
-      UITapGestureRecognizer *tapRecogniser =
-      [[UITapGestureRecognizer alloc] initWithTarget:self
-                                              action:@selector(viewTapped:)];
-      
-      tapRecogniser.numberOfTapsRequired = 1;
-      tapRecogniser.numberOfTouchesRequired = 1;
-      
-      tapRecogniser.delegate = self;
-      
-      //need to keep array of overlay views for gesture reognizer, to find the view(renderer) when tapped
-      [_circleOverlayViews addObject:circleRenderer];
-      //TODO: initialize the array
-      // implement clearing the array when regionDidChange and in other updates
-      
-      [_mapView addGestureRecognizer:tapRecogniser];
-      
-     // probably not here[circleRenderer addGestureRecognizer:tapRecogniser];
-      
+    MKCircleRenderer *circleRenderer =
+        [[MKCircleRenderer alloc] initWithCircle:overlay];
+
+    // TODO: implement rating display (pie chart) here or in subclassed
+    // MKCircleRenderer
+
+    UITapGestureRecognizer *tapRecogniser =
+        [[UITapGestureRecognizer alloc] initWithTarget:self
+                                                action:@selector(handleTap:)];
+
+    tapRecogniser.numberOfTapsRequired = 1;
+    tapRecogniser.numberOfTouchesRequired = 1;
+
+    tapRecogniser.delegate = self;
+
+    // need to keep array of overlay views for gesture reognizer, to find the
+    // view(renderer) when tapped
+    [_circleOverlayViews addObject:circleRenderer];
+    // TODO: initialize the array
+    // implement clearing the array when regionDidChange and in other updates
+
+    [_mapView addGestureRecognizer:tapRecogniser];
+
+    // probably not here[circleRenderer addGestureRecognizer:tapRecogniser];
 
     MKOverlayPathRenderer *pathRenderer =
         [[MKOverlayPathRenderer alloc] initWithOverlay:overlay];
-    //        The MKOverlayPathRenderer class draws a map overlay whose shape is
-    //        represented by a CGPathRef data type. The default drawing behavior
-    //        of this class is to apply the object’s current fill attributes,
-    //        fill the path, apply the current stroke attributes, and then
-    //        stroke the path.
-    if (overlay.RatingForPin == ) {
 
-      // modify path - for anomation or for drawing
-      CGPathRef path = pathRenderer.path;
+    // if (overlay.RatingForPin == ) {
 
-      pathRenderer.fillColor = [UIColor redColor];
-      pathRenderer.strokeColor = [UIColor blackColor];
-      // pathRenderer.lineWidth =
-      // pathRenderer.lineDashPattern =
-      // pathRenderer.lineDashPhase
-      //            pathRenderer.lineJoin =
-      // pathRenderer.lineCap =
-    }
+    // modify path - for animation or for drawing
+    // CGPathRef path = pathRenderer.path;
+
+    // pathRenderer.fillColor = [UIColor redColor];
+    // pathRenderer.strokeColor = [UIColor blackColor];
+    // pathRenderer.lineWidth =
+    // pathRenderer.lineDashPattern =
+    // pathRenderer.lineDashPhase
+    //            pathRenderer.lineJoin =
+    // pathRenderer.lineCap =
+    // }
 
     //        You can use this class as-is or subclass to define additional
     //        drawing behaviors. If you subclass, you should override the
@@ -755,39 +753,132 @@ static bool isMainRoute;
   return nil;
 }
 
-- (MKPolylineView *)circleOverlayTapped:(CGPoint)point
-{
-    // Check if the overlay got tapped
-    for (MKCircleRenderer *circleOverlayView in _circleOverlayViews)
-    {
-        // Get view frame rect in the mapView's coordinate system
-        CGRect viewFrameInMapView = [circleOverlayView.superview convertRect:circleOverlayView.frame toView:_mapView];
-        
-        // Check if the touch is within the view bounds
-        if (CGRectContainsPoint(viewFrameInMapView, point))
-        {
-            return circleOverlayView;
-        }
+/** Returns the distance of |pt| to |poly| in meters
+ *
+ * from http://paulbourke.net/geometry/pointlineplane/DistancePoint.java
+ *
+ */
+- (double)distanceOfPoint:(MKMapPoint)pt toPoly:(MKPolyline *)poly {
+  double distance = MAXFLOAT;
+  for (int n = 0; n < poly.pointCount - 1; n++) {
+
+    MKMapPoint ptA = poly.points[n];
+    MKMapPoint ptB = poly.points[n + 1];
+
+    double xDelta = ptB.x - ptA.x;
+    double yDelta = ptB.y - ptA.y;
+
+    if (xDelta == 0.0 && yDelta == 0.0) {
+
+      // Points must not be equal
+      continue;
     }
-    return nil;
+
+    double u = ((pt.x - ptA.x) * xDelta + (pt.y - ptA.y) * yDelta) /
+               (xDelta * xDelta + yDelta * yDelta);
+    MKMapPoint ptClosest;
+    if (u < 0.0) {
+
+      ptClosest = ptA;
+    } else if (u > 1.0) {
+
+      ptClosest = ptB;
+    } else {
+
+      ptClosest = MKMapPointMake(ptA.x + u * xDelta, ptA.y + u * yDelta);
+    }
+
+    distance = MIN(distance, MKMetersBetweenMapPoints(ptClosest, pt));
+  }
+
+  return distance;
 }
 
-- (void)didTap:(UITapGestureRecognizer *)gr
-{
-    if (gr.state == UIGestureRecognizerStateEnded)
-    {
-        // convert the touch point to a CLLocationCoordinate & geocode
-        CGPoint touchPoint = [gr locationInView:_mapView];
-        MKPolylineView *touchedPolyLineView = [self circleOverlayTapped:touchPoint];
-        if (touchedPolyLineView)
-        {
-            //touched a polyLineView
-        }
-    }
+/** Converts |px| to meters at location |pt| */
+- (double)metersFromPixel:(NSUInteger)px atPoint:(CGPoint)pt {
+  CGPoint ptB = CGPointMake(pt.x + px, pt.y);
+
+  CLLocationCoordinate2D coordA =
+      [_mapView convertPoint:pt toCoordinateFromView:_mapView];
+  CLLocationCoordinate2D coordB =
+      [_mapView convertPoint:ptB toCoordinateFromView:_mapView];
+
+  return MKMetersBetweenMapPoints(MKMapPointForCoordinate(coordA),
+                                  MKMapPointForCoordinate(coordB));
 }
 
+#define MAX_DISTANCE_PX 22.0f
+- (void)handleTap:(UITapGestureRecognizer *)tap {
+  if ((tap.state & UIGestureRecognizerStateRecognized) ==
+      UIGestureRecognizerStateRecognized) {
 
+    // Get map coordinate from touch point
+    CGPoint touchPt = [tap locationInView:_mapView];
+    CLLocationCoordinate2D coord =
+        [_mapView convertPoint:touchPt toCoordinateFromView:_mapView];
 
+    double maxMeters = [self metersFromPixel:MAX_DISTANCE_PX atPoint:touchPt];
+
+    float nearestDistance = MAXFLOAT;
+    MKPolyline *nearestPoly = nil;
+
+    // for every overlay ...
+    for (id<MKOverlay> overlay in _mapView.overlays) {
+
+      // .. if MKPolyline ...
+      if ([overlay isKindOfClass:[MKPolyline class]]) {
+
+        // ... get the distance ...
+        float distance = [self distanceOfPoint:MKMapPointForCoordinate(coord)
+                                        toPoly:overlay];
+
+        // ... and find the nearest one
+        if (distance < nearestDistance) {
+
+          nearestDistance = distance;
+          nearestPoly = overlay;
+        }
+      }
+    }
+
+    if (nearestDistance <= maxMeters) {
+
+      NSLog(@"Touched poly: %@\n"
+             "    distance: %f",
+            nearestPoly, nearestDistance);
+    }
+  }
+}
+
+- (void)didTap:(UITapGestureRecognizer *)gestureRecognizer {
+  if (gestureRecognizer.state == UIGestureRecognizerStateEnded) {
+    // convert the touch point to a CLLocationCoordinate & geocode
+    CGPoint touchPoint = [gestureRecognizer locationInView:_mapView];
+
+    // MKPolylineView *touchedPolyLineView = [self
+    // circleOverlayTapped:touchPoint];
+
+    //        if (touchedPolyLineView) {
+    //
+    //        }
+  }
+}
+
+//- (MKPolylineView *)circleOverlayTapped:(CGPoint)point {
+//  // Check if the overlay got tapped
+//  for (MKCircleRenderer *circleOverlayView in _circleOverlayViews) {
+//    // Get view frame rect in the mapView's coordinate system
+//    CGRect viewFrameInMapView =
+//        [circleOverlayView.superview convertRect:circleOverlayView.frame
+//                                          toView:_mapView];
+//
+//    // Check if the touch is within the view bounds
+//    if (CGRectContainsPoint(viewFrameInMapView, point)) {
+//      return circleOverlayView;
+//    }
+//  }
+//  return nil;
+//}
 
 #pragma mark - Alert -
 
@@ -1058,9 +1149,15 @@ static bool isMainRoute;
 
           FBAnnotationClusterView *annotationView =
               (FBAnnotationClusterView *)View;
-          CGRect frame =
-              [annotationView convertRect:annotationView.annotationLabel.frame
-                                   toView:self.view];
+
+          // TODO: test it
+          CGRect frame = [annotationView convertRect:annotationView.frame
+                                              toView:self.view];
+
+          // WAS          CGRect frame =
+          //              [annotationView
+          //              convertRect:annotationView.annotationLabel.frame
+          //                                   toView:self.view];
 
           if (CGRectContainsPoint(frame, point)) {
             // annotationsArray = [annotationView.annotation.annotations copy];
@@ -1113,26 +1210,27 @@ static bool isMainRoute;
   // Ignore single tap if the user actually double taps
 }
 
-- (void)mapTapped:(UITapGestureRecognizer *)recognizer {
-  MKMapView *mapView = (MKMapView *)recognizer.view;
-  id<MKOverlay> tappedOverlay = nil;
-  for (id<MKOverlay> overlay in mapView.overlays) {
-    MKOverlayView *view = [mapView viewForOverlay:overlay];
-    if (view) {
-      // Get view frame rect in the mapView's coordinate system
-      CGRect viewFrameInMapView =
-          [view.superview convertRect:view.frame toView:mapView];
-      // Get touch point in the mapView's coordinate system
-      CGPoint point = [recognizer locationInView:mapView];
-      // Check if the touch is within the view bounds
-      if (CGRectContainsPoint(viewFrameInMapView, point)) {
-        tappedOverlay = overlay;
-        break;
-      }
-    }
-  }
-  NSLog(@"Tapped view: %@", [mapView viewForOverlay:tappedOverlay]);
-}
+//- (void)mapTapped:(UITapGestureRecognizer *)recognizer {
+//  MKMapView *mapView = (MKMapView *)recognizer.view;
+//  id<MKOverlay> tappedOverlay = nil;
+//  for (id<MKOverlay> overlay in mapView.overlays) {
+//
+//    MKOverlayView *view = [mapView viewForOverlay:overlay];
+//    if (view) {
+//      // Get view frame rect in the mapView's coordinate system
+//      CGRect viewFrameInMapView =
+//          [view.superview convertRect:view.frame toView:mapView];
+//      // Get touch point in the mapView's coordinate system
+//      CGPoint point = [recognizer locationInView:mapView];
+//      // Check if the touch is within the view bounds
+//      if (CGRectContainsPoint(viewFrameInMapView, point)) {
+//        tappedOverlay = overlay;
+//        break;
+//      }
+//    }
+//  }
+//  NSLog(@"Tapped view: %@", [mapView viewForOverlay:tappedOverlay]);
+//}
 
 - (void)handleMapTap:(UIGestureRecognizer *)tap {
   CGPoint tapPoint = [tap locationInView:self.mapView];
@@ -1150,9 +1248,9 @@ static bool isMainRoute;
       // initialize colours for cluster
       UIColor *color = [UIColor redColor];
 
-      overlay.fillColor = color;
-      overlay.strokeColor = color;
-      overlay.lineWidth = 2;
+      //      overlay.fillColor = color;
+      //      overlay.strokeColor = color;
+      //      overlay.lineWidth = 2;
 
       // MKPolygon *polygon = (MKPolygon*) overlay;
 
