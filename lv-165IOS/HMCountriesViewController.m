@@ -142,8 +142,9 @@
     
     //cell.downloadProgress.hidden = YES;
     
-    if ([countries.place count] != 0) {
+    if ([countries.place count] >= 1) {
         [cell.downloadSwitch setOn:YES];
+        NSLog(@"%@",countries.place);
     }
     else {
         [cell.downloadSwitch setOn:NO];
@@ -170,34 +171,32 @@
                         
                         [self.arrayOfPlaces removeAllObjects];
                         for (NSDictionary* dict in places) {
-                            
                             [self.arrayOfPlaces addObject:[dict objectForKey:@"id"]];
                         }
                         [self downloadPlaces:countries];
                         
-                        
                     } onFailure:^(NSError *error, NSInteger statusCode) {
                         
                     }];
-                    return;});
-                
+                });
             }
         }
     }
     else {
         for (Countries* countries in self.arrayOfContries ) {
             if ([cell.continentLable.text isEqualToString:countries.name]) {
-                NSSet *set = countries.place;
-                [countries removePlace:set];
-            }
-        }
-        
-        NSError* error = nil;
-        if (![[self managedObjectContext] save:&error]) {
-            NSLog(@"%@", [error localizedDescription]);
-        }else {
-            for (Countries* countries in self.arrayOfContries ) {
-                [[self managedObjectContext] refreshObject:countries mergeChanges:NO];
+                
+                NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Countries"];
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"iso == %@", countries.iso];
+                [request setPredicate:predicate];
+                NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+                
+                NSError *deleteError = nil;
+                [self.managedObjectContext.persistentStoreCoordinator executeRequest:delete withContext:self.managedObjectContext error:&deleteError];
+                
+                [[HMCoreDataManager sharedManager] saveCountriesToCoreDataWithCountries:countries];
+                
+                break;
             }
         }
     }

@@ -38,6 +38,23 @@
 
 #pragma mark - Create_Delete Objects
 
+- (void) saveCountriesToCoreDataWithCountries:(Countries*) countriess {
+    
+    NSLog(@"saveCountriesToCoreDataWithCountries");
+        
+    Countries *countries =
+    [NSEntityDescription insertNewObjectForEntityForName:@"Countries"
+                                inManagedObjectContext:[self managedObjectContext]];
+        
+    countries.iso = countriess.iso;
+    countries.name = countriess.name;
+    countries.places = countriess.places;
+    
+    NSError *error = nil;
+    if (![[self managedObjectContext] save:&error]) {
+        NSLog(@"%@", [error localizedDescription]);
+    }
+}
 
 - (void) saveCountriesToCoreDataWithNSArray:(NSArray*) countryArray {
     

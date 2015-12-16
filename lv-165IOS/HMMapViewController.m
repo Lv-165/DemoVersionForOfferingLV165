@@ -27,7 +27,7 @@
 @property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
 @property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
 
-@property (strong, nonatomic) NSMutableArray* mapPointArray;
+@property (strong, nonatomic) NSArray* mapPointArray;
 
 @property (assign, nonatomic) NSInteger ratingOfPoints;
 @property (assign, nonatomic) BOOL pointHasComments;
@@ -440,8 +440,8 @@ static bool isMainRoute;
         
         [fetchRequest setPredicate:compoundPredicate];
     }
-    self.mapPointArray = [[managedObjectContext executeFetchRequest:fetchRequest
-                                                              error:nil] mutableCopy];
+    self.mapPointArray = [managedObjectContext executeFetchRequest:fetchRequest
+                                                              error:nil];
     NSLog(@"MAP annotation array count %lu",(unsigned long)self.mapPointArray.count);
     
     for (Place* place in self.mapPointArray) {

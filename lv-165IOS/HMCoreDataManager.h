@@ -27,5 +27,6 @@
 - (void) saveCountriesToCoreDataWithNSArray:(NSArray*) countryArray;
 - (void) savePlaceToCoreDataWithNSArray:(NSDictionary*) placeNSDictionary
                                contries:(Countries*)countries;
+- (void) saveCountriesToCoreDataWithCountries:(Countries*) countriess;
 
 @end
