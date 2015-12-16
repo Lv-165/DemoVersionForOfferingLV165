@@ -31,7 +31,7 @@
 
 @implementation FBAnnotationClusterView
 
-- (void)divideAnnotationsByRating {
+- (void)groupAnnotationsByRating {
   _annotationsWithoutRating = [NSMutableArray new];
   _annotationsWithBadRating = [NSMutableArray new];
   _annotationsWithGoodRating = [NSMutableArray new];
@@ -54,7 +54,7 @@
   }
 }
 
-- (void)countAnnotationsByRating:(FBAnnotationCluster *)clusterAnnotation {
+- (void)countAnnotationsByRating {
 
   //    [self enumerateAnnotationsForRating];
   //    _numOfAnnotationsWithoutRating = _annotationsWithoutRating.count;
@@ -65,7 +65,7 @@
   _numOfAnnotationsWithBadRating = 0;
   _numOfAnnotationsWithGoodRating = 0;
 
-  for (HMMapAnnotation *annotation in clusterAnnotation.annotations) {
+  for (HMMapAnnotation *annotation in self.annotation.annotations) {
 
     switch (annotation.ratingForColor) {
     case senseLess:
@@ -88,6 +88,22 @@
     //    }
   }
 }
+
+
+-(void)countPieChartSegments{
+    _numberOfPieChartSegments = 0;
+    [self countAnnotationsByRating];
+    if(_numOfAnnotationsWithoutRating){
+        _numberOfPieChartSegments++;
+    }
+    if(_numOfAnnotationsWithGoodRating){
+        _numberOfPieChartSegments++;
+    }
+    if(_numOfAnnotationsWithBadRating){
+        _numberOfPieChartSegments++;
+    }
+}
+
 
 - (id)initWithAnnotation:(id<MKAnnotation>)annotation
          reuseIdentifier:(NSString *)reuseIdentifier {
@@ -130,33 +146,71 @@
   return self;
 }
 
-- (void)drawRect:(CGRect)rect {
-  // can add sublayer to view's layer instead of subclassed layer
-  //    CALayer *parentLayer = [CALayer layer];
-  //    [self.view.layer addSubLayer:parentLayer];
-  //
-  //    [parentLayer addSublayer: myShapeLayer];
-  //    [parentLayer addSublayer: myLayerOverShapeLayer];
-  //
-  //  UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0.0);
-  //  CGContextRef ctx = UIGraphicsGetCurrentContext();
-  //  // Create the clipping path and add it
-  //  UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:imageRect];
-  //  [path addClip];
-  //
-  ////    need image here
-  //    UIImage * image;
-  //  [image drawInRect:imageRect];
-  //
-  //  CGContextSetStrokeColorWithColor(ctx, [[UIColor greenColor] CGColor]);
-  //  [path setLineWidth:50.0f];
-  //  [path stroke];
-  //
-  //  UIImage *roundedImage = UIGraphicsGetImageFromCurrentImageContext();
-  //  UIGraphicsEndImageContext();
-  //
-  //  self.image = roundedImage;
-}
+// or put in UIImage context to add to annotation.image
+//- (void)drawRect:(CGRect)rect {
+//  //    Step 1: Create the arc that will be in the center of the donut segment
+//  (the   orange line in the below image). The radius will be (rmax + rmin) /
+//  2.
+//
+//  CGMutablePathRef arc = CGPathCreateMutable();
+//
+//  CGPathMoveToPoint(arc, NULL, centerX, centerY);
+//
+//  CGPathAddArc(arc, NULL, centerX, centerY, radius, startAngle, endAngle,
+//  YES);
+//
+//  //    Step 2: Stroke that arc
+//  //    Create the final donut segment shape by stroking the arc. This
+//  function may look like magic to you but that is how it feels to find a
+//  hidden treasure in Core Graphics. It will stroke the path with a specific
+//  stroke width. "Line cap" and "line join" control how the start and end  of
+//  the shape looks and how the joins between path components look (there    is
+//  only one component in this shape).
+//
+//  CGFloat lineWidth = 10.0; // any radius you want
+//  CGPathRef donutSegment =
+//      CGPathCreateCopyByStrokingPath(arc, NULL, lineWidth, kCGLineCapButt,
+//                                     kCGLineJoinMiter, // the default
+//                                     10); // 10 is default miter limit
+//
+//  //    Step 3: There is no step 3 (well, there is fill + stroke)
+//  //    Fill this shape just like you did with the pie shapes. (lightGray and
+//  black was used in Image 2 (above)).
+//
+//  CGContextRef c = UIGraphicsGetCurrentContext();
+//  CGContextAddPath(c, donutSegment);
+//  CGContextSetFillColorWithColor(c, [UIColor lightGrayColor].CGColor);
+//  CGContextSetStrokeColorWithColor(c, [UIColor blackColor].CGColor);
+//  CGContextDrawPath(c, kCGPathFillStroke);
+//}
+
+// - (void)drawRect:(CGRect)rect {
+// can add sublayer to view's layer instead of subclassed layer
+//    CALayer *parentLayer = [CALayer layer];
+//    [self.view.layer addSubLayer:parentLayer];
+//
+//    [parentLayer addSublayer: myShapeLayer];
+//    [parentLayer addSublayer: myLayerOverShapeLayer];
+//
+//  UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0.0);
+//  CGContextRef ctx = UIGraphicsGetCurrentContext();
+//  // Create the clipping path and add it
+//  UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:imageRect];
+//  [path addClip];
+//
+////    need image here
+//    UIImage * image;
+//  [image drawInRect:imageRect];
+//
+//  CGContextSetStrokeColorWithColor(ctx, [[UIColor greenColor] CGColor]);
+//  [path setLineWidth:50.0f];
+//  [path stroke];
+//
+//  UIImage *roundedImage = UIGraphicsGetImageFromCurrentImageContext();
+//  UIGraphicsEndImageContext();
+//
+//  self.image = roundedImage;
+// }
 
 // - (void)drawRect:(CGRect)rect {
 //  {

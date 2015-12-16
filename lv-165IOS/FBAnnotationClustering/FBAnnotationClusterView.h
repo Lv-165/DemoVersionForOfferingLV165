@@ -28,6 +28,11 @@
 @property(nonatomic) NSUInteger numOfAnnotationsWithGoodRating;
 @property(nonatomic) NSUInteger numOfAnnotationsWithBadRating;
 
+@property(nonatomic) NSUInteger numberOfPieChartSegments;
+
+- (void)countAnnotationsByRating;
+- (void)groupAnnotationsByRating;
+
 //@property(nonatomic) UILabel *annotationLabel;
 
 @end

@@ -401,8 +401,69 @@ static bool isMainRoute;
     return polygonView;
   } else if ([overlay isKindOfClass:[MKCircle class]]) {
 
+    MKCircle *circleOverlay = (MKCircle *)overlay;
     MKCircleRenderer *circleRenderer =
         [[MKCircleRenderer alloc] initWithCircle:overlay];
+
+    // the circle center
+    MKMapPoint overlayMapPoint =
+        MKMapPointForCoordinate(circleOverlay.coordinate);
+
+    double mapRadius =
+        circleOverlay.radius *
+        MKMapPointsPerMeterAtLatitude(circleOverlay.coordinate.latitude);
+
+    // calculate the rect in map coordinate
+    MKMapRect mrect = MKMapRectMake(overlayMapPoint.x - mapRadius,
+                                    overlayMapPoint.y - mapRadius,
+                                    mapRadius * 2, mapRadius * 2);
+
+    // return the pixel coordinate circle
+    CGRect rect = [circleRenderer rectForMapRect:mrect];
+    CGPoint overlayPoint = [circleRenderer pointForMapPoint:overlayMapPoint];
+    // Alternative: CGPoint point = [mapView convertCoordinate:
+    // annotation.coordinate toPointToView:overlayView];
+
+    //      circleRenderer.pointForMapPoint:
+    //      circleRenderer.mapPointForPoint:
+    //      circleRenderer.rectForMapRect:
+    //      circleRenderer.mapRectForRect:
+
+    // painting the pie chart - only one piece currently!
+    CGMutablePathRef arc = CGPathCreateMutable();
+
+    // if number of ratings = 2 - divide by 360/2, else if 3 - 360/3
+    CGFloat startAngle;
+    CGFloat endAngle;
+
+    CGPathMoveToPoint(arc, NULL, overlayPoint.x, overlayPoint.y);
+
+    CGPathAddArc(arc, NULL, overlayPoint.x, overlayPoint.y,
+                 circleOverlay.radius, startAngle, endAngle, YES);
+
+    //    Step 2: Stroke that arc
+    //    Create the final donut segment shape by stroking the arc. This
+    //    function may look like magic to you but that is how it feels to find a
+    //    hidden treasure in Core Graphics. It will stroke the path with a
+    //    specific stroke width. "Line cap" and "line join" control how the
+    //    start and end  of the shape looks and how the joins between path
+    //    components look (there    is only one component in this shape).
+
+    CGFloat lineWidth = 10.0; // any radius you want
+    CGPathRef donutSegment =
+        CGPathCreateCopyByStrokingPath(arc, NULL, lineWidth, kCGLineCapButt,
+                                       kCGLineJoinMiter, // the default
+                                       10); // 10 is default miter limit
+
+    //    Step 3: There is no step 3 (well, there is fill + stroke)
+    //    Fill this shape just like you did with the pie shapes. (lightGray and
+    //    black was used in Image 2 (above)).
+
+    CGContextRef c = UIGraphicsGetCurrentContext();
+    CGContextAddPath(c, donutSegment);
+    CGContextSetFillColorWithColor(c, [UIColor lightGrayColor].CGColor);
+    CGContextSetStrokeColorWithColor(c, [UIColor blackColor].CGColor);
+    CGContextDrawPath(c, kCGPathFillStroke);
 
     // TODO: implement rating display (pie chart) here or in subclassed
     // MKCircleRenderer
@@ -410,7 +471,6 @@ static bool isMainRoute;
     UITapGestureRecognizer *tapRecogniser =
         [[UITapGestureRecognizer alloc] initWithTarget:self
                                                 action:@selector(handleTap:)];
-
     tapRecogniser.numberOfTapsRequired = 1;
     tapRecogniser.numberOfTouchesRequired = 1;
 
@@ -752,6 +812,105 @@ static bool isMainRoute;
   }
   return nil;
 }
+
+//- (void)addAnimatedOverlayToAnnotation:(id<MKAnnotation>)annotation {
+//  // get a frame around the annotation
+//  MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(
+//      annotation.coordinate, OVERLAYMETERS, OVERLAYMETERS);
+//  CGRect rect = [_mapView convertRegion:region toRectToView:_mapView];
+//  // set up the animated overlay
+//  if (!animatedOverlay) {
+//    animatedOverlay = [[AnimatedOverlay alloc] initWithFrame:rect];
+//  } else {
+//    [animatedOverlay setFrame:rect];
+//  }
+//  // add to the map and start the animation
+//  [_mapView addSubview:animatedOverlay];
+//  if ([annotation.title isEqual:@"1"]) {
+//    [animatedOverlay startAnimatingWithColor:[UIColor redColor]
+//    andFrame:rect];
+//  } else if ([annotation.title isEqual:@"2"]) {
+//    [animatedOverlay startAnimatingWithColor:[UIColor purpleColor]
+//                                    andFrame:rect];
+//  } else { // == @"3"
+//    [animatedOverlay startAnimatingWithColor:[UIColor greenColor]
+//                                    andFrame:rect];
+//  }
+//}
+//
+//- (void)removeAnimatedOverlay {
+//  if (animatedOverlay) {
+//    [animatedOverlay stopAnimating];
+//    [animatedOverlay removeFromSuperview];
+//  }
+//}
+
+//-(void) startAnimatingWithColor:(UIColor *)color andFrame:(CGRect)frame{
+//
+//    //TODO: animate  FBAnnotationClusterView.image.frame or
+//    FBAnnotationClusterView.frame
+//
+//    //get the image
+//    UIImage * image = [UIImage imageNamed:@"circle.png"];
+//
+//    UIColor *colorForAnimation = color;
+//
+//    //image color change
+//
+//    CGRect rect = CGRectMake(0, 0, frame.size.width, frame.size.height);
+//    UIGraphicsBeginImageContext(rect.size);
+//    CGContextRef context = UIGraphicsGetCurrentContext();
+//    CGContextClipToMask(context, rect, self.image.CGImage);
+//    CGContextSetFillColorWithColor(context, [colorForAnimation CGColor]);
+//    CGContextFillRect(context, rect);
+//    UIImage *img = UIGraphicsGetImageFromCurrentImageContext();
+//    UIGraphicsEndImageContext();
+//
+//    UIImage *flippedImage = [UIImage imageWithCGImage:img.CGImage
+//                                                scale:1.0 orientation:
+//                                                UIImageOrientationDownMirrored];
+//    self.image = flippedImage;
+//
+//
+//    //opacity animation setup
+//    CABasicAnimation *opacityAnimation;
+//
+//    opacityAnimation=[CABasicAnimation animationWithKeyPath:@"opacity"];
+//    opacityAnimation.duration = ANIMATION_DURATION;
+//    opacityAnimation.repeatCount = ANIMATION_REPEAT;
+//    //theAnimation.autoreverses=YES;
+//    opacityAnimation.fromValue = [NSNumber numberWithFloat:0.85];
+//    opacityAnimation.toValue = [NSNumber numberWithFloat:0.15];
+//
+//    //resize animation setup
+//    CABasicAnimation *transformAnimation;
+//
+//    transformAnimation = [CABasicAnimation
+//    animationWithKeyPath:@"transform.scale"];
+//
+//    transformAnimation.duration = ANIMATION_DURATION;
+//    transformAnimation.repeatCount = ANIMATION_REPEAT;
+//    //transformAnimation.autoreverses=YES;
+//    transformAnimation.fromValue = [NSNumber numberWithFloat:MIN_RATIO];
+//    transformAnimation.toValue = [NSNumber numberWithFloat:MAX_RATIO];
+//
+//
+//    //group the two animation
+//    CAAnimationGroup *group = [CAAnimationGroup animation];
+//
+//    group.repeatCount = ANIMATION_REPEAT;
+//    [group setAnimations:[NSArray arrayWithObjects:opacityAnimation,
+//    transformAnimation, nil]];
+//    group.duration = ANIMATION_DURATION;
+//
+//    //apply the grouped animaton
+//    [self.layer addAnimation:group forKey:@"groupAnimation"];
+//}
+//
+//-(void)stopAnimating{
+//    [self.layer removeAllAnimations];
+//    [self removeFromSuperview];
+//}
 
 /** Returns the distance of |pt| to |poly| in meters
  *
