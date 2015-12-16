@@ -144,6 +144,22 @@
                                     <outlet property="delegate" destination="BYZ-38-t0r" id="doc-Ae-qTV"/>
                                 </connections>
                             </mapView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="FYm-s8-iZT">
+                                <rect key="frame" x="0.0" y="376" width="600" height="224"/>
+                                <subviews>
+                                    <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="7SA-v6-wd0">
+                                        <rect key="frame" x="0.0" y="180" width="600" height="44"/>
+                                        <items/>
+                                    </toolbar>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="trailing" secondItem="7SA-v6-wd0" secondAttribute="trailing" id="1Bg-dW-eeK"/>
+                                    <constraint firstAttribute="height" constant="224" id="Wd8-K5-dzD"/>
+                                    <constraint firstAttribute="bottom" secondItem="7SA-v6-wd0" secondAttribute="bottom" id="hu6-fx-Bgq"/>
+                                    <constraint firstItem="7SA-v6-wd0" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" id="u8i-6r-dMV"/>
+                                </constraints>
+                            </view>
                             <toolbar clearsContextBeforeDrawing="NO" tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cpQ-J0-Ekk">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <animations/>
@@ -160,6 +176,8 @@
                         <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstAttribute="trailingMargin" secondItem="FYm-s8-iZT" secondAttribute="trailing" constant="-20" id="37c-ce-vUa"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="bottom" id="6MC-8b-ac0"/>
                             <constraint firstItem="eIw-hm-dci" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="DKP-tp-O4n"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="eIw-hm-dci" secondAttribute="bottom" id="EvY-Ev-fma"/>
                             <constraint firstItem="cpQ-J0-Ekk" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="XYO-9o-JWI"/>
@@ -167,13 +185,16 @@
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="cpQ-J0-Ekk" secondAttribute="bottom" id="eDt-Up-V1H"/>
                             <constraint firstAttribute="trailingMargin" secondItem="eIw-hm-dci" secondAttribute="trailing" constant="-20" id="faf-ly-Iqn"/>
                             <constraint firstAttribute="trailingMargin" secondItem="cpQ-J0-Ekk" secondAttribute="trailing" constant="-20" id="jv7-6l-e90"/>
+                            <constraint firstItem="FYm-s8-iZT" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="o9K-WB-Ins"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="7Kx-Zu-vjK"/>
                     <connections>
-                        <outlet property="constraitToShowUpToolBar" destination="eDt-Up-V1H" id="nQM-J2-ZS6"/>
+                        <outlet property="constraitToShowUpToolBar" destination="Wd8-K5-dzD" id="wAV-ZG-ftA"/>
                         <outlet property="downToolBar" destination="cpQ-J0-Ekk" id="A7d-TE-jMF"/>
                         <outlet property="mapView" destination="eIw-hm-dci" id="YBP-2t-6ao"/>
+                        <outlet property="upToolBar" destination="7SA-v6-wd0" id="AQi-IA-jjA"/>
+                        <outlet property="viewToAnimate" destination="FYm-s8-iZT" id="p5n-BR-f6x"/>
                         <segue destination="PwR-jp-DFQ" kind="show" identifier="showSearchViewController" id="X3p-XK-KOt"/>
                         <segue destination="7bs-0b-0Y2" kind="show" identifier="showSettingsViewController" id="FIo-P1-Pcd"/>
                         <segue destination="4Ib-ml-FoI" kind="show" identifier="Comments" id="Bf4-ER-3t1"/>
@@ -182,7 +203,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="34" y="-477"/>
+            <point key="canvasLocation" x="-108" y="-477"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="zVh-Tb-0VY">

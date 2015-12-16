@@ -12,8 +12,10 @@
 #import "HMServerManager.h"
 
 @interface HMMapViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate>
-@property (weak, nonatomic) IBOutlet UIToolbar *upToolBar;
+@property (weak, nonatomic) IBOutlet UIView *viewToAnimate;
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraitToShowUpToolBar;
+@property (weak, nonatomic) IBOutlet UIToolbar *upToolBar;
+
 
 @property (weak, nonatomic) IBOutlet UIToolbar *downToolBar;
 @property (weak, nonatomic) IBOutlet MKMapView *mapView;

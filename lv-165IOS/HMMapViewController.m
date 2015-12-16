@@ -530,21 +530,27 @@ static bool isMainRoute;
     [self.mapView setVisibleMapRect:zoomRect
                         edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
                            animated:YES];
-
     self.downToolBar.hidden = YES;
-    self.constraitToShowUpToolBar.constant = 44.f;
-    
+    self.constraitToShowUpToolBar.constant = 210.f;
+    [self.viewToAnimate setNeedsUpdateConstraints];
+    [UIView animateWithDuration:1.f animations:^{
+        [self.viewToAnimate layoutIfNeeded];
+    }];
 }
 - (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view NS_AVAILABLE(10_9, 4_0) {
     self.downToolBar.hidden = NO;
     self.constraitToShowUpToolBar.constant = 0.f;
+    [self.viewToAnimate setNeedsUpdateConstraints];
+    [UIView animateWithDuration:1.f animations:^{
+        [self.viewToAnimate layoutIfNeeded];
+    }];
 }
 
 
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
     
-    self.userLocationPin.transform = CGAffineTransformMakeRotation((manager.heading.trueHeading * M_PI)/180.f);
+    self.userLocationPin.transform = CGAffineTransformMakeRotation((manager.heading.trueHeading * M_PI) / 180.f);
     
 }
 
