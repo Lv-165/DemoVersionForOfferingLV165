@@ -106,6 +106,8 @@ static bool isMainRoute;
     [self startHeadingEvents];
     
     [self.locationManager startUpdatingHeading];
+    
+    self.mapView.showsScale = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
