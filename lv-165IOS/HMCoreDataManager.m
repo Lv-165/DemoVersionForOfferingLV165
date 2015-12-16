@@ -50,10 +50,7 @@
     countries.name = countriess.name;
     countries.places = countriess.places;
     
-    NSError *error = nil;
-    if (![[self managedObjectContext] save:&error]) {
-        NSLog(@"%@", [error localizedDescription]);
-    }
+    [self saveContext];
 }
 
 - (void) saveCountriesToCoreDataWithNSArray:(NSArray*) countryArray {
@@ -72,16 +69,13 @@
         countries.places = [NSNumber numberWithInteger:tempInteger];
     }
     
-    NSError *error = nil;
-    if (![[self managedObjectContext] save:&error]) {
-        NSLog(@"%@", [error localizedDescription]);
-    }
+    [self saveContext];
 }
 
 - (void) savePlaceToCoreDataWithNSArray:(NSDictionary*) placeNSDictionary
                               contries:(Countries*)countries {
     
-    NSLog(@"savePlaceToCoreDataWithNSArray");
+    //NSLog(@"savePlaceToCoreDataWithNSArray");
     
     Place* place = [NSEntityDescription insertNewObjectForEntityForName:@"Place"                                                              inManagedObjectContext:[self managedObjectContext]];
         
@@ -155,10 +149,11 @@
     [place addDescriptObject:description];
     [countries addPlaceObject:place];
 
-    NSError* error = nil;
-    if (![[self managedObjectContext] save:&error]) {
-        NSLog(@"%@", [error localizedDescription]);
-    }
+    [self saveContext];
+//    NSError* error = nil;
+//    if (![[self managedObjectContext] save:&error]) {
+//        NSLog(@"%@", [error localizedDescription]);
+//    }
 }
 
 - (void) deleteAllObjects {

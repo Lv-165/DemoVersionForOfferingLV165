@@ -3,7 +3,7 @@
 //  lv-165IOS
 //
 //  Created by AG on 11/28/15.
-//  Copyright © 2015 SS. All rights reserved.
+//  Copyright © 2015 SS. All rights reserved.
 //
 
 #import "HMCountriesViewController.h"
@@ -14,6 +14,7 @@
 #import "Countries.h"
 #import "HMMapViewController.h"
 #import "UIImageView+AFNetworking.h"
+#import "AFNetworkActivityIndicatorManager.h"
 
 @interface HMCountriesViewController ()
 
@@ -175,9 +176,13 @@
                         }
                         [self downloadPlaces:countries];
                         
+                        
+                        
                     } onFailure:^(NSError *error, NSInteger statusCode) {
                         
                     }];
+                    
+                    
                 });
             }
         }
@@ -186,15 +191,36 @@
         for (Countries* countries in self.arrayOfContries ) {
             if ([cell.continentLable.text isEqualToString:countries.name]) {
                 
-                NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Countries"];
-                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"iso == %@", countries.iso];
-                [request setPredicate:predicate];
-                NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+                //NSSet *set = countries.place;
                 
-                NSError *deleteError = nil;
-                [self.managedObjectContext.persistentStoreCoordinator executeRequest:delete withContext:self.managedObjectContext error:&deleteError];
+                for (NSDictionary *dictionary in countries.place) {
+                    
+                    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Place"];
+                    NSString *str = [NSString stringWithFormat:@"%@", [dictionary valueForKey:@"id"]];
+                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id == %@", str];
+                    [request setPredicate:predicate];
+                    NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+                    
+                    NSError *deleteError = nil;
+                    
+                    [self.managedObjectContext.persistentStoreCoordinator executeRequest:delete withContext:self.managedObjectContext error:&deleteError];
+                    //[[self managedObjectContext] save:nil];
+                    //[countries removePlace:countries.place];
+                    [NSFetchedResultsController deleteCacheWithName:@"All"];
+                }
                 
-                [[HMCoreDataManager sharedManager] saveCountriesToCoreDataWithCountries:countries];
+//                NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Countries"];
+//                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"iso == %@", countries.iso];
+//                [request setPredicate:predicate];
+//                NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
+//                
+//                NSError *deleteError = nil;
+//                [self.managedObjectContext.persistentStoreCoordinator executeRequest:delete withContext:self.managedObjectContext error:&deleteError];
+//                
+//                [[HMCoreDataManager sharedManager] saveCountriesToCoreDataWithCountries:countries];
+                
+//                [countries removePlace:countries.place];
+//                [[self managedObjectContext] save:nil];
                 
                 break;
             }
@@ -204,15 +230,31 @@
 
 - (void) downloadPlaces:(Countries*)countries {
     
-    static int i = 0;
+    self.readyButton.enabled = NO;
     
-    for (NSString* idPlaces in self.arrayOfPlaces) {
+    //static int i = 0;
+    
+//    for (NSString* idPlaces in self.arrayOfPlaces) {
+    for (NSInteger i=0; i<self.arrayOfPlaces.count; i++) {
+        
+        static NSInteger countPlace;
+        
+        if (i == 0) {
+            countPlace = 0;
+        }
+        
+        NSString *idPlaces = [NSString stringWithFormat:@"%@", [self.arrayOfPlaces objectAtIndex:i]];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[HMServerManager sharedManager] getPlaceWithID:idPlaces onSuccess:^(NSDictionary *places) {
-                NSLog(@"\n\ni = %d\tPLACE%@\n",i++, places);
+                //NSLog(@"\n\ni = %d\tPLACE%@\n",i++, places);
                 
                 [[HMCoreDataManager sharedManager] savePlaceToCoreDataWithNSArray:places contries:countries];
+                
+                countPlace++;
+                if (countPlace == self.arrayOfPlaces.count) {
+                    self.readyButton.enabled = YES;
+                }
                 
             } onFailure:^(NSError *error, NSInteger statusCode) {
                     NSLog(@"err");
