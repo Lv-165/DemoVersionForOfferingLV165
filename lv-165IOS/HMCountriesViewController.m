@@ -68,6 +68,11 @@
         }
             onFailure:^(NSError *error, NSInteger statusCode) {
                 NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                
+                [self showAlertWithTitle:@"Oops! No Internet"
+                              andMessage:@"Check your connection"
+                          andActionTitle:@"OK"];
+                
             }];
     });
 
@@ -178,6 +183,11 @@
                         
                     } onFailure:^(NSError *error, NSInteger statusCode) {
                         
+                        [self showAlertWithTitle:@"Oops! No Internet"
+                                      andMessage:@"Check your connection"
+                                  andActionTitle:@"OK"];
+                        
+                        ((UISwitch *)sender).on = NO;
                     }];
                     return;});
                 
@@ -241,6 +251,25 @@
     NSLog(@"%@",searchBar);
     self.fetchedResultsController = nil;
     self.searchString = searchText;
+}
+
+#pragma mark - Alert View
+
+- (void)showAlertWithTitle:(NSString *)title
+                andMessage:(NSString *)message
+            andActionTitle:(NSString *)actionTitle {
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:actionTitle
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+    
 }
 
 @end
