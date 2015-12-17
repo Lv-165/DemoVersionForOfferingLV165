@@ -70,6 +70,8 @@
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"Error: %@", error);
+         
+         failure(error, 0);
      }];
     
 }
@@ -106,6 +108,8 @@
          
      } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
          NSLog(@"Error: %@", error);
+         
+         failure(error, 0);
      }];
 }
 

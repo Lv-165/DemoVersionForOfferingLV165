@@ -27,12 +27,15 @@
     // Dispose of any resources that can be recreated.
 }
 
-#pragma mark - Segmented Control For Map Type
-
-- (IBAction)segmentedControlForMapTypeValueChanged:(id)sender {
+- (void)viewWillDisappear:(BOOL)animated {
     
     [self saveSettings];
+    
+    [super viewWillDisappear:YES];
+    
 }
+
+#pragma mark - Countries Donwload
 
 - (IBAction)actionDownloadsCountries:(id)sender {
     

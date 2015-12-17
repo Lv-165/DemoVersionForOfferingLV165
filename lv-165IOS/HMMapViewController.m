@@ -148,17 +148,25 @@ static bool isMainRoute;
 #pragma mark - buttons on Tool Bar
 
 - (void)showYourCurrentLocation:(UIBarButtonItem *)sender {
-    MKMapRect zoomRect = MKMapRectNull;
-    CLLocationCoordinate2D location = self.mapView.userLocation.coordinate;
-    MKMapPoint center = MKMapPointForCoordinate(location);
-    static double delta = 40000;
-    MKMapRect rect = MKMapRectMake(center.x - delta, center.y - delta, delta * 2, delta * 2);
-    zoomRect = MKMapRectUnion(zoomRect, rect);
-    zoomRect = [self.mapView mapRectThatFits:zoomRect];
     
-    [self.mapView setVisibleMapRect:zoomRect
-                        edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
-                           animated:YES];
+    if (self.mapView.userLocation.location) {
+        MKMapRect zoomRect = MKMapRectNull;
+        CLLocationCoordinate2D location  = self.mapView.userLocation.coordinate;
+        MKMapPoint center = MKMapPointForCoordinate(location);
+        static double delta = 40000;
+        MKMapRect rect = MKMapRectMake(center.x - delta, center.y - delta, delta * 2, delta * 2);
+        zoomRect = MKMapRectUnion(zoomRect, rect);
+        zoomRect = [self.mapView mapRectThatFits:zoomRect];
+        
+        [self.mapView setVisibleMapRect:zoomRect
+                            edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
+                               animated:YES];
+    } else {
+        
+        [self showAlertWithTitle:@"No User Location"
+                      andMessage:@"You didn't allow to get your current location"
+                  andActionTitle:@"OK"];
+    }
 }
 
 - (void)moveToToolsController:(UIBarButtonItem *)sender {
@@ -345,7 +353,13 @@ static bool isMainRoute;
     [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
     if (error) {
         NSLog(@"%@", error);
-        } else if ([response.routes count] == 0) {
+        
+        [self showAlertWithTitle:@"No direction"
+                      andMessage:@"There is no connection between your position and this point"
+                  andActionTitle:@"OK"];
+        
+        }
+    else if ([response.routes count] == 0) {
             NSLog(@"routes = 0");
         } else {
             NSMutableArray *array  = [NSMutableArray array];
@@ -378,19 +392,27 @@ static bool isMainRoute;
 }
 
 - (void) actionDirection:(UIButton*) sender {
-    [self removeRoutes];
-    MKAnnotationView* annotationView = [sender superAnnotationView];
-    if (!annotationView) {
-        return;
-    }
-    CLLocationCoordinate2D coordinate = annotationView.annotation.coordinate;
     
-    isMainRoute = YES;
-    [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
-                            startCoordinate:coordinate];
-    isMainRoute = NO;
-    [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
-                            startCoordinate:coordinate];
+    if (self.mapView.userLocation.location) {
+        [self removeRoutes];
+        MKAnnotationView* annotationView = [sender superAnnotationView];
+        if (!annotationView) {
+            return;
+        }
+        CLLocationCoordinate2D coordinate = annotationView.annotation.coordinate;
+        
+        isMainRoute = YES;
+        [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
+                                startCoordinate:coordinate];
+        isMainRoute = NO;
+        [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
+                                startCoordinate:coordinate];
+    } else {
+        
+        [self showAlertWithTitle:@"No User Location"
+                      andMessage:@"You didn't allow to get your current location"
+                  andActionTitle:@"OK"];
+    }
 }
 
 - (void) actionRemoveRoute:(UIButton*) sender {
@@ -553,6 +575,26 @@ static bool isMainRoute;
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
     
     self.userLocationPin.transform = CGAffineTransformMakeRotation((manager.heading.trueHeading * M_PI) / 180.f);
+    
+}
+
+#pragma mark - Alert
+
+- (void)showAlertWithTitle:(NSString *)title
+                andMessage:(NSString *)message
+            andActionTitle:(NSString *)actionTitle {
+    
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:actionTitle
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
     
 }
 
