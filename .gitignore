@@ -8,6 +8,11 @@ DerivedData
 
 # Ignore Mac DS_Store files
 *.DS_Store
+## Other
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcscmblueprint
 
 ## Various settings
 *.pbxuser
@@ -20,11 +25,7 @@ DerivedData
 !default.perspectivev3
 xcuserdata
 
-## Other
-*.xccheckout
-*.moved-aside
-*.xcuserstate
-*.xcscmblueprint
+
 
 ## Obj-C/Swift specific
 *.hmap
