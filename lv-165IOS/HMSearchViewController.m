@@ -13,9 +13,15 @@
 NSString* const showPlaceNotificationCenter = @"showPlaceNotificationCenter";
 NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCenterInfoKey";
 
+static NSString *historyPlaces = @"historyPlaces";
+static NSString *favouritePlaces = @"favouritePlaces";
+
+
 @interface HMSearchViewController ()
 
 @property (strong, nonatomic)NSArray *arrayForPlacesMarks;
+@property (strong, nonatomic)NSMutableArray *arrayOfFavouritePlaces;
+@property (strong, nonatomic)NSMutableArray *arrayOfHistoryPlaces;
 
 @end
 
@@ -25,8 +31,19 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     [super viewDidLoad];
     
     [[self navigationController] setNavigationBarHidden:NO animated:YES];
+    self.arrayOfHistoryPlaces = [NSMutableArray array];
+    self.arrayOfFavouritePlaces = [NSMutableArray array];
     // Do any additional setup after loading the view.
 }
+
+- (void)viewWillAppear:(BOOL)animated {
+    animated = YES;
+}
+
+- (void)viewDidDisappear:(BOOL)animated {
+    animated = YES;
+}
+
 #pragma mark - UISearchBarDelegate
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
@@ -61,10 +78,25 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     return YES;
 }
 
--(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
-{
+-(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar {
     searchBar.text = @"";
     [searchBar resignFirstResponder];
+    [self.tableView reloadData];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
+    switch (selectedScope) {
+        case 0:
+        {
+            self.arrayForPlacesMarks = self.arrayOfHistoryPlaces;
+            break;
+        }
+        case 1:
+        {
+            self.arrayForPlacesMarks = self.arrayOfFavouritePlaces;
+            break;
+        }
+    }
     [self.tableView reloadData];
 }
 
@@ -127,13 +159,15 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     SVPlacemark *object = self.arrayForPlacesMarks[indexPath.row];
+    
+    [self.arrayOfHistoryPlaces addObject:object];
+    
     NSDictionary *dictionary = [NSDictionary dictionaryWithObject:object
                                                            forKey:showPlaceNotificationCenterInfoKey];
     [[NSNotificationCenter defaultCenter] postNotificationName:showPlaceNotificationCenter
                                                         object:nil
                                                       userInfo:dictionary];
 }
-
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
