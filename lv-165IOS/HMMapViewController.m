@@ -243,20 +243,30 @@ static bool isMainRoute;
     
     switch (((HMMapAnnotation *)annotation).ratingForColor) {
             
-        case badRating:
+        case noRating:
         {
-            pin.pinTintColor = [UIColor redColor];
+            pin.pinTintColor = [UIColor darkGrayColor];
             break;
         }
-        case senseLess:
+        case badRating:
         {
-            pin.pinTintColor = [UIColor whiteColor];
+             pin.pinTintColor = [UIColor redColor];
+            break;
+        }
+        case normalRating:
+        {
+            pin.pinTintColor = [UIColor colorWithRed:(252/255.0) green:(190/255.0) blue:(78/255.0) alpha:1];
+            break;
+        }
+        case goodRating:
+        {
+            pin.pinTintColor = [UIColor colorWithRed:(200/255.0) green:(233/255.0) blue:(100/255.0) alpha:1];
             break;
         }
         case veryGoodRating:
         {
-            pin.pinTintColor = [UIColor greenColor];
-            break;
+            pin.pinTintColor = [UIColor colorWithRed:(140/255.0) green:(180/255.0) blue:(110/255.0) alpha:1];
+                       break;
         }
     }
     pin.animatesDrop = NO;
@@ -473,15 +483,21 @@ static bool isMainRoute;
         CLLocationCoordinate2D coordinate;
         coordinate.latitude = [place.lat doubleValue];
         coordinate.longitude = [place.lon doubleValue];
+        
         if ([place.rating intValue] == 0) {
-            annotation.ratingForColor = senseLess;
-        } else if (([place.rating intValue] >=4) && ([place.rating intValue] <= 5)) {
+            annotation.ratingForColor = noRating;
+        }else if (([place.rating intValue] >=1) && ([place.rating intValue] <= 2)) {
             annotation.ratingForColor = badRating;
-        } else if (([place.rating intValue] >=1) && ([place.rating intValue] <= 3)) {
+        }else if ([place.rating intValue] == 3) {
+            annotation.ratingForColor = normalRating;
+        }else if ([place.rating intValue] == 4) {
+            annotation.ratingForColor = goodRating;
+        }else if ([place.rating intValue] == 5) {
             annotation.ratingForColor = veryGoodRating;
         }
         annotation.coordinate = coordinate;
         annotation.title = [NSString stringWithFormat:@"Rating = %@", place.rating];
+        
         annotation.subtitle = [NSString stringWithFormat:@"%.5g, %.5g",
                                annotation.coordinate.latitude,
                                annotation.coordinate.longitude];
