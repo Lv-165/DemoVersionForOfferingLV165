@@ -36,8 +36,7 @@
     return manager;
 }
 
-#pragma mark - Create_Delete Objects
-
+#pragma mark - Save Objects
 
 - (void) saveCountriesToCoreDataWithNSArray:(NSArray*) countryArray {
     
@@ -55,16 +54,13 @@
         countries.places = [NSNumber numberWithInteger:tempInteger];
     }
     
-    NSError *error = nil;
-    if (![[self managedObjectContext] save:&error]) {
-        NSLog(@"%@", [error localizedDescription]);
-    }
+    [self saveContext];
 }
 
 - (void) savePlaceToCoreDataWithNSArray:(NSDictionary*) placeNSDictionary
                               contries:(Countries*)countries {
     
-    NSLog(@"savePlaceToCoreDataWithNSArray");
+    //NSLog(@"savePlaceToCoreDataWithNSArray");
     
     Place* place = [NSEntityDescription insertNewObjectForEntityForName:@"Place"                                                              inManagedObjectContext:[self managedObjectContext]];
         
@@ -138,10 +134,7 @@
     [place addDescriptObject:description];
     [countries addPlaceObject:place];
 
-    NSError* error = nil;
-    if (![[self managedObjectContext] save:&error]) {
-        NSLog(@"%@", [error localizedDescription]);
-    }
+    [self saveContext];
 }
 
 - (void) deleteAllObjects {
@@ -152,6 +145,43 @@
         [self.managedObjectContext deleteObject:object];
     }
     [self.managedObjectContext save:nil];
+}
+
+#pragma mark - Get Objects
+
+- (NSArray *) getPlaceWithStringId:(NSString *) stringId {
+    
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id == %@", stringId];
+    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Place"];
+    request.predicate = predicate;
+    
+    return [[self managedObjectContext] executeFetchRequest:request
+                                                      error:nil];
+}
+
+- (NSArray *) getPlaceWithStartRating:(NSString *)startRating endRating:(NSString *)endRating {
+    
+    NSPredicate* ratingPredicate = [NSPredicate predicateWithFormat:@"%@ => rating  AND rating >= %@",startRating, endRating];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Place"];
+    
+    [fetchRequest setPredicate:ratingPredicate];
+    
+    return [[self managedObjectContext] executeFetchRequest:fetchRequest
+                                               error:nil];
+}
+
+- (NSArray *) getPlaceWithCommentsStartRating:(NSString *)startRating endRating:(NSString *)endRating {
+    
+    NSPredicate* ratingPredicate = [NSPredicate predicateWithFormat:@"%@ => rating  AND rating >= %@",startRating, endRating];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Place"];
+    
+    NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@",@0];
+    NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:ratingPredicate, commentsCountPredicate, nil]];
+    
+    [fetchRequest setPredicate:compoundPredicate];
+    
+    return [[self managedObjectContext] executeFetchRequest:fetchRequest
+                                                      error:nil];
 }
 
 #pragma mark - Print Objects

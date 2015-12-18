@@ -3,7 +3,7 @@
 //  lv-165IOS
 //
 //  Created by AG on 11/28/15.
-//  Copyright © 2015 SS. All rights reserved.
+//  Copyright © 2015 SS. All rights reserved.
 //
 
 #import "HMCountriesViewController.h"
@@ -12,8 +12,13 @@
 #import "HMDownloadCellTableViewCell.h"
 #import "UIView+HMUItableViewCell.h"
 #import "Countries.h"
+#import "Place.h"
 #import "HMMapViewController.h"
 #import "UIImageView+AFNetworking.h"
+#import "AFNetworkActivityIndicatorManager.h"
+#import "UIActivityIndicatorView+AFNetworking.h"
+#import "AFURLConnectionOperation.h"
+#import "AFURLSessionManager.h"
 
 @interface HMCountriesViewController ()
 
@@ -51,6 +56,17 @@
     self.arrayOfContries = [[NSMutableArray alloc] init];
     self.arrayOfPlaces = [[NSMutableArray alloc] init];
     
+#warning don't work, ASK!
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(blocButton)
+//                                                 name:AFNetworkingOperationDidStartNotification
+//                                               object:nil];
+//    
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(anblocButton)
+//                                                 name:AFNetworkingTaskDidResumeNotification
+//                                               object:nil];
+    
     // Do any additional setup after loading the view.
 }
 
@@ -68,6 +84,11 @@
         }
             onFailure:^(NSError *error, NSInteger statusCode) {
                 NSLog(@"error = %@, code = %ld", [error localizedDescription], statusCode);
+                
+                [self showAlertWithTitle:@"Oops! No Internet"
+                              andMessage:@"Check your connection"
+                          andActionTitle:@"OK"];
+                
             }];
     });
 
@@ -112,8 +133,8 @@
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:self.managedObjectContext
                                           sectionNameKeyPath:nil
-                                                   cacheName:self.searchString>0?self.searchString:@"All"];
-//    aFetchedResultsController.delegate = self;
+                                                   cacheName:nil]; //self.searchString.length>0?self.searchString:@"All"];
+    aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
     NSError *error = nil;
@@ -142,8 +163,9 @@
     
     //cell.downloadProgress.hidden = YES;
     
-    if ([countries.place count] != 0) {
+    if ([countries.place count] >= 1) {
         [cell.downloadSwitch setOn:YES];
+        NSLog(@"%@",countries.place);
     }
     else {
         [cell.downloadSwitch setOn:NO];
@@ -170,50 +192,65 @@
                         
                         [self.arrayOfPlaces removeAllObjects];
                         for (NSDictionary* dict in places) {
-                            
                             [self.arrayOfPlaces addObject:[dict objectForKey:@"id"]];
                         }
                         [self downloadPlaces:countries];
                         
                         
+                        
                     } onFailure:^(NSError *error, NSInteger statusCode) {
                         
+                        [self showAlertWithTitle:@"Oops! No Internet"
+                                      andMessage:@"Check your connection"
+                                  andActionTitle:@"OK"];
+                        
+                        ((UISwitch *)sender).on = NO;
                     }];
-                    return;});
-                
+                    
+                    
+                });
             }
         }
     }
     else {
-        for (Countries* countries in self.arrayOfContries ) {
+        for (Countries* countries in self.fetchedResultsController.fetchedObjects ) {
             if ([cell.continentLable.text isEqualToString:countries.name]) {
-                NSSet *set = countries.place;
-                [countries removePlace:set];
+                
+                for (Place *p in countries.place) {
+                    [self.managedObjectContext deleteObject:p];
+                }
+                break;
             }
         }
         
-        NSError* error = nil;
-        if (![[self managedObjectContext] save:&error]) {
-            NSLog(@"%@", [error localizedDescription]);
-        }else {
-            for (Countries* countries in self.arrayOfContries ) {
-                [[self managedObjectContext] refreshObject:countries mergeChanges:NO];
-            }
-        }
+        [[HMCoreDataManager sharedManager] saveContext];
     }
 }
 
 - (void) downloadPlaces:(Countries*)countries {
     
-    static int i = 0;
+    //self.readyButton.enabled = NO;
     
-    for (NSString* idPlaces in self.arrayOfPlaces) {
+    for (NSInteger i=0; i<self.arrayOfPlaces.count; i++) {
+        
+//        static NSInteger countPlace;
+//        
+//        if (i == 0) {
+//            countPlace = 0;
+//        }
+        
+        NSString *idPlaces = [NSString stringWithFormat:@"%@", [self.arrayOfPlaces objectAtIndex:i]];
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             [[HMServerManager sharedManager] getPlaceWithID:idPlaces onSuccess:^(NSDictionary *places) {
-                NSLog(@"\n\ni = %d\tPLACE%@\n",i++, places);
+                //NSLog(@"\n\ni = %d\tPLACE%@\n",i++, places);
                 
                 [[HMCoreDataManager sharedManager] savePlaceToCoreDataWithNSArray:places contries:countries];
+                
+//                countPlace++;
+//                if (countPlace == self.arrayOfPlaces.count) {
+//                    self.readyButton.enabled = YES;
+//                }
                 
             } onFailure:^(NSError *error, NSInteger statusCode) {
                     NSLog(@"err");
@@ -221,6 +258,15 @@
         });
     }
 }
+
+#warning don't work, ASK!
+//- (void) blocButton {
+//    self.readyButton.enabled = NO;
+//}
+//
+//- (void) anblocButton {
+//    self.readyButton.enabled = YES;
+//}
 
 #pragma mark - UISearchBarDelegate
 
@@ -241,6 +287,25 @@
     NSLog(@"%@",searchBar);
     self.fetchedResultsController = nil;
     self.searchString = searchText;
+}
+
+#pragma mark - Alert View
+
+- (void)showAlertWithTitle:(NSString *)title
+                andMessage:(NSString *)message
+            andActionTitle:(NSString *)actionTitle {
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:actionTitle
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
+    
 }
 
 @end

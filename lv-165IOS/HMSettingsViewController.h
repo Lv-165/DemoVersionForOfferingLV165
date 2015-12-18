@@ -13,7 +13,6 @@
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControlForMapType;
 @property (strong, nonatomic) NSArray *dataSource;
 
-- (IBAction)segmentedControlForMapTypeValueChanged:(id)sender;
 - (IBAction)actionDownloadsCountries:(id)sender;
 
 @end

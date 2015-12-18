@@ -16,7 +16,7 @@
         <attribute name="iso" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="places" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
-        <relationship name="place" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Place" inverseName="countries" inverseEntity="Place" syncable="YES"/>
+        <relationship name="place" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Place" inverseName="countries" inverseEntity="Place" syncable="YES"/>
     </entity>
     <entity name="Country" representedClassName="Country" syncable="YES">
         <attribute name="iso" optional="YES" attributeType="String" syncable="YES"/>
@@ -54,7 +54,7 @@
         <relationship name="countries" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Countries" inverseName="place" inverseEntity="Countries" syncable="YES"/>
         <relationship name="descript" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Description" inverseName="place" inverseEntity="Description" syncable="YES"/>
         <relationship name="location" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Location" inverseName="place" inverseEntity="Location" syncable="YES"/>
-        <relationship name="user" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="User" inverseName="place" inverseEntity="User" syncable="YES"/>
+        <relationship name="user" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="User" inverseName="place" inverseEntity="User" syncable="YES"/>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES">
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>

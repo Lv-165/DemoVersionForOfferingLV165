@@ -24,10 +24,10 @@
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 
-@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
-@property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
+//@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+//@property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
 
-@property (strong, nonatomic) NSMutableArray* mapPointArray;
+@property (strong, nonatomic) NSArray* mapPointArray;
 
 @property (assign, nonatomic) NSInteger ratingOfPoints;
 @property (assign, nonatomic) BOOL pointHasComments;
@@ -46,13 +46,13 @@ static NSString* kSettingsRating = @"rating";
 static NSMutableArray* nameCountries;
 static bool isMainRoute;
 
-- (NSManagedObjectContext*) managedObjectContext {
-    
-    if (!_managedObjectContext) {
-        _managedObjectContext = [[HMCoreDataManager sharedManager] managedObjectContext];
-    }
-    return _managedObjectContext;
-}
+//- (NSManagedObjectContext*) managedObjectContext {
+//    
+//    if (!_managedObjectContext) {
+//        _managedObjectContext = [[HMCoreDataManager sharedManager] managedObjectContext];
+//    }
+//    return _managedObjectContext;
+//}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -112,6 +112,8 @@ static bool isMainRoute;
     [self startHeadingEvents];
     
     [self.locationManager startUpdatingHeading];
+    
+    self.mapView.showsScale = YES;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -152,17 +154,25 @@ static bool isMainRoute;
 #pragma mark - buttons on Tool Bar
 
 - (void)showYourCurrentLocation:(UIBarButtonItem *)sender {
-    MKMapRect zoomRect = MKMapRectNull;
-    CLLocationCoordinate2D location = self.mapView.userLocation.coordinate;
-    MKMapPoint center = MKMapPointForCoordinate(location);
-    static double delta = 40000;
-    MKMapRect rect = MKMapRectMake(center.x - delta, center.y - delta, delta * 2, delta * 2);
-    zoomRect = MKMapRectUnion(zoomRect, rect);
-    zoomRect = [self.mapView mapRectThatFits:zoomRect];
     
-    [self.mapView setVisibleMapRect:zoomRect
-                        edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
-                           animated:YES];
+    if (self.mapView.userLocation.location) {
+        MKMapRect zoomRect = MKMapRectNull;
+        CLLocationCoordinate2D location  = self.mapView.userLocation.coordinate;
+        MKMapPoint center = MKMapPointForCoordinate(location);
+        static double delta = 40000;
+        MKMapRect rect = MKMapRectMake(center.x - delta, center.y - delta, delta * 2, delta * 2);
+        zoomRect = MKMapRectUnion(zoomRect, rect);
+        zoomRect = [self.mapView mapRectThatFits:zoomRect];
+        
+        [self.mapView setVisibleMapRect:zoomRect
+                            edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
+                               animated:YES];
+    } else {
+        
+        [self showAlertWithTitle:@"No User Location"
+                      andMessage:@"You didn't allow to get your current location"
+                  andActionTitle:@"OK"];
+    }
 }
 
 - (void)moveToToolsController:(UIBarButtonItem *)sender {
@@ -243,20 +253,30 @@ static bool isMainRoute;
     
     switch (((HMMapAnnotation *)annotation).ratingForColor) {
             
-        case badRating:
+        case noRating:
         {
-            pin.pinTintColor = [UIColor redColor];
+            pin.pinTintColor = [UIColor darkGrayColor];
             break;
         }
-        case senseLess:
+        case badRating:
         {
-            pin.pinTintColor = [UIColor whiteColor];
+             pin.pinTintColor = [UIColor redColor];
+            break;
+        }
+        case normalRating:
+        {
+            pin.pinTintColor = [UIColor colorWithRed:(252/255.0) green:(190/255.0) blue:(78/255.0) alpha:1];
+            break;
+        }
+        case goodRating:
+        {
+            pin.pinTintColor = [UIColor colorWithRed:(200/255.0) green:(233/255.0) blue:(100/255.0) alpha:1];
             break;
         }
         case veryGoodRating:
         {
-            pin.pinTintColor = [UIColor greenColor];
-            break;
+            pin.pinTintColor = [UIColor colorWithRed:(140/255.0) green:(180/255.0) blue:(110/255.0) alpha:1];
+                       break;
         }
     }
     pin.animatesDrop = NO;
@@ -353,7 +373,13 @@ static bool isMainRoute;
     [directions calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response, NSError *error) {
     if (error) {
         NSLog(@"%@", error);
-        } else if ([response.routes count] == 0) {
+        
+        [self showAlertWithTitle:@"No direction"
+                      andMessage:@"There is no connection between your position and this point"
+                  andActionTitle:@"OK"];
+        
+        }
+    else if ([response.routes count] == 0) {
             NSLog(@"routes = 0");
         } else {
             NSMutableArray *array  = [NSMutableArray array];
@@ -375,30 +401,38 @@ static bool isMainRoute;
 
 - (void) actionDescription:(UIButton*) sender {
     MKAnnotationView* annotationView = [sender superAnnotationView];
-    NSString *str = [NSString stringWithFormat:@"%ld",
+    NSString *stringId = [NSString stringWithFormat:@"%ld",
                      (long)((HMMapAnnotation *)annotationView.annotation).idPlace];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id == %@", str];
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Place"];
-    request.predicate = predicate;
-    self.placeArray = [[self managedObjectContext] executeFetchRequest:request
-                                                                 error:nil];
+    
+    [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
+    
+    self.placeArray = [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
+    
     [self performSegueWithIdentifier:@"Comments" sender:self];
 }
 
 - (void) actionDirection:(UIButton*) sender {
-    [self removeRoutes];
-    MKAnnotationView* annotationView = [sender superAnnotationView];
-    if (!annotationView) {
-        return;
-    }
-    CLLocationCoordinate2D coordinate = annotationView.annotation.coordinate;
     
-    isMainRoute = YES;
-    [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
-                            startCoordinate:coordinate];
-    isMainRoute = NO;
-    [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
-                            startCoordinate:coordinate];
+    if (self.mapView.userLocation.location) {
+        [self removeRoutes];
+        MKAnnotationView* annotationView = [sender superAnnotationView];
+        if (!annotationView) {
+            return;
+        }
+        CLLocationCoordinate2D coordinate = annotationView.annotation.coordinate;
+        
+        isMainRoute = YES;
+        [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
+                                startCoordinate:coordinate];
+        isMainRoute = NO;
+        [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
+                                startCoordinate:coordinate];
+    } else {
+        
+        [self showAlertWithTitle:@"No User Location"
+                      andMessage:@"You didn't allow to get your current location"
+                  andActionTitle:@"OK"];
+    }
 }
 
 - (void) actionRemoveRoute:(UIButton*) sender {
@@ -411,8 +445,8 @@ static bool isMainRoute;
 }
 
 - (void)printPointWithContinent {
-    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Place"];
+//    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
+//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Place"];
     
     NSInteger minForPoint = 0;
     NSInteger maxForPoint = 5;
@@ -440,18 +474,27 @@ static bool isMainRoute;
             break;
     }
     
-    NSPredicate* ratingPredicate = [NSPredicate predicateWithFormat:@"%@ => rating  AND rating >= %@",[NSString stringWithFormat:@" %ld",(long)maxForPoint],[NSString stringWithFormat:@" %ld",(long)minForPoint]];
+    NSString *startRating = [NSString stringWithFormat:@" %ld",(long)maxForPoint];
+    NSString *endRating = [NSString stringWithFormat:@" %ld",(long)minForPoint];
     
     if(!self.pointHasComments) {
-        [fetchRequest setPredicate:ratingPredicate];
-    } else {
-        NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@",@0];
-        NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:ratingPredicate, commentsCountPredicate, nil]];
         
-        [fetchRequest setPredicate:compoundPredicate];
+        self.mapPointArray  = [[HMCoreDataManager sharedManager] getPlaceWithStartRating:startRating
+                                                                               endRating:endRating];
+        
+        //[fetchRequest setPredicate:ratingPredicate];
+    } else {
+//        NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@",@0];
+//        NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:ratingPredicate, commentsCountPredicate, nil]];
+//        
+//        [fetchRequest setPredicate:compoundPredicate];
+        
+        self.mapPointArray = [[HMCoreDataManager sharedManager] getPlaceWithCommentsStartRating:startRating
+                                                                                      endRating:endRating];
     }
-    self.mapPointArray = [[managedObjectContext executeFetchRequest:fetchRequest
-                                                              error:nil] mutableCopy];
+    
+    //self.mapPointArray = [managedObjectContext executeFetchRequest:fetchRequest
+     //                                                         error:nil];
     NSLog(@"MAP annotation array count %lu",(unsigned long)self.mapPointArray.count);
     
     for (Place* place in self.mapPointArray) {
@@ -459,15 +502,21 @@ static bool isMainRoute;
         CLLocationCoordinate2D coordinate;
         coordinate.latitude = [place.lat doubleValue];
         coordinate.longitude = [place.lon doubleValue];
+        
         if ([place.rating intValue] == 0) {
-            annotation.ratingForColor = senseLess;
-        } else if (([place.rating intValue] >=4) && ([place.rating intValue] <= 5)) {
+            annotation.ratingForColor = noRating;
+        }else if (([place.rating intValue] >=1) && ([place.rating intValue] <= 2)) {
             annotation.ratingForColor = badRating;
-        } else if (([place.rating intValue] >=1) && ([place.rating intValue] <= 3)) {
+        }else if ([place.rating intValue] == 3) {
+            annotation.ratingForColor = normalRating;
+        }else if ([place.rating intValue] == 4) {
+            annotation.ratingForColor = goodRating;
+        }else if ([place.rating intValue] == 5) {
             annotation.ratingForColor = veryGoodRating;
         }
         annotation.coordinate = coordinate;
         annotation.title = [NSString stringWithFormat:@"Rating = %@", place.rating];
+        
         annotation.subtitle = [NSString stringWithFormat:@"%.5g, %.5g",
                                annotation.coordinate.latitude,
                                annotation.coordinate.longitude];
@@ -564,6 +613,26 @@ static bool isMainRoute;
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
     
     self.userLocationPin.transform = CGAffineTransformMakeRotation((manager.heading.trueHeading * M_PI) / 180.f);
+    
+}
+
+#pragma mark - Alert
+
+- (void)showAlertWithTitle:(NSString *)title
+                andMessage:(NSString *)message
+            andActionTitle:(NSString *)actionTitle {
+    
+    
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
+                                                                   message:message
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:actionTitle
+                                                            style:UIAlertActionStyleDefault
+                                                          handler:^(UIAlertAction * action) {}];
+    
+    [alert addAction:defaultAction];
+    [self presentViewController:alert animated:YES completion:nil];
     
 }
 
