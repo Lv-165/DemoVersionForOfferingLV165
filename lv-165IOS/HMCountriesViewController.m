@@ -12,6 +12,7 @@
 #import "HMDownloadCellTableViewCell.h"
 #import "UIView+HMUItableViewCell.h"
 #import "Countries.h"
+#import "Place.h"
 #import "HMMapViewController.h"
 #import "UIImageView+AFNetworking.h"
 #import "AFNetworkActivityIndicatorManager.h"
@@ -113,8 +114,8 @@
     [[NSFetchedResultsController alloc] initWithFetchRequest:fetchRequest
                                         managedObjectContext:self.managedObjectContext
                                           sectionNameKeyPath:nil
-                                                   cacheName:self.searchString>0?self.searchString:@"All"];
-//    aFetchedResultsController.delegate = self;
+                                                   cacheName:nil]; //self.searchString.length>0?self.searchString:@"All"];
+    aFetchedResultsController.delegate = self;
     self.fetchedResultsController = aFetchedResultsController;
     
     NSError *error = nil;
@@ -188,43 +189,17 @@
         }
     }
     else {
-        for (Countries* countries in self.arrayOfContries ) {
+        for (Countries* countries in self.fetchedResultsController.fetchedObjects ) {
             if ([cell.continentLable.text isEqualToString:countries.name]) {
                 
-                //NSSet *set = countries.place;
-                
-                for (NSDictionary *dictionary in countries.place) {
-                    
-                    NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Place"];
-                    NSString *str = [NSString stringWithFormat:@"%@", [dictionary valueForKey:@"id"]];
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id == %@", str];
-                    [request setPredicate:predicate];
-                    NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
-                    
-                    NSError *deleteError = nil;
-                    
-                    [self.managedObjectContext.persistentStoreCoordinator executeRequest:delete withContext:self.managedObjectContext error:&deleteError];
-                    //[[self managedObjectContext] save:nil];
-                    //[countries removePlace:countries.place];
-                    [NSFetchedResultsController deleteCacheWithName:@"All"];
+                for (Place *p in countries.place) {
+                    [self.managedObjectContext deleteObject:p];
                 }
-                
-//                NSFetchRequest *request = [[NSFetchRequest alloc] initWithEntityName:@"Countries"];
-//                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"iso == %@", countries.iso];
-//                [request setPredicate:predicate];
-//                NSBatchDeleteRequest *delete = [[NSBatchDeleteRequest alloc] initWithFetchRequest:request];
-//                
-//                NSError *deleteError = nil;
-//                [self.managedObjectContext.persistentStoreCoordinator executeRequest:delete withContext:self.managedObjectContext error:&deleteError];
-//                
-//                [[HMCoreDataManager sharedManager] saveCountriesToCoreDataWithCountries:countries];
-                
-//                [countries removePlace:countries.place];
-//                [[self managedObjectContext] save:nil];
-                
                 break;
             }
         }
+        
+        [[HMCoreDataManager sharedManager] saveContext];
     }
 }
 
@@ -232,9 +207,6 @@
     
     self.readyButton.enabled = NO;
     
-    //static int i = 0;
-    
-//    for (NSString* idPlaces in self.arrayOfPlaces) {
     for (NSInteger i=0; i<self.arrayOfPlaces.count; i++) {
         
         static NSInteger countPlace;
