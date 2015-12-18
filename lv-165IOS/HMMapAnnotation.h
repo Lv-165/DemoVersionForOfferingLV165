@@ -11,8 +11,10 @@
 #import "HMAnnotationView.h"
 
 typedef enum : NSUInteger {
-    senseLess = 0,
+    noRating = 0,
     badRating,
+    normalRating,
+    goodRating,
     veryGoodRating,
 } RatingForPin;
 
@@ -24,6 +26,6 @@ typedef enum : NSUInteger {
 @property (nonatomic, copy) NSString *subtitle;
 
 @property (nonatomic, assign) NSInteger idPlace;
-@property (nonatomic, assign)RatingForPin ratingForColor;
+@property (nonatomic, assign) RatingForPin ratingForColor;
 
 @end
