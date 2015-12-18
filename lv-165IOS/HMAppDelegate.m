@@ -10,6 +10,7 @@
 #import "HMCountriesViewController.h"
 #import "AFNetworkActivityIndicatorManager.h"
 #import "Reachability.h"
+#import <Branch/Branch.h>
 
 @interface HMAppDelegate ()
 
@@ -38,6 +39,20 @@
         
         self.window.rootViewController = vc;
     }
+    Branch *branch = [Branch getInstance];
+    [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
+        if (!error) {
+            NSLog(@"params: %@", params.description);
+        }
+    }];
+    
+    return YES;
+}
+
+- (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
+    // pass the url to the handle deep link call
+    [[Branch getInstance] handleDeepLink:url];
+    // do other deep link routing for the Facebook SDK, Pinterest SDK, etc
     return YES;
 }
 
