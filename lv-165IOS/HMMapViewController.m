@@ -24,8 +24,8 @@
 
 @property (strong, nonatomic) CLLocationManager *locationManager;
 
-@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
-@property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
+//@property (strong, nonatomic) NSFetchedResultsController *fetchedResultsController;
+//@property (strong, nonatomic) NSManagedObjectContext* managedObjectContext;
 
 @property (strong, nonatomic) NSArray* mapPointArray;
 
@@ -46,13 +46,13 @@ static NSString* kSettingsRating = @"rating";
 static NSMutableArray* nameCountries;
 static bool isMainRoute;
 
-- (NSManagedObjectContext*) managedObjectContext {
-    
-    if (!_managedObjectContext) {
-        _managedObjectContext = [[HMCoreDataManager sharedManager] managedObjectContext];
-    }
-    return _managedObjectContext;
-}
+//- (NSManagedObjectContext*) managedObjectContext {
+//    
+//    if (!_managedObjectContext) {
+//        _managedObjectContext = [[HMCoreDataManager sharedManager] managedObjectContext];
+//    }
+//    return _managedObjectContext;
+//}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -381,13 +381,13 @@ static bool isMainRoute;
 
 - (void) actionDescription:(UIButton*) sender {
     MKAnnotationView* annotationView = [sender superAnnotationView];
-    NSString *str = [NSString stringWithFormat:@"%ld",
+    NSString *stringId = [NSString stringWithFormat:@"%ld",
                      (long)((HMMapAnnotation *)annotationView.annotation).idPlace];
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"id == %@", str];
-    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName:@"Place"];
-    request.predicate = predicate;
-    self.placeArray = [[self managedObjectContext] executeFetchRequest:request
-                                                                 error:nil];
+    
+    [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
+    
+    self.placeArray = [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
+    
     [self performSegueWithIdentifier:@"Comments" sender:self];
 }
 
@@ -425,8 +425,8 @@ static bool isMainRoute;
 }
 
 - (void)printPointWithContinent {
-    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Place"];
+//    NSManagedObjectContext *managedObjectContext = [self managedObjectContext];
+//    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Place"];
     
     NSInteger minForPoint = 0;
     NSInteger maxForPoint = 5;
@@ -454,18 +454,27 @@ static bool isMainRoute;
             break;
     }
     
-    NSPredicate* ratingPredicate = [NSPredicate predicateWithFormat:@"%@ => rating  AND rating >= %@",[NSString stringWithFormat:@" %ld",(long)maxForPoint],[NSString stringWithFormat:@" %ld",(long)minForPoint]];
+    NSString *startRating = [NSString stringWithFormat:@" %ld",(long)maxForPoint];
+    NSString *endRating = [NSString stringWithFormat:@" %ld",(long)minForPoint];
     
     if(!self.pointHasComments) {
-        [fetchRequest setPredicate:ratingPredicate];
-    } else {
-        NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@",@0];
-        NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:ratingPredicate, commentsCountPredicate, nil]];
         
-        [fetchRequest setPredicate:compoundPredicate];
+        self.mapPointArray  = [[HMCoreDataManager sharedManager] getPlaceWithStartRating:startRating
+                                                                               endRating:endRating];
+        
+        //[fetchRequest setPredicate:ratingPredicate];
+    } else {
+//        NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@",@0];
+//        NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:ratingPredicate, commentsCountPredicate, nil]];
+//        
+//        [fetchRequest setPredicate:compoundPredicate];
+        
+        self.mapPointArray = [[HMCoreDataManager sharedManager] getPlaceWithCommentsStartRating:startRating
+                                                                                      endRating:endRating];
     }
-    self.mapPointArray = [managedObjectContext executeFetchRequest:fetchRequest
-                                                              error:nil];
+    
+    //self.mapPointArray = [managedObjectContext executeFetchRequest:fetchRequest
+     //                                                         error:nil];
     NSLog(@"MAP annotation array count %lu",(unsigned long)self.mapPointArray.count);
     
     for (Place* place in self.mapPointArray) {

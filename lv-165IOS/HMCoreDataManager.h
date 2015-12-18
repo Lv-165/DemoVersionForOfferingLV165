@@ -29,4 +29,10 @@
                                contries:(Countries*)countries;
 - (void) saveCountriesToCoreDataWithCountries:(Countries*) countriess;
 
+#pragma mark - Get Objects
+
+- (NSArray *) getPlaceWithStringId:(NSString *) stringId;
+- (NSArray *) getPlaceWithStartRating:(NSString *)startRating endRating:(NSString *)endRating;
+- (NSArray *) getPlaceWithCommentsStartRating:(NSString *)startRating endRating:(NSString *)endRating;
+
 @end

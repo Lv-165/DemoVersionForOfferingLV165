@@ -16,6 +16,9 @@
 #import "HMMapViewController.h"
 #import "UIImageView+AFNetworking.h"
 #import "AFNetworkActivityIndicatorManager.h"
+#import "UIActivityIndicatorView+AFNetworking.h"
+#import "AFURLConnectionOperation.h"
+#import "AFURLSessionManager.h"
 
 @interface HMCountriesViewController ()
 
@@ -52,6 +55,17 @@
     
     self.arrayOfContries = [[NSMutableArray alloc] init];
     self.arrayOfPlaces = [[NSMutableArray alloc] init];
+    
+#warning don't work, ASK!
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(blocButton)
+//                                                 name:AFNetworkingOperationDidStartNotification
+//                                               object:nil];
+//    
+//    [[NSNotificationCenter defaultCenter] addObserver:self
+//                                             selector:@selector(anblocButton)
+//                                                 name:AFNetworkingTaskDidResumeNotification
+//                                               object:nil];
     
     // Do any additional setup after loading the view.
 }
@@ -215,15 +229,15 @@
 
 - (void) downloadPlaces:(Countries*)countries {
     
-    self.readyButton.enabled = NO;
+    //self.readyButton.enabled = NO;
     
     for (NSInteger i=0; i<self.arrayOfPlaces.count; i++) {
         
-        static NSInteger countPlace;
-        
-        if (i == 0) {
-            countPlace = 0;
-        }
+//        static NSInteger countPlace;
+//        
+//        if (i == 0) {
+//            countPlace = 0;
+//        }
         
         NSString *idPlaces = [NSString stringWithFormat:@"%@", [self.arrayOfPlaces objectAtIndex:i]];
         
@@ -233,10 +247,10 @@
                 
                 [[HMCoreDataManager sharedManager] savePlaceToCoreDataWithNSArray:places contries:countries];
                 
-                countPlace++;
-                if (countPlace == self.arrayOfPlaces.count) {
-                    self.readyButton.enabled = YES;
-                }
+//                countPlace++;
+//                if (countPlace == self.arrayOfPlaces.count) {
+//                    self.readyButton.enabled = YES;
+//                }
                 
             } onFailure:^(NSError *error, NSInteger statusCode) {
                     NSLog(@"err");
@@ -244,6 +258,15 @@
         });
     }
 }
+
+#warning don't work, ASK!
+//- (void) blocButton {
+//    self.readyButton.enabled = NO;
+//}
+//
+//- (void) anblocButton {
+//    self.readyButton.enabled = YES;
+//}
 
 #pragma mark - UISearchBarDelegate
 
