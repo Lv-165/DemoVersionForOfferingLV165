@@ -13,145 +13,70 @@
 @property(nonatomic, assign) BOOL isSelected;
 @property(nonatomic, strong) NSString *text;
 
-- (void)createArcAnimationForKey:(NSString *)key
-                       fromValue:(NSNumber *)from
-                         toValue:(NSNumber *)to
-                        Delegate:(id)delegate;
 @end
 
 @implementation SliceLayer
 
 //@dynamic progress;
 
-- (void)drawInContext:(CGContextRef)ctx {
-    
-  CGPoint center =
-      CGPointMake((self.bounds.size.width / 2) + self.centerOffset,
-                  (self.bounds.size.height / 2) - self.centerOffset);
-  CGFloat radius = MIN(center.x, center.y) - 25;
-  radius *= self.pieScale;
-  int clockwise = self.startAngle > self.endAngle;
-
-  /* Clipping should be done first so the next path(s) are not creating the
-   * clipping mask */
-  CGContextMoveToPoint(ctx, center.x, center.y);
-  CGContextAddArc(ctx, center.x, center.y, radius * 0.5, self.startAngle,
-                  self.endAngle, !clockwise);
-  // CGContextClipPath(ctx);
-  CGContextClip(ctx);
-
-  /* Now, start drawing your graph and filling things in... */
-  CGContextBeginPath(ctx);
-  CGContextMoveToPoint(ctx, center.x, center.y);
-
-  CGPoint p1 = CGPointMake(center.x + radius * cosf(self.startAngle),
-                           center.y + radius * sinf(self.startAngle));
-
-  CGContextAddLineToPoint(ctx, p1.x, p1.y);
-  CGContextAddArc(ctx, center.x, center.y, radius, self.startAngle,
-                  self.endAngle, clockwise);
-  CGContextClosePath(ctx);
-
-  CGContextSetFillColorWithColor(ctx, self.fillColor.CGColor);
-  CGContextSetStrokeColorWithColor(ctx, self.strokeColor.CGColor);
-  CGContextSetLineWidth(ctx, self.strokeWidth);
-
-  self.pathRef = CGContextCopyPath(ctx);
-  CGContextDrawPath(ctx, kCGPathFillStroke);
-
-  // LABELS
-  UIGraphicsPushContext(ctx);
-  CGContextSetFillColorWithColor(ctx, self.labelColor.CGColor);
-
-  CGFloat distance = [self angleDistance:(self.startAngle * 180 / M_PI)
-                                  angle2:(self.endAngle * 180 / M_PI)];
-  CGFloat arcDistanceAngle = distance * M_PI / 180;
-  CGFloat arcCenterAngle = self.startAngle + arcDistanceAngle / 2;
-
-  CGPoint labelPoint = CGPointMake(center.x + radius * cosf(arcCenterAngle),
-                                   center.y + radius * sinf(arcCenterAngle));
-
-  /*
-   Basic drawing of lines to labels.. Disabled for now..
-   CGContextBeginPath(ctx);
-   CGContextMoveToPoint(ctx, labelPoint.x, labelPoint.y);
-   */
-
-  if (labelPoint.x <= center.x)
-    labelPoint.x -= 50;
-  else
-    labelPoint.x += 5;
-
-  if (labelPoint.y <= center.y)
-    labelPoint.y -= 25;
-
-  /*
-   Basic drawing of lines to labels.. Disabled for now..
-   CGContextAddLineToPoint(ctx, labelPoint.x, labelPoint.y);
-   CGContextClosePath(ctx);
-
-   CGContextSetFillColorWithColor(ctx, self.fillColor.CGColor);
-   CGContextSetStrokeColorWithColor(ctx, self.strokeColor.CGColor);
-   CGContextSetLineWidth(ctx, self.strokeWidth);
-   CGContextDrawPath(ctx, kCGPathFillStroke);
-   */
-
-  [self.labelString drawAtPoint:labelPoint
-                       forWidth:50.0f
-                       withFont:[UIFont systemFontOfSize:18]
-                  lineBreakMode:NSLineBreakByClipping];
-  UIGraphicsPopContext();
-}
-
-// + (BOOL)needsDisplayForKey:(NSString *)key {
-//  // This is the core of what does animation for us. It
-//  // tells CoreAnimation that it needs to redisplay on
-//  // each new value of progress, including tweened ones.
-//  return [key isEqualToString:@"progress"] || [super needsDisplayForKey:key];
-//}
-
-//- (id)actionForKey:(NSString *)aKey {
-//  // This is the other crucial half to tweening.
-//  // The animation we return is compatible with that
-//  // used by UIView, but it also enables implicit
-//  // filling-up-the-pie animations.
-//  if ([aKey isEqualToString:@"progress"]) {
-//    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:aKey];
-//    animation.fromValue = [self.presentationLayer valueForKey:aKey];
-//    return animation;
-//  }
-//  return [super actionForKey:aKey];
-//}
-
 - (void)drawInContext:(CGContextRef)context {
-  // This is the gold; the drawing of the pie itself.
-  // In this code, it draws in a "HUD"-y style, using
-  // the same color to fill as the border.
-  CGRect circleRect = CGRectInset(self.bounds, 1, 1);
-
-  CGColorRef borderColor = [[UIColor whiteColor] CGColor];
-  CGColorRef backgroundColor =
-      [[UIColor colorWithWhite:1.0 alpha:0.15] CGColor];
-
-  CGContextSetFillColorWithColor(context, backgroundColor);
-  CGContextSetStrokeColorWithColor(context, borderColor);
-  CGContextSetLineWidth(context, 2.0f);
-
-  CGContextFillEllipseInRect(context, circleRect);
-  CGContextStrokeEllipseInRect(context, circleRect);
-
-  CGFloat radius = MIN(CGRectGetMidX(circleRect), CGRectGetMidY(circleRect));
-  CGPoint center = CGPointMake(radius, CGRectGetMidY(circleRect));
-  CGFloat startAngle = -M_PI / 2;
-  CGFloat endAngle = self.progress * 2 * M_PI + startAngle;
-  CGContextSetFillColorWithColor(context, borderColor);
-  CGContextMoveToPoint(context, center.x, center.y);
-  CGContextAddArc(context, center.x, center.y, radius, startAngle, endAngle, 0);
-  CGContextClosePath(context);
-  CGContextFillPath(context);
-
-  [super drawInContext:context];
+    // This is the gold; the drawing of the pie itself.
+    // In this code, it draws in a "HUD"-y style, using
+    // the same color to fill as the border.
+    CGRect circleRect = CGRectInset(self.bounds, 1, 1);
+    
+    CGColorRef borderColor = [[UIColor whiteColor] CGColor];
+    CGColorRef backgroundColor =
+    [[UIColor colorWithWhite:1.0 alpha:0.15] CGColor];
+    
+    CGContextSetFillColorWithColor(context, backgroundColor);
+    CGContextSetStrokeColorWithColor(context, borderColor);
+    CGContextSetLineWidth(context, 2.0f);
+    
+    CGContextFillEllipseInRect(context, circleRect);
+    CGContextStrokeEllipseInRect(context, circleRect);
+    
+    CGFloat radius = MIN(CGRectGetMidX(circleRect), CGRectGetMidY(circleRect));
+    CGPoint center = CGPointMake(radius, CGRectGetMidY(circleRect));
+    CGFloat startAngle = -M_PI / 2;
+    CGFloat endAngle = self.progress * 2 * M_PI + startAngle;
+    CGContextSetFillColorWithColor(context, borderColor);
+    CGContextMoveToPoint(context, center.x, center.y);
+    CGContextAddArc(context, center.x, center.y, radius, startAngle, endAngle, 0);
+    CGContextClosePath(context);
+    CGContextFillPath(context);
+    
+    [super drawInContext:context];
 }
+
+//- (void)drawInContext:(CGContextRef)context {
+//    CGRect circleRect = CGRectInset(self.bounds, 1, 1);
+//
+//    UIColor *__autoreleasing borderColor = [UIColor whiteColor];
+//    UIColor *__autoreleasing backgroundColor =
+//    [UIColor colorWithWhite:0 alpha:0.75];
+//
+//    CGContextSetFillColorWithColor(context, backgroundColor.CGColor);
+//    CGContextSetStrokeColorWithColor(context, borderColor.CGColor);
+//    CGContextSetLineWidth(context, 2.0f);
+//
+//    CGContextFillEllipseInRect(context, circleRect);
+//    CGContextStrokeEllipseInRect(context, circleRect);
+//
+//    CGFloat radius = MIN(CGRectGetMidX(circleRect), CGRectGetMidY(circleRect));
+//    CGPoint center = CGPointMake(radius, CGRectGetMidY(circleRect));
+//    CGFloat startAngle = -M_PI / 2;
+//    // need progress here
+//    NSUInteger progress = 50;
+//    CGFloat endAngle = progress * 2 * M_PI + startAngle;
+//    CGContextSetFillColorWithColor(context, borderColor.CGColor);
+//    CGContextMoveToPoint(context, center.x, center.y);
+//    CGContextAddArc(context, center.x, center.y, radius, startAngle, endAngle, 0);
+//    CGContextClosePath(context);
+//    CGContextFillPath(context);
+//
+//    [super drawInContext:context];
+//}
 
 //    - (void)drawInContext:(CGContextRef)context {
 //  {
@@ -253,34 +178,104 @@
 //         [super drawInContext:context];
 //    }
 
-- (void)drawInContext:(CGContextRef)context {
-  CGRect circleRect = CGRectInset(self.bounds, 1, 1);
 
-  UIColor *__autoreleasing borderColor = [UIColor whiteColor];
-  UIColor *__autoreleasing backgroundColor =
-      [UIColor colorWithWhite:0 alpha:0.75];
+// - (void)drawInContext:(CGContextRef)ctx {
+    
+//  CGPoint center =
+//      CGPointMake((self.bounds.size.width / 2) + self.centerOffset,
+//                  (self.bounds.size.height / 2) - self.centerOffset);
+//  CGFloat radius = MIN(center.x, center.y) - 25;
+//  radius *= self.pieScale;
+//  int clockwise = self.startAngle > self.endAngle;
+//
+// //Clipping should be done first so the next path(s) are not creating the clipping mask
+//  CGContextMoveToPoint(ctx, center.x, center.y);
+//  CGContextAddArc(ctx, center.x, center.y, radius * 0.5, self.startAngle,
+//                  self.endAngle, !clockwise);
+//  // CGContextClipPath(ctx);
+//  CGContextClip(ctx);
+//
+//  /* Now, start drawing your graph and filling things in... */
+//  CGContextBeginPath(ctx);
+//  CGContextMoveToPoint(ctx, center.x, center.y);
+//
+//  CGPoint p1 = CGPointMake(center.x + radius * cosf(self.startAngle),
+//                           center.y + radius * sinf(self.startAngle));
+//
+//  CGContextAddLineToPoint(ctx, p1.x, p1.y);
+//  CGContextAddArc(ctx, center.x, center.y, radius, self.startAngle,
+//                  self.endAngle, clockwise);
+//  CGContextClosePath(ctx);
+//
+//  CGContextSetFillColorWithColor(ctx, self.fillColor.CGColor);
+//  CGContextSetStrokeColorWithColor(ctx, self.strokeColor.CGColor);
+//  CGContextSetLineWidth(ctx, self.strokeWidth);
+//
+//  self.pathRef = CGContextCopyPath(ctx);
+//  CGContextDrawPath(ctx, kCGPathFillStroke);
+//
+//  // LABELS
+//  UIGraphicsPushContext(ctx);
+//  CGContextSetFillColorWithColor(ctx, self.labelColor.CGColor);
+//
+//  CGFloat distance = [self angleDistance:(self.startAngle * 180 / M_PI)
+//                                  angle2:(self.endAngle * 180 / M_PI)];
+//  CGFloat arcDistanceAngle = distance * M_PI / 180;
+//  CGFloat arcCenterAngle = self.startAngle + arcDistanceAngle / 2;
+//
+//  CGPoint labelPoint = CGPointMake(center.x + radius * cosf(arcCenterAngle),
+//                                   center.y + radius * sinf(arcCenterAngle));
+//
+//  /*
+//   Basic drawing of lines to labels.. Disabled for now..
+//   CGContextBeginPath(ctx);
+//   CGContextMoveToPoint(ctx, labelPoint.x, labelPoint.y);
+//   */
+//
+//  if (labelPoint.x <= center.x)
+//    labelPoint.x -= 50;
+//  else
+//    labelPoint.x += 5;
+//
+//  if (labelPoint.y <= center.y)
+//    labelPoint.y -= 25;
+//
+//  /*
+//   Basic drawing of lines to labels.. Disabled for now..
+//   CGContextAddLineToPoint(ctx, labelPoint.x, labelPoint.y);
+//   CGContextClosePath(ctx);
+//
+//   CGContextSetFillColorWithColor(ctx, self.fillColor.CGColor);
+//   CGContextSetStrokeColorWithColor(ctx, self.strokeColor.CGColor);
+//   CGContextSetLineWidth(ctx, self.strokeWidth);
+//   CGContextDrawPath(ctx, kCGPathFillStroke);
+//   */
+//
+//  UIGraphicsPopContext();
+// }
 
-  CGContextSetFillColorWithColor(context, backgroundColor.CGColor);
-  CGContextSetStrokeColorWithColor(context, borderColor.CGColor);
-  CGContextSetLineWidth(context, 2.0f);
+// + (BOOL)needsDisplayForKey:(NSString *)key {
+//  // This is the core of what does animation for us. It
+//  // tells CoreAnimation that it needs to redisplay on
+//  // each new value of progress, including tweened ones.
+//  return [key isEqualToString:@"progress"] || [super needsDisplayForKey:key];
+//}
 
-  CGContextFillEllipseInRect(context, circleRect);
-  CGContextStrokeEllipseInRect(context, circleRect);
+//- (id)actionForKey:(NSString *)aKey {
+//  // This is the other crucial half to tweening.
+//  // The animation we return is compatible with that
+//  // used by UIView, but it also enables implicit
+//  // filling-up-the-pie animations.
+//  if ([aKey isEqualToString:@"progress"]) {
+//    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:aKey];
+//    animation.fromValue = [self.presentationLayer valueForKey:aKey];
+//    return animation;
+//  }
+//  return [super actionForKey:aKey];
+//}
 
-  CGFloat radius = MIN(CGRectGetMidX(circleRect), CGRectGetMidY(circleRect));
-  CGPoint center = CGPointMake(radius, CGRectGetMidY(circleRect));
-  CGFloat startAngle = -M_PI / 2;
-  // need progress here
-  NSUInteger progress = 50;
-  CGFloat endAngle = progress * 2 * M_PI + startAngle;
-  CGContextSetFillColorWithColor(context, borderColor.CGColor);
-  CGContextMoveToPoint(context, center.x, center.y);
-  CGContextAddArc(context, center.x, center.y, radius, startAngle, endAngle, 0);
-  CGContextClosePath(context);
-  CGContextFillPath(context);
 
-  [super drawInContext:context];
-}
+
 
 + (void)drawCircle:(CGRect)rect {
 }

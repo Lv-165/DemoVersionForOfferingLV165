@@ -53,5 +53,10 @@
 - (void)setSliceSelectedAtIndex:(NSInteger)index;
 - (void)setSliceDeselectedAtIndex:(NSInteger)index;
 
+- (void)createArcAnimationForKey:(NSString *)key
+                       fromValue:(NSNumber *)from
+                         toValue:(NSNumber *)to
+                        Delegate:(id)delegate;
+
 @end
-;
+

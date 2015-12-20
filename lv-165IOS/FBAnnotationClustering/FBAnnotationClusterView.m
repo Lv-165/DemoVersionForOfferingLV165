@@ -10,11 +10,36 @@
 #import "HMMapAnnotation.h"
 
 @import QuartzCore;
+@import CoreText;
+
+typedef NS_OPTIONS(NSInteger, AnnotationsPresentByRating) {
+  PresentWithoutRating = 1 << 0,
+  PresentWithBadRating = 1 << 1,
+  PresentWithGoodRating = 1 << 2
+};
+
+typedef struct {
+  unsigned int numOfAnnotationsWithoutRating;
+  unsigned int numOfAnnotationsWithBadRating;
+  unsigned int numOfAnnotationsWithGoodRating;
+} NumberOfAnnotationsByRating;
+
+typedef struct {
+    unsigned int partOfAnnotationsWithoutRating;
+    unsigned int partOfAnnotationsWithBadRating;
+    unsigned int partOfAnnotationsWithGoodRating;
+} PieChartSegments;
 
 @interface FBAnnotationClusterView ()
 
-@property(strong, nonatomic) ClusterViewPieChart *pieChartRight;
-@property(strong, nonatomic) ClusterViewPieChart *pieChartLeft;
+@property(strong, nonatomic) UIColor *goodRatingColour;
+@property(strong, nonatomic) UIColor *badRatingColour;
+@property(strong, nonatomic) UIColor *noneRatingColour;
+@property(strong, nonatomic) NSMutableArray *segmentSizesArray;
+
+
+//@property(strong, nonatomic) ClusterViewPieChart *pieChartRight;
+//@property(strong, nonatomic) ClusterViewPieChart *pieChartLeft;
 
 //@property(strong, nonatomic) UILabel *percentageLabel;
 //@property(strong, nonatomic) UILabel *selectedSliceLabel;
@@ -27,94 +52,212 @@
 
 @property(nonatomic, strong) NSArray *sliceColors;
 
+//@property(nonatomic) CGFloat partWithoutRating;
+//@property(nonatomic) CGFloat partWithBadRating;
+//@property(nonatomic) CGFloat partWithGoodRating;
+
 @end
 
 @implementation FBAnnotationClusterView
 
-- (void)groupAnnotationsByRating {
-  _annotationsWithoutRating = [NSMutableArray new];
-  _annotationsWithBadRating = [NSMutableArray new];
-  _annotationsWithGoodRating = [NSMutableArray new];
+AnnotationsPresentByRating annotationsPresentByRating;
+NumberOfAnnotationsByRating numberOfAnnotationsByRating;
+PieChartSegments pieChartSegments;
 
-  for (HMMapAnnotation *annotation in self.annotation.annotations) {
+static CGFloat radianConversionFactor = M_PI / 180;
 
-    switch (annotation.ratingForColor) {
-    case senseLess:
-      [_annotationsWithoutRating addObject:annotation];
-      break;
+- (void)calculatePieChartSegmentSizes {
 
-    case badRating:
-      [_annotationsWithBadRating addObject:annotation];
-      break;
-
-    case veryGoodRating:
-      [_annotationsWithGoodRating addObject:annotation];
-      break;
-    }
-  }
-}
-
-- (void)countAnnotationsByRating {
-
-  //    [self enumerateAnnotationsForRating];
-  //    _numOfAnnotationsWithoutRating = _annotationsWithoutRating.count;
-  //    _numOfAnnotationsWithBadRating = _annotationsWithBadRating.count;
-  //    _numOfAnnotationsWithGoodRating = _annotationsWithGoodRating.count;
-
-  _numOfAnnotationsWithoutRating = 0;
-  _numOfAnnotationsWithBadRating = 0;
-  _numOfAnnotationsWithGoodRating = 0;
-
-  for (HMMapAnnotation *annotation in self.annotation.annotations) {
-
-    switch (annotation.ratingForColor) {
-    case senseLess:
-      _numOfAnnotationsWithoutRating++;
-      break;
-
-    case badRating:
-      _numOfAnnotationsWithBadRating++;
-      break;
-
-    case veryGoodRating:
-      _numOfAnnotationsWithGoodRating++;
-      break;
-    }
-
-    //    for  (HMMapAnnotation * annotation in clusterAnnotation.annotations){
-    //        NSNumber * num = self.slices [annotation.ratingForColor];
-    //        NSUInteger count = num.integerValue;
-    //        count++;
-    //    }
-  }
-}
-
-
--(void)countPieChartSegments{
     _numberOfPieChartSegments = 0;
-    [self countAnnotationsByRating];
-    if(_numOfAnnotationsWithoutRating){
-        _numberOfPieChartSegments++;
+
+   // _segmentSizesArray = [NSMutableArray alloc]initWithCapacity:3];
+
+    numberOfAnnotationsByRating.numOfAnnotationsWithBadRating = 0;
+    numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating = 0;
+    numberOfAnnotationsByRating.numOfAnnotationsWithoutRating = 0;
+
+    //  _annotationsWithoutRating = [NSMutableArray new];
+    //  _annotationsWithBadRating = [NSMutableArray new];
+    //  _annotationsWithGoodRating = [NSMutableArray new];
+
+    for (HMMapAnnotation *annotation in self.annotation.annotations) {
+        switch (annotation.ratingForColor) {
+            case senseLess:
+                //[_annotationsWithoutRating addObject:annotation];
+                numberOfAnnotationsByRating.numOfAnnotationsWithoutRating++;
+                break;
+            case badRating:
+                // [_annotationsWithBadRating addObject:annotation];
+                numberOfAnnotationsByRating.numOfAnnotationsWithBadRating++;
+                break;
+            case veryGoodRating:
+                //[_annotationsWithGoodRating addObject:annotation];
+                
+                numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating++;
+                break;
+        }
     }
-    if(_numOfAnnotationsWithGoodRating){
-        _numberOfPieChartSegments++;
-    }
-    if(_numOfAnnotationsWithBadRating){
-        _numberOfPieChartSegments++;
-    }
+
+  NSUInteger total =
+      numberOfAnnotationsByRating.numOfAnnotationsWithBadRating +
+      numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating +
+      numberOfAnnotationsByRating.numOfAnnotationsWithoutRating;
+  // NSUInteger total =   _annotationsWithoutRating.count +
+  //                     _annotationsWithBadRating.count +
+  //                     _annotationsWithGoodRating.count;
+
+  pieChartSegments.partOfAnnotationsWithoutRating = numberOfAnnotationsByRating.numOfAnnotationsWithoutRating / total;
+  pieChartSegments.partOfAnnotationsWithGoodRating = numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating / total;
+  pieChartSegments.partOfAnnotationsWithBadRating = numberOfAnnotationsByRating.numOfAnnotationsWithBadRating / total;
+
+  if (pieChartSegments.partOfAnnotationsWithoutRating ) {
+    [_segmentSizesArray addObject:[NSNumber numberWithFloat:pieChartSegments.partOfAnnotationsWithoutRating ]];
+  }
+  if (pieChartSegments.partOfAnnotationsWithBadRating) {
+    [_segmentSizesArray addObject:[NSNumber numberWithFloat:pieChartSegments.partOfAnnotationsWithBadRating]];
+  }
+  if (pieChartSegments.partOfAnnotationsWithGoodRating) {
+    [_segmentSizesArray
+        addObject:[NSNumber numberWithFloat:pieChartSegments.partOfAnnotationsWithGoodRating]];
+  }
+    //return [_segmentSizesArray copy];
 }
+
+
+//- (void)calculateNumOfAnnotationsByRating {
+//    _numberOfPieChartSegments = 0;
+//
+//  numberOfAnnotationsByRating.numOfAnnotationsWithBadRating = 0;
+//  numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating = 0;
+//  numberOfAnnotationsByRating.numOfAnnotationsWithoutRating = 0;
+//
+//  //  _annotationsWithoutRating = [NSMutableArray new];
+//  //  _annotationsWithBadRating = [NSMutableArray new];
+//  //  _annotationsWithGoodRating = [NSMutableArray new];
+//
+//  for (HMMapAnnotation *annotation in self.annotation.annotations) {
+//    switch (annotation.ratingForColor) {
+//    case senseLess:
+//      //[_annotationsWithoutRating addObject:annotation];
+//      numberOfAnnotationsByRating.numOfAnnotationsWithoutRating++;
+//      break;
+//    case badRating:
+//      // [_annotationsWithBadRating addObject:annotation];
+//      numberOfAnnotationsByRating.numOfAnnotationsWithBadRating++;
+//      break;
+//    case veryGoodRating:
+//      //[_annotationsWithGoodRating addObject:annotation];
+//
+//      numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating++;
+//      break;
+//    }
+//  }
+//
+////    if (numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating) {
+////        _numberOfPieChartSegments++;
+////    }
+////    if (numberOfAnnotationsByRating.numOfAnnotationsWithoutRating) {
+////        _numberOfPieChartSegments++;
+////    }
+////    if (numberOfAnnotationsByRating.numOfAnnotationsWithBadRating) {
+////        _numberOfPieChartSegments++;
+////    }
+//
+//}
+
+
+//- (NSUInteger)countAnnotationsByRating   {
+//    _numberOfPieChartSegments = 0;
+//    [self calculateNumOfAnnotationsByRating];
+//    if (_numOfAnnotationsWithoutRating) {
+//        _numberOfPieChartSegments++;
+//    }
+//    if (_numOfAnnotationsWithGoodRating) {
+//        _numberOfPieChartSegments++;
+//    }
+//    if (_numOfAnnotationsWithBadRating) {
+//        _numberOfPieChartSegments++;
+//    }
+//    return _numberOfPieChartSegments;
+//}
+
+
+
+//- (void)returnNonZero {
+//  _numOfAnnotationsWithoutRating;
+//  _numOfAnnotationsWithBadRating;
+//  _numOfAnnotationsWithGoodRating;
+//
+//  annotationsPresentByRating =
+//      PresentWithBadRating | PresentWithoutRating | PresentWithGoodRating;
+//
+//  if (annotationsPresentByRating & PresentWithBadRating) {
+//
+//  }
+//}
+
+
+//- (void)countAnnotationsByRating {
+//  //    [self enumerateAnnotationsForRating];
+//  //    _numOfAnnotationsWithoutRating = _annotationsWithoutRating.count;
+//  //    _numOfAnnotationsWithBadRating = _annotationsWithBadRating.count;
+//  //    _numOfAnnotationsWithGoodRating = _annotationsWithGoodRating.count;
+//
+//  _numOfAnnotationsWithoutRating = 0;
+//  _numOfAnnotationsWithBadRating = 0;
+//  _numOfAnnotationsWithGoodRating = 0;
+//
+//  for (HMMapAnnotation *annotation in self.annotation.annotations) {
+//    switch (annotation.ratingForColor) {
+//    case senseLess:
+//      _numOfAnnotationsWithoutRating++;
+//      break;
+//
+//    case badRating:
+//      _numOfAnnotationsWithBadRating++;
+//      break;
+//
+//    case veryGoodRating:
+//      _numOfAnnotationsWithGoodRating++;
+//      break;
+//    }
+//
+//    //    for  (HMMapAnnotation * annotation in clusterAnnotation.annotations){
+//    //        NSNumber * num = self.slices [annotation.ratingForColor];
+//    //        NSUInteger count = num.integerValue;
+//    //        count++;
+//    //    }
+//  }
+//}
+//
+//- (NSUInteger)countPieChartSegments {
+//  _numberOfPieChartSegments = 0;
+//  [self countAnnotationsByRating];
+//  if (_numOfAnnotationsWithoutRating) {
+//    _numberOfPieChartSegments++;
+//  }
+//  if (_numOfAnnotationsWithGoodRating) {
+//    _numberOfPieChartSegments++;
+//  }
+//  if (_numOfAnnotationsWithBadRating) {
+//    _numberOfPieChartSegments++;
+//  }
+//  return _numberOfPieChartSegments;
+//}
 
 
 - (id)initWithAnnotation:(id<MKAnnotation>)annotation
          reuseIdentifier:(NSString *)reuseIdentifier {
   self = [super initWithAnnotation:annotation reuseIdentifier:reuseIdentifier];
   if (self != nil) {
-
     FBAnnotationCluster *clusterAnnotation = (FBAnnotationCluster *)annotation;
-
+    self.frame = CGRectMake(0, 0, 70, 70);
+    self.backgroundColor = [UIColor clearColor];
+    // self.opaque = YES;
+    //[self setNeedsDisplay];
     // ClusterViewPieChart *pieChartView = [ClusterViewPieChart alloc];
 
-    self.image = [ClusterViewPieChart constructPieChartImage];
+    // self.image = [ClusterViewPieChart constructPieChartImage];
 
     // self.annotationLabel =[[UILabel alloc] initWithFrame:CGRectMake(0, 0, 35,
     // 35)];
@@ -146,88 +289,491 @@
   return self;
 }
 
-// or put in UIImage context to add to annotation.image
-//- (void)drawRect:(CGRect)rect {
-//  //    Step 1: Create the arc that will be in the center of the donut segment
-//  (the   orange line in the below image). The radius will be (rmax + rmin) /
-//  2.
+//// Draw inner pie
+// CGFloat innerRadius = CGRectGetMidX(circleRect) * 0.45;
 //
-//  CGMutablePathRef arc = CGPathCreateMutable();
+// CGContextSetFillColorWithColor(context, innerPieColor);
+// CGContextMoveToPoint(context, center.x, center.y);
+// CGContextAddArc(context, center.x, center.y, innerRadius, startAngle,
+//                endAngle, 0);
+// CGContextClosePath(context);
+// CGContextFillPath(context);
+
+//// Draw the White Line
+// CGFloat lineRadius = CGRectGetMidX(circleRect) * 0.72;
+// CGFloat arrowWidth = 0.35;
 //
-//  CGPathMoveToPoint(arc, NULL, centerX, centerY);
+// CGContextSetStrokeColorWithColor(context, arrowColor);
+// CGContextSetFillColorWithColor(context, arrowColor);
 //
-//  CGPathAddArc(arc, NULL, centerX, centerY, radius, startAngle, endAngle,
-//  YES);
+// CGMutablePathRef path = CGPathCreateMutable();
+// CGContextSetLineWidth(context, 16);
+// CGFloat lineEndAngle = ((endAngle - startAngle) >= arrowWidth)
+//? endAngle - arrowWidth
+//: endAngle;
+// CGPathAddArc(path, NULL, center.x, center.y, lineRadius, startAngle,
+//             lineEndAngle, 0);
+// CGContextAddPath(context, path);
+// CGContextStrokePath(context);
+
+- (void)drawText:(CGFloat)xPosition
+       yPosition:(CGFloat)yPosition
+     canvasWidth:(CGFloat)canvasWidth
+    canvasHeight:(CGFloat)canvasHeight {
+  // Draw Text
+  CGRect textRect = CGRectMake(xPosition, yPosition, canvasWidth, canvasHeight);
+  NSMutableParagraphStyle *textStyle =
+      NSMutableParagraphStyle.defaultParagraphStyle.mutableCopy;
+  textStyle.alignment = NSTextAlignmentLeft;
+
+  NSDictionary *textFontAttributes = @{
+    NSFontAttributeName : [UIFont fontWithName:@"Helvetica" size:12],
+    NSForegroundColorAttributeName : UIColor.redColor,
+    NSParagraphStyleAttributeName : textStyle
+  };
+
+  [@"Hello, World!" drawInRect:textRect withAttributes:textFontAttributes];
+}
+
+- (void)addText {
+  //    NSString *text = [[NSString alloc]initWithFormat:@"%lu",(unsigned
+  //    long)_numOfAnnotationsWithBadRating];
+  //    NSAttributedString* attString = [[NSAttributedString alloc]
+  //                                     initWithString:text] ;
+  //    CTFramesetterRef framesetter =
+  //    CTFramesetterCreateWithAttributedString((CFAttributedStringRef)attString);
+  //    CTFrameRef frame =
+  //    CTFramesetterCreateFrame(framesetter,
+  //                             CFRangeMake(0, [attString length]), path,
+  //                             NULL);
+  //
+  //    CTFrameDraw(frame, context);
+}
+
+- (void)drawRect:(CGRect)rect {
+
+  _goodRatingColour =
+      [UIColor colorWithRed:0.257 green:0.667 blue:0.244 alpha:1.000];
+  _badRatingColour =
+      [UIColor colorWithRed:0.871 green:0.000 blue:0.126 alpha:1.000];
+  _noneRatingColour =
+      [UIColor colorWithRed:0.620 green:0.625 blue:0.612 alpha:1.000];
+
+    NSArray *coloursArray = [[NSArray alloc]initWithObjects:_noneRatingColour,_badRatingColour, _goodRatingColour, nil];
+
+  CGRect circleRect = CGRectInset(self.bounds, 1, 1);
+  CGPoint center =
+      CGPointMake(CGRectGetMidX(circleRect), CGRectGetMidY(circleRect));
+
+  //  UIBezierPath *circularPath = [UIBezierPath
+  //  bezierPathWithRoundedRect:self.bounds
+  //                               cornerRadius:self.bounds.size.height / 2.0];
+  //    [circularPath addClip];
+
+  // CGPoint center = CGPointMake(rect.origin.x + rect.size.width / 2,
+  // rect.origin.y + rect.size.height / 2);
+
+  CGFloat radius = rect.size.width / 2;
+
+  //    CGContextSetStrokeColorWithColor(context, [UIColor blueColor].CGColor);
+
+  CGContextRef context = UIGraphicsGetCurrentContext();
+
+  // CGContextAddEllipseInRect(context, CGRectInset(rect, 2.0, 2.0));
+
+  CGMutablePathRef arc = CGPathCreateMutable();
+  CGPathMoveToPoint(arc, NULL, center.x, center.y);
+
+  // CGContextMoveToPoint(context, center.x, center.y);
+  CGFloat startAngle = 0;
+  CGFloat endAngle = 360 * radianConversionFactor;
+
+    //NSUInteger numOfPieChartSegments = [self countPieChartSegments];
+
+  [self calculatePieChartSegmentSizes];
+
+  CGFloat currentAngle;
+
+//    if (pieChartSegments.partOfAnnotationsWithoutRating ) {
+//        _noneRatingColour;
+//        CGFloat angle = 360 * pieChartSegments.partOfAnnotationsWithoutRating;
+//        currentAngle;
+//    }
 //
-//  //    Step 2: Stroke that arc
-//  //    Create the final donut segment shape by stroking the arc. This
-//  function may look like magic to you but that is how it feels to find a
-//  hidden treasure in Core Graphics. It will stroke the path with a specific
-//  stroke width. "Line cap" and "line join" control how the start and end  of
-//  the shape looks and how the joins between path components look (there    is
-//  only one component in this shape).
+//    if (pieChartSegments.partOfAnnotationsWithBadRating) {
+//        _badRatingColour;
+//currentAngle;
+//    }
+//    
+//    if (pieChartSegments.partOfAnnotationsWithGoodRating) {
+//        _goodRatingColour;
+//        currentAngle;
+//    }
+
+
+   // for (NSNumber * segmentSize in pieChartSegmentSizes){
+    for (unsigned int i = 0; i < _segmentSizesArray.count; i++){
+     if (i == 0){
+         startAngle = 0;
+     } else {
+         startAngle = currentAngle;
+     }
+
+
+     if (i == _segmentSizesArray.count){
+        endAngle = 360;
+     }else {
+
+    NSNumber * num = _segmentSizesArray[i];
+         
+      CGFloat endAngle = 360 * num.doubleValue;
+     }
+     currentAngle = endAngle;
+
+    UIColor * color = coloursArray[i];
+
+     CGContextSetFillColorWithColor(
+                                    context, color
+                                    .CGColor);
+     CGContextSetStrokeColorWithColor(
+                                      context, [UIColor colorWithRed:0.163 green:0.743 blue:0.751 alpha:1.000]
+                                      .CGColor);
+
+        //CGFloat angle = 180 * radianConversionFactor;
+
+
+        // drawing segment 1
+
+        // CGPathRef donutSegment = CGPathCreateCopyByStrokingPath(  arc, NULL,
+        // lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+        // CGContextAddPath(context, donutSegment);
+
+
+
+        CGPathAddArc(arc, NULL, center.x, center.y, rect.size.width / 2, startAngle,
+                     endAngle, YES);
+        CGPathCloseSubpath(arc);
+        CGContextAddPath(context, arc);
+        CGContextDrawPath(context, kCGPathFillStroke);
+        CGContextFillPath(context);
+        //      CGContextAddArc(context, center.x, center.y, radius,
+        //      startAngle,angle1, 0);
+        //      CGContextClosePath(context);
+        //      CGContextFillPath(context);
+
+        // drawing segment 2
+
+        //    donutSegment = CGPathCreateCopyByStrokingPath(       arc, NULL,
+        //    lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+        //    CGContextAddPath(context, donutSegment);
+
+
+}
+  //  NSLog(@"numOfPieChartSegments: %lu",(unsigned long)numOfPieChartSegments);
+
+  // [self drawText:0 yPosition:0 canvasWidth:200 canvasHeight:150];
 //
-//  CGFloat lineWidth = 10.0; // any radius you want
-//  CGPathRef donutSegment =
-//      CGPathCreateCopyByStrokingPath(arc, NULL, lineWidth, kCGLineCapButt,
-//                                     kCGLineJoinMiter, // the default
-//                                     10); // 10 is default miter limit
 //
-//  //    Step 3: There is no step 3 (well, there is fill + stroke)
-//  //    Fill this shape just like you did with the pie shapes. (lightGray and
-//  black was used in Image 2 (above)).
+//  switch (numOfPieChartSegments) {
+//  case 0:
+//  case 1: {
 //
-//  CGContextRef c = UIGraphicsGetCurrentContext();
-//  CGContextAddPath(c, donutSegment);
-//  CGContextSetFillColorWithColor(c, [UIColor lightGrayColor].CGColor);
-//  CGContextSetStrokeColorWithColor(c, [UIColor blackColor].CGColor);
-//  CGContextDrawPath(c, kCGPathFillStroke);
+//    CGContextSetFillColorWithColor(context, [UIColor lightGrayColor].CGColor);
+//    CGContextSetStrokeColorWithColor(context, [UIColor blackColor].CGColor);
+//
+//    CGPathAddArc(arc, NULL, center.x, center.y, radius, startAngle, endAngle,
+//                 YES);
+//    CGPathCloseSubpath(arc);
+//    CGContextAddPath(context, arc);
+//    CGContextDrawPath(context, kCGPathFillStroke);
+//    CGContextFillPath(context);
+//    //    CGContextAddArc(context, center.x, center.y, radius,
+//    //    startAngle,endAngle, YES);
+//    //      CGContextClosePath(context);
+//    //      CGContextFillPath(context);
+//
+//    // CGFloat lineWidth = 5; // any radius you want
+//
+//    //   CGPathRef donutSegment = CGPathCreateCopyByStrokingPath(   arc, NULL,
+//    //   lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+//    //   CGContextAddPath(context, donutSegment);
+//
+//    break;
+//  }
+//  case 2: {
+//    CGFloat angle1 = 180 * radianConversionFactor;
+//
+//
+//      360/1
+//      360/2
+//    // drawing segment 1
+//
+//    // CGPathRef donutSegment = CGPathCreateCopyByStrokingPath(  arc, NULL,
+//    // lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+//    // CGContextAddPath(context, donutSegment);
+//
+//    CGContextSetFillColorWithColor(
+//        context, [UIColor colorWithRed:0.257 green:0.667 blue:0.244 alpha:1.000]
+//                     .CGColor);
+//    CGContextSetStrokeColorWithColor(
+//        context, [UIColor colorWithRed:0.163 green:0.743 blue:0.751 alpha:1.000]
+//                     .CGColor);
+//
+//    CGPathAddArc(arc, NULL, center.x, center.y, rect.size.width / 2, startAngle,
+//                 angle1, YES);
+//    CGPathCloseSubpath(arc);
+//    CGContextAddPath(context, arc);
+//    CGContextDrawPath(context, kCGPathFillStroke);
+//    CGContextFillPath(context);
+//    //      CGContextAddArc(context, center.x, center.y, radius,
+//    //      startAngle,angle1, 0);
+//    //      CGContextClosePath(context);
+//    //      CGContextFillPath(context);
+//
+//    // drawing segment 2
+//
+//    //    donutSegment = CGPathCreateCopyByStrokingPath(       arc, NULL,
+//    //    lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+//    //    CGContextAddPath(context, donutSegment);
+//    CGContextSetFillColorWithColor(
+//        context, [UIColor colorWithRed:0.808 green:0.286 blue:0.212 alpha:1.000]
+//                     .CGColor);
+//    CGContextSetStrokeColorWithColor(
+//        context, [UIColor colorWithRed:0.422 green:0.345 blue:0.568 alpha:1.000]
+//                     .CGColor);
+//
+//    arc = CGPathCreateMutable();
+//    CGPathMoveToPoint(arc, NULL, center.x, center.y);
+//
+//    CGPathAddArc(arc, NULL, center.x, center.y, radius, angle1, endAngle, YES);
+//    CGPathCloseSubpath(arc);
+//    CGContextAddPath(context, arc);
+//    CGContextDrawPath(context, kCGPathFillStroke);
+//    CGContextFillPath(context);
+//
+//    //      CGContextAddArc(context, center.x, center.y, radius,
+//    //      angle1,endAngle, 0);
+//    //      CGContextClosePath(context);
+//    //      CGContextFillPath(context);
+//
+//    break;
+//  }
+//  case 3: {
+//    CGFloat angle1 = 120 * radianConversionFactor;
+//    CGFloat angle2 = 240 * radianConversionFactor;
+//
+//    // drawing segment 1
+//
+//    //    CGPathRef donutSegment = CGPathCreateCopyByStrokingPath(       arc,
+//    //    NULL, lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+//    //    CGContextAddPath(context, donutSegment);
+//
+//    CGContextSetFillColorWithColor(
+//        context, [UIColor colorWithRed:0.257 green:0.667 blue:0.244 alpha:1.000]
+//                     .CGColor);
+//    CGContextSetStrokeColorWithColor(
+//        context, [UIColor colorWithRed:0.163 green:0.743 blue:0.751 alpha:1.000]
+//                     .CGColor);
+//
+//    CGPathAddArc(arc, NULL, center.x, center.y, rect.size.width / 2, startAngle,
+//                 angle1, YES);
+//    CGPathCloseSubpath(arc);
+//    CGContextAddPath(context, arc);
+//    CGContextDrawPath(context, kCGPathFillStroke);
+//    CGContextFillPath(context);
+//
+//    //      CGContextMoveToPoint(context, center.x, center.y);
+//    //      CGContextAddLineToPoint(context, <#CGFloat x#>, <#CGFloat y#>);
+//    //      CGContextAddArc(context, center.x, center.y, radius,
+//    //      startAngle,angle1, 0);
+//    //      CGContextAddLineToPoint(context, center.x, center.y);
+//    //      CGContextClosePath(context);
+//    //      CGContextFillPath(context);
+//
+//    // drawing segment 2
+//
+//    //    donutSegment = CGPathCreateCopyByStrokingPath(       arc, NULL,
+//    //    lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+//    //    CGContextAddPath(context, donutSegment);
+//
+//    CGContextSetFillColorWithColor(
+//        context, [UIColor colorWithRed:0.808 green:0.286 blue:0.212 alpha:1.000]
+//                     .CGColor);
+//    CGContextSetStrokeColorWithColor(
+//        context, [UIColor colorWithRed:0.422 green:0.345 blue:0.568 alpha:1.000]
+//                     .CGColor);
+//
+//    //      CGContextAddArc(context, center.x, center.y, radius, angle1,angle2,
+//    //      0);
+//    //      CGContextClosePath(context);
+//    //      CGContextFillPath(context);
+//    arc = CGPathCreateMutable();
+//    CGPathMoveToPoint(arc, NULL, center.x, center.y);
+//    CGPathAddArc(arc, NULL, center.x, center.y, radius, angle1, angle2, YES);
+//    CGPathCloseSubpath(arc);
+//    CGContextAddPath(context, arc);
+//    CGContextDrawPath(context, kCGPathFillStroke);
+//    CGContextFillPath(context);
+//    ;
+//
+//    // drawing segment 3
+//
+//    //    donutSegment = CGPathCreateCopyByStrokingPath(       arc, NULL,
+//    //    lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+//    //    CGContextAddPath(context, donutSegment);
+//
+//    CGContextSetFillColorWithColor(
+//        context, [UIColor colorWithRed:1.000 green:0.996 blue:0.960 alpha:1.000]
+//                     .CGColor);
+//    CGContextSetStrokeColorWithColor(
+//        context, [UIColor colorWithRed:0.351 green:0.860 blue:0.825 alpha:1.000]
+//                     .CGColor);
+//    //      CGContextAddArc(context, center.x, center.y, radius,
+//    //      angle2,endAngle, 0);
+//    //      CGContextClosePath(context);
+//    //      CGContextFillPath(context);
+//    arc = CGPathCreateMutable();
+//    CGPathMoveToPoint(arc, NULL, center.x, center.y);
+//    CGPathAddArc(arc, NULL, center.x, center.y, radius, angle2, endAngle, NO);
+//    CGPathCloseSubpath(arc);
+//    CGContextAddPath(context, arc);
+//    CGContextDrawPath(context, kCGPathFillStroke);
+//    CGContextFillPath(context);
+//    break;
+//  }
+//  //  case 4: {
+//  //    CGFloat angle1 = 90 * radianConversionFactor;
+//  //    CGFloat angle2 = 180 * radianConversionFactor;
+//  //    CGFloat angle3 = 270 * radianConversionFactor;
+//  //
+//  //    // drawing segment 1
+//  //
+//  //    //    CGPathRef donutSegment = CGPathCreateCopyByStrokingPath(
+//  //    //        arc, NULL, lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+//  //    //    CGContextAddPath(c, donutSegment);
+//  //
+//  //    CGContextSetFillColorWithColor(
+//  //        context, [UIColor colorWithRed:0.257 green:0.667 blue:0.244
+//  //        alpha:1.000]
+//  //                     .CGColor);
+//  //    CGContextSetStrokeColorWithColor(
+//  //        context, [UIColor colorWithRed:0.163 green:0.743 blue:0.751
+//  //        alpha:1.000]
+//  //                     .CGColor);
+//  //    //      CGContextAddArc(context, center.x, center.y, radius,
+//  //    //      startAngle,angle1, 0);
+//  //    //      CGContextClosePath(context);
+//  //    //      CGContextFillPath(context);
+//  //
+//  //    CGPathAddArc(arc, NULL, center.x, center.y, rect.size.width / 2,
+//  //    startAngle,
+//  //                 angle1, YES);
+//  //    CGPathCloseSubpath(arc);
+//  //    CGContextAddPath(context, arc);
+//  //    CGContextDrawPath(context, kCGPathFillStroke);
+//  //    CGContextFillPath(context);
+//  //
+//  //    // drawing segment 2
+//  //
+//  //    //    donutSegment = CGPathCreateCopyByStrokingPath(      arc, NULL,
+//  //    //    lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+//  //    //    CGContextAddPath(context, donutSegment);
+//  //
+//  //    CGContextSetFillColorWithColor(
+//  //        context, [UIColor colorWithRed:0.808 green:0.286 blue:0.212
+//  //        alpha:1.000]
+//  //                     .CGColor);
+//  //    CGContextSetStrokeColorWithColor(
+//  //        context, [UIColor colorWithRed:0.422 green:0.345 blue:0.568
+//  //        alpha:1.000]
+//  //                     .CGColor);
+//  //    //      CGContextAddArc(context, center.x, center.y, radius,
+//  //    angle1,angle2,
+//  //    //      0);
+//  //    //      CGContextClosePath(context);
+//  //    //      CGContextFillPath(context);
+//  //      arc = CGPathCreateMutable();
+//  //      CGPathMoveToPoint(arc, NULL, center.x, center.y);
+//  //    CGPathAddArc(arc, NULL, center.x, center.y, radius, angle1, angle2,
+//  //    YES);
+//  //    CGPathCloseSubpath(arc);
+//  //    CGContextAddPath(context, arc);
+//  //    CGContextDrawPath(context, kCGPathFillStroke);
+//  //    CGContextFillPath(context);
+//  //
+//  //    // drawing segment 3
+//  //
+//  //    //    donutSegment = CGPathCreateCopyByStrokingPath(
+//  //    //        arc, NULL, lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+//  //    //    CGContextAddPath(context, donutSegment);
+//  //
+//  //    CGContextSetFillColorWithColor(
+//  //        context, [UIColor colorWithRed:1.000 green:0.041 blue:0.000
+//  //        alpha:1.000]
+//  //                     .CGColor);
+//  //    CGContextSetStrokeColorWithColor(
+//  //        context, [UIColor colorWithRed:0.860 green:0.159 blue:0.848
+//  //        alpha:1.000]
+//  //                     .CGColor);
+//  //    //      CGContextAddArc(context, center.x, center.y, radius,
+//  //    angle2,angle3,
+//  //    //      0);
+//  //    //      CGContextClosePath(context);
+//  //    //      CGContextFillPath(context);
+//  //      arc = CGPathCreateMutable();
+//  //      CGPathMoveToPoint(arc, NULL, center.x, center.y);
+//  //    CGPathAddArc(arc, NULL, center.x, center.y, radius, angle2, angle3,
+//  //    YES);
+//  //
+//  //    CGPathCloseSubpath(arc);
+//  //    CGContextAddPath(context, arc);
+//  //    CGContextDrawPath(context, kCGPathFillStroke);
+//  //    CGContextFillPath(context);
+//  //
+//  //    // drawing segment 4
+//  //
+//  //    //    donutSegment = CGPathCreateCopyByStrokingPath(
+//  //    //        arc, NULL, lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
+//  //    //    CGContextAddPath(context, donutSegment);
+//  //
+//  //    CGContextSetFillColorWithColor(
+//  //        context, [UIColor colorWithRed:0.289 green:0.808 blue:0.318
+//  //        alpha:1.000]
+//  //                     .CGColor);
+//  //    CGContextSetStrokeColorWithColor(
+//  //        context, [UIColor colorWithRed:0.860 green:0.145 blue:0.269
+//  //        alpha:1.000]
+//  //                     .CGColor);
+//  //    //      CGContextAddArc(context, center.x, center.y, radius,
+//  //    //      angle3,endAngle, 0);
+//  //    //      CGContextClosePath(context);
+//  //    //      CGContextFillPath(context);
+//  //      arc = CGPathCreateMutable();
+//  //      CGPathMoveToPoint(arc, NULL, center.x, center.y);
+//  //    CGPathAddArc(arc, NULL, center.x, center.y, radius, angle3, endAngle,
+//  //    YES);
+//  //    CGPathCloseSubpath(arc);
+//  //    CGContextAddPath(context, arc);
+//  //    CGContextDrawPath(context, kCGPathFillStroke);
+//  //    CGContextFillPath(context);
+//  //    ;
+//  //    break;
+//  //  }
+//  default:
+//    break;
+//  }
+}
+
+// just clipping for now
+// - (void)drawRect:(CGRect)rect {
+//  UIBezierPath *circularPath =
+//      [UIBezierPath bezierPathWithRoundedRect:self.bounds
+//                                 cornerRadius:self.bounds.size.height / 2.0];
+//  [circularPath addClip];
+
+//  // clip subsequent drawing to the inside of the path
+//  [self.image drawInRect:self.bounds];
 //}
-
-// - (void)drawRect:(CGRect)rect {
-// can add sublayer to view's layer instead of subclassed layer
-//    CALayer *parentLayer = [CALayer layer];
-//    [self.view.layer addSubLayer:parentLayer];
-//
-//    [parentLayer addSublayer: myShapeLayer];
-//    [parentLayer addSublayer: myLayerOverShapeLayer];
-//
-//  UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0.0);
-//  CGContextRef ctx = UIGraphicsGetCurrentContext();
-//  // Create the clipping path and add it
-//  UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:imageRect];
-//  [path addClip];
-//
-////    need image here
-//    UIImage * image;
-//  [image drawInRect:imageRect];
-//
-//  CGContextSetStrokeColorWithColor(ctx, [[UIColor greenColor] CGColor]);
-//  [path setLineWidth:50.0f];
-//  [path stroke];
-//
-//  UIImage *roundedImage = UIGraphicsGetImageFromCurrentImageContext();
-//  UIGraphicsEndImageContext();
-//
-//  self.image = roundedImage;
-// }
-
-// - (void)drawRect:(CGRect)rect {
-//  {
-
-// self.contentsScale = [UIScreen mainScreen].scale;
-
-//        CGContextRef currenctContext = ctx;
-//        CGContextSetStrokeColorWithColor(currenctContext, [UIColor
-//        blackColor].CGColor);
-//
-//        CGContextSetLineWidth(currenctContext, _lineWidth);
-//        CGContextSetLineJoin(currenctContext,kCGLineJoinRound);
-//
-//        CGContextMoveToPoint(currenctContext,x1, y1);
-//        CGContextAddLineToPoint(currenctContext,x2, y2);
-//        CGContextStrokePath(currenctContext);
-// }
 
 //- (void)drawRect:(CGRect)rect {
 //
@@ -342,6 +888,51 @@
 //
 //}
 
+// - (void)drawRect:(CGRect)rect {
+// can add sublayer to view's layer instead of subclassed layer
+//    CALayer *parentLayer = [CALayer layer];
+//    [self.view.layer addSubLayer:parentLayer];
+//
+//    [parentLayer addSublayer: myShapeLayer];
+//    [parentLayer addSublayer: myLayerOverShapeLayer];
+//
+//  UIGraphicsBeginImageContextWithOptions(imageSize, NO, 0.0);
+//  CGContextRef ctx = UIGraphicsGetCurrentContext();
+//  // Create the clipping path and add it
+//  UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:imageRect];
+//  [path addClip];
+//
+////    need image here
+//    UIImage * image;
+//  [image drawInRect:imageRect];
+//
+//  CGContextSetStrokeColorWithColor(ctx, [[UIColor greenColor] CGColor]);
+//  [path setLineWidth:50.0f];
+//  [path stroke];
+//
+//  UIImage *roundedImage = UIGraphicsGetImageFromCurrentImageContext();
+//  UIGraphicsEndImageContext();
+//
+//  self.image = roundedImage;
+// }
+
+// - (void)drawRect:(CGRect)rect {
+//  {
+
+// self.contentsScale = [UIScreen mainScreen].scale;
+
+//        CGContextRef currenctContext = ctx;
+//        CGContextSetStrokeColorWithColor(currenctContext, [UIColor
+//        blackColor].CGColor);
+//
+//        CGContextSetLineWidth(currenctContext, _lineWidth);
+//        CGContextSetLineJoin(currenctContext,kCGLineJoinRound);
+//
+//        CGContextMoveToPoint(currenctContext,x1, y1);
+//        CGContextAddLineToPoint(currenctContext,x2, y2);
+//        CGContextStrokePath(currenctContext);
+// }
+
 // clipping image
 //+ (UIImage *)maskedImage {
 //  CGRect rect = CGRectZero;
@@ -376,16 +967,6 @@
 //  return maskedImage;
 //}
 
-// just clipping for now
-// - (void)drawRect:(CGRect)rect {
-//  UIBezierPath *circularPath =
-//      [UIBezierPath bezierPathWithRoundedRect:self.bounds
-//                                 cornerRadius:self.bounds.size.height / 2.0];
-//  [circularPath addClip];
-//  // clip subsequent drawing to the inside of the path
-//  [self.image drawInRect:self.bounds];
-//}
-
 //- (void)drawRect:(CGRect)rect
 //{
 //    CGContextRef currenctContext = UIGraphicsGetCurrentContext();
@@ -405,64 +986,63 @@
 }
 
 - (void)addSubview:(UIView *)view {
-
-  //}
-  //
-  //#pragma mark - PIECHART DEMO
-  //
-  //- (void)viewDidLoad {
-  self.slices = [NSMutableArray arrayWithCapacity:10];
-
-  for (int i = 0; i < 5; i++) {
-    NSNumber *one = [NSNumber numberWithInt:rand() % 60 + 20];
-    [_slices addObject:one];
-  }
-
-  [self.pieChartLeft setDataSource:self];
-  [self.pieChartLeft setStartPieAngle:M_PI_2];
-  [self.pieChartLeft setAnimationSpeed:1.0];
-  [self.pieChartLeft
-      setLabelFont:[UIFont fontWithName:@"DBLCDTempBlack" size:24]];
-  [self.pieChartLeft setLabelRadius:160];
-  [self.pieChartLeft setShowPercentage:YES];
-  [self.pieChartLeft
-      setPieBackgroundColor:[UIColor colorWithWhite:0.95 alpha:1]];
-  [self.pieChartLeft setPieCenter:CGPointMake(240, 240)];
-  [self.pieChartLeft setUserInteractionEnabled:NO];
-  [self.pieChartLeft setLabelShadowColor:[UIColor blackColor]];
-
-  [self.pieChartRight setDelegate:self];
-  [self.pieChartRight setDataSource:self];
-  [self.pieChartRight setPieCenter:CGPointMake(240, 240)];
-  //[self.pieChartRight setShowPercentage:NO];
-  [self.pieChartRight setLabelColor:[UIColor blackColor]];
-
-  //[self.percentageLabel.layer setCornerRadius:90];
-
-  self.sliceColors = [NSArray arrayWithObjects:[UIColor colorWithRed:246 / 255.0
-                                                               green:155 / 255.0
-                                                                blue:0 / 255.0
-                                                               alpha:1],
-                                               [UIColor colorWithRed:129 / 255.0
-                                                               green:195 / 255.0
-                                                                blue:29 / 255.0
-                                                               alpha:1],
-                                               [UIColor colorWithRed:62 / 255.0
-                                                               green:173 / 255.0
-                                                                blue:219 / 255.0
-                                                               alpha:1],
-                                               [UIColor colorWithRed:229 / 255.0
-                                                               green:66 / 255.0
-                                                                blue:115 / 255.0
-                                                               alpha:1],
-                                               [UIColor colorWithRed:148 / 255.0
-                                                               green:141 / 255.0
-                                                                blue:139 / 255.0
-                                                               alpha:1],
-                                               nil];
-
-  // rotate up arrow
-  // self.downArrow.transform = CGAffineTransformMakeRotation(M_PI);
+////}
+////
+////#pragma mark - PIECHART DEMO
+////
+////- (void)viewDidLoad {
+//self.slices = [NSMutableArray arrayWithCapacity:10];
+//
+//for (int i = 0; i < 5; i++) {
+//NSNumber *one = [NSNumber numberWithInt:rand() % 60 + 20];
+//[_slices addObject:one];
+//}
+//
+//[self.pieChartLeft setDataSource:self];
+//[self.pieChartLeft setStartPieAngle:M_PI_2];
+//[self.pieChartLeft setAnimationSpeed:1.0];
+//[self.pieChartLeft
+//setLabelFont:[UIFont fontWithName:@"DBLCDTempBlack" size:24]];
+//[self.pieChartLeft setLabelRadius:160];
+//[self.pieChartLeft setShowPercentage:YES];
+//[self.pieChartLeft
+//setPieBackgroundColor:[UIColor colorWithWhite:0.95 alpha:1]];
+//[self.pieChartLeft setPieCenter:CGPointMake(240, 240)];
+//[self.pieChartLeft setUserInteractionEnabled:NO];
+//[self.pieChartLeft setLabelShadowColor:[UIColor blackColor]];
+//
+//[self.pieChartRight setDelegate:self];
+//[self.pieChartRight setDataSource:self];
+//[self.pieChartRight setPieCenter:CGPointMake(240, 240)];
+////[self.pieChartRight setShowPercentage:NO];
+//[self.pieChartRight setLabelColor:[UIColor blackColor]];
+//
+////[self.percentageLabel.layer setCornerRadius:90];
+//
+//self.sliceColors = [NSArray arrayWithObjects:[UIColor colorWithRed:246 / 255.0
+//                       green:155 / 255.0
+//                        blue:0 / 255.0
+//                       alpha:1],
+//       [UIColor colorWithRed:129 / 255.0
+//                       green:195 / 255.0
+//                        blue:29 / 255.0
+//                       alpha:1],
+//       [UIColor colorWithRed:62 / 255.0
+//                       green:173 / 255.0
+//                        blue:219 / 255.0
+//                       alpha:1],
+//       [UIColor colorWithRed:229 / 255.0
+//                       green:66 / 255.0
+//                        blue:115 / 255.0
+//                       alpha:1],
+//       [UIColor colorWithRed:148 / 255.0
+//                       green:141 / 255.0
+//                        blue:139 / 255.0
+//                       alpha:1],
+//       nil];
+//
+//// rotate up arrow
+//// self.downArrow.transform = CGAffineTransformMakeRotation(M_PI);
 }
 
 //- (void)viewDidUnload {
@@ -557,19 +1137,19 @@
 //  [self.pieChartRight reloadData];
 //}
 
-- (IBAction)updateSlices {
-  for (int i = 0; i < _slices.count; i++) {
-    [_slices replaceObjectAtIndex:i
-                       withObject:[NSNumber numberWithInt:rand() % 60 + 20]];
-  }
-  [self.pieChartLeft reloadData];
-  [self.pieChartRight reloadData];
-}
-
-- (IBAction)showSlicePercentage:(id)sender {
-  UISwitch *perSwitch = (UISwitch *)sender;
-  [self.pieChartRight setShowPercentage:perSwitch.isOn];
-}
+//- (IBAction)updateSlices {
+//  for (int i = 0; i < _slices.count; i++) {
+//    [_slices replaceObjectAtIndex:i
+//                       withObject:[NSNumber numberWithInt:rand() % 60 + 20]];
+//  }
+//  [self.pieChartLeft reloadData];
+//  [self.pieChartRight reloadData];
+//}
+//
+//- (IBAction)showSlicePercentage:(id)sender {
+//  UISwitch *perSwitch = (UISwitch *)sender;
+//  [self.pieChartRight setShowPercentage:perSwitch.isOn];
+//}
 
 #pragma mark - ClusterViewPieChartPieChart Data Source
 
@@ -593,13 +1173,13 @@
   return [[self.slices objectAtIndex:index] intValue];
 }
 
-- (UIColor *)pieChart:(ClusterViewPieChart *)pieChart
- colorForSliceAtIndex:(NSUInteger)index {
-  if (pieChart == self.pieChartRight)
-    return nil;
-  return [self.sliceColors objectAtIndex:(index % self.sliceColors.count)];
-}
-//
+//- (UIColor *)pieChart:(ClusterViewPieChart *)pieChart
+// colorForSliceAtIndex:(NSUInteger)index {
+//  if (pieChart == self.pieChartRight)
+//    return nil;
+//  return [self.sliceColors objectAtIndex:(index % self.sliceColors.count)];
+//}
+
 //#pragma mark - ClusterViewPieChartPieChart Delegate
 //- (void)pieChart:(ClusterViewPieChartPieChart *)pieChart
 //    willSelectSliceAtIndex:(NSUInteger)index {

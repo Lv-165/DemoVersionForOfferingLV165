@@ -321,7 +321,8 @@ static bool isMainRoute;
     FBAnnotationClusterView *clusterAnnotationView =
         [[FBAnnotationClusterView alloc] initWithAnnotation:clusterAnnotation
                                             reuseIdentifier:nil];
-    return clusterAnnotationView;
+      clusterAnnotationView.userInteractionEnabled = YES;
+      return clusterAnnotationView;
   } else {
 
     if (!pin) {
@@ -442,12 +443,7 @@ static bool isMainRoute;
                  circleOverlay.radius, startAngle, endAngle, YES);
 
     //    Step 2: Stroke that arc
-    //    Create the final donut segment shape by stroking the arc. This
-    //    function may look like magic to you but that is how it feels to find a
-    //    hidden treasure in Core Graphics. It will stroke the path with a
-    //    specific stroke width. "Line cap" and "line join" control how the
-    //    start and end  of the shape looks and how the joins between path
-    //    components look (there    is only one component in this shape).
+    //    Create the final donut segment shape by stroking the arc. This // function may look like magic to you but that is how it feels to find a //    hidden treasure in Core Graphics. It will stroke the path with a //    specific stroke width. "Line cap" and "line join" control how the // start and end  of the shape looks and how the joins between path // components look (there    is only one component in this shape).
 
     CGFloat lineWidth = 10.0; // any radius you want
     CGPathRef donutSegment =
@@ -455,9 +451,7 @@ static bool isMainRoute;
                                        kCGLineJoinMiter, // the default
                                        10); // 10 is default miter limit
 
-    //    Step 3: There is no step 3 (well, there is fill + stroke)
-    //    Fill this shape just like you did with the pie shapes. (lightGray and
-    //    black was used in Image 2 (above)).
+    //    Step 3: There is no step 3 (well, there is fill + stroke) // Fill this shape just like you did with the pie shapes. (lightGray and // black was used in Image 2 (above)).
 
     CGContextRef c = UIGraphicsGetCurrentContext();
     CGContextAddPath(c, donutSegment);
@@ -465,29 +459,30 @@ static bool isMainRoute;
     CGContextSetStrokeColorWithColor(c, [UIColor blackColor].CGColor);
     CGContextDrawPath(c, kCGPathFillStroke);
 
-    // TODO: implement rating display (pie chart) here or in subclassed
+     [_circleOverlayViews addObject:circleRenderer];
+      
+      // TODO: implement rating display (pie chart) here or in subclassed
     // MKCircleRenderer
 
-    UITapGestureRecognizer *tapRecogniser =
-        [[UITapGestureRecognizer alloc] initWithTarget:self
-                                                action:@selector(handleTap:)];
-    tapRecogniser.numberOfTapsRequired = 1;
-    tapRecogniser.numberOfTouchesRequired = 1;
 
-    tapRecogniser.delegate = self;
+      //    UITapGestureRecognizer *tapRecogniser =
+//        [[UITapGestureRecognizer alloc] initWithTarget:self
+//                                                action:@selector(handleTap:)];
+//    tapRecogniser.numberOfTapsRequired = 1;
+//    tapRecogniser.numberOfTouchesRequired = 1;
+//
+//    tapRecogniser.delegate = self;
 
-    // need to keep array of overlay views for gesture reognizer, to find the
-    // view(renderer) when tapped
-    [_circleOverlayViews addObject:circleRenderer];
+    // need to keep array of overlay views for gesture reognizer, to find the view(renderer) when tapped
+      
     // TODO: initialize the array
     // implement clearing the array when regionDidChange and in other updates
 
-    [_mapView addGestureRecognizer:tapRecogniser];
+    //[_mapView addGestureRecognizer:tapRecogniser];
 
     // probably not here[circleRenderer addGestureRecognizer:tapRecogniser];
 
-    MKOverlayPathRenderer *pathRenderer =
-        [[MKOverlayPathRenderer alloc] initWithOverlay:overlay];
+  // MKOverlayPathRenderer *pathRenderer =   [[MKOverlayPathRenderer alloc] initWithOverlay:overlay];
 
     // if (overlay.RatingForPin == ) {
 
@@ -503,312 +498,75 @@ static bool isMainRoute;
     // pathRenderer.lineCap =
     // }
 
-    //        You can use this class as-is or subclass to define additional
-    //        drawing behaviors. If you subclass, you should override the
-    //        createPath method and use that method to build the appropriate
-    //        path object. To change the path, invalidate it and recreate the
-    //        path using whatever new data your subclass has obtained.
+    //        You can use this class as-is or subclass to define additional   drawing behaviors. If you subclass, you should override the createPath method and use that method to build the appropriate path object. To change the path, invalidate it and recreate the path using whatever new data your subclass has obtained. The miter limit helps you avoid spikes in paths that use the kCGLineJoinMiter join style. If the ratio of  the miter length—that is, the diagonal length of the miter join—to the line thickness exceeds the miter limit, the joint is converted to a bevel join. The default miter limit is 10, which results in the  conversion of miters whose angle at the joint is less   than 11 degrees
+     // lineDashPhase
+    // Property
+    // The offset (in points) at which to start drawing the  dash pattern. Use this property to start drawing a dashed line partway through a segment or gap. For example, a phase value of 6 for the patter 5-2-3-2 would cause drawing to begin in the middle of the first gap. The default value of this property is 0.
 
-    //                    The miter limit helps you avoid spikes in paths that
-    //                    use the kCGLineJoinMiter join style. If the ratio of
-    //                    the miter length—that is, the diagonal length of the
-    //                    miter join—to the line thickness exceeds the miter
-    //                    limit, the joint is converted to a bevel join. The
-    //                    default miter limit is 10, which results in the
-    //                    conversion of miters whose angle at the joint is less
-    //                    than 11 degrees
 
-    //                    lineDashPhase
-    //                    Property
-    //                    The offset (in points) at which to start drawing the
-    //                    dash pattern.
+    // lineDashPattern Property
+    // An array of numbers specifying the dash pattern to
+    // use for the path.
 
-    //                    Use this property to start drawing a dashed line
-    //                    partway through a segment or gap. For example, a phase
-    //                    value of 6 for the patter 5-2-3-2 would cause drawing
-    //                    to begin in the middle of the first gap.
-    //
-    //                        The default value of this property is 0.
-    //
-    //                        Availability
-    //                        Available in iOS 7.0 and later.
-
-    //                        lineDashPattern
-    //                        Property
-    //                        An array of numbers specifying the dash pattern to
-    //                        use for the path.
-    //
-    //                            Declaration
-    //                            SWIFT
-    //                            var lineDashPattern: [NSNumber]?
-    //                            OBJECTIVE-C
-    //                            @property(copy) NSArray <NSNumber *>
-    //                            *lineDashPattern
-    //                            Discussion
-    //                            The array contains one or more NSNumber
-    //                            objects that indicate the lengths (measured in
-    //                            points) of the line segments and gaps in the
-    //                            pattern. The values in the array alternate,
-    //                            starting with the first line segment length,
-    //                            followed by the first gap length, followed by
-    //                            the second line segment length, and so on.
-    //
-    //                            This property is set to nil by default, which
-    //                            indicates no line dash pattern.
-    //
-    //                            Availability
-    //                            Available in iOS 7.0 and later.
-    //                            Creating and Managing the Path
-    //                            path
-    //                            Property
-    //                            The path representing the overlay’s shape.
-    //
-    //                            Declaration
-    //                            SWIFT
-    //                            var path: CGPath!
-    //                            OBJECTIVE-C
-    //                            @property CGPathRef path
-    //                            Discussion
-    //                            Getting the value of this property causes the
-    //                            path to be created (using the createPath
-    //                            method) if it does not already exist. You can
-    //                            assign a path object to this property
-    //                            explicitly. When assigning a new path object
-    //                            to this property, the overlay renderer stores
-    //                            a strong reference to the path you provide.
-    //
-    //                                Availability
-    //                                Available in iOS 7.0 and later.
-    //                                - createPath
-    //                                Creates the path for the overlay.
-    //
-    //                                    Declaration
-    //                                    SWIFT
-    //                                    func createPath()
-    //                                    OBJECTIVE-C
-    //                                    - (void)createPath
-    //                                    Discussion
-    //                                    The default implementation of this
-    //                                    method does nothing. Subclasses should
-    //                                    override it and use it to create the
-    //                                    CGPathRef data type to be used for
-    //                                    drawing. After creating the path, your
-    //                                    implementation should assign it to the
-    //                                    path property.
-    //
-    //                                        Availability
-    //                                        Available in iOS 7.0 and later.
-    //                                        - invalidatePath
-    //                                        Updates the path associated with
-    //                                        the overlay renderer.
-    //
-    //                                        Declaration
-    //                                        SWIFT
-    //                                        func invalidatePath()
-    //                                        OBJECTIVE-C
+    // @property(copy) NSArray <NSNumber *>
+    // *lineDashPattern
+    // Discussion
+    // The array contains one or more NSNumber objects that indicate the lengths (measured in points) of the line segments and gaps in the pattern. The values in the array alternate,  starting with the first line segment length,  followed by the first gap length, followed by the second line segment length, and so on. // This property is set to nil by default, which indicates no line dash pattern.
+    // Creating and Managing the Path // path
+    // The path representing the overlay’s shape.
+    // OBJECTIVE-C
+    // @property CGPathRef path
+    // Discussion
+    // Getting the value of this property causes the path to be created (using the createPath method) if it does not already exist. You can assign a path object to this property explicitly. When assigning a new path object to this property, the overlay renderer stores a strong reference to the path you provide.
+      
+      // - createPath
+    // Creates the path for the overlay.
+    // The default implementation of this method does nothing. Subclasses should override it and use it to create the CGPathRef data type to be used for drawing. After creating the path, your  implementation should assign it to the path property.
+     // - invalidatePath
+    // Updates the path associated with the overlay renderer.
+      // OBJECTIVE-C
     //                                        - (void)invalidatePath
-    //                                        Discussion
-    //                                        Call this method when a change in
-    //                                        the path information would require
-    //                                        you to recreate the overlay’s
-    //                                        path. This method sets the path
-    //                                        property to nil and tells the
-    //                                        overlay renderer to redisplay its
-    //                                        contents.
-    //
-    //                                        Availability
-    //                                        Available in iOS 7.0 and later.
-    //                                        Drawing the Path
-    //                                        -
-    //                                        applyStrokePropertiesToContext:atZoomScale:
-    //                                        Applies the receiver’s current
-    //                                        stroke-related drawing properties
-    //                                        to the specified graphics context.
-    //
-    //                                        Declaration
-    //                                        SWIFT
-    //                                        func
-    //                                        applyStrokePropertiesToContext(_
-    //                                        context: CGContext,
-    //                                                                            atZoomScale zoomScale: MKZoomScale)
-    //                                        OBJECTIVE-C
-    //                                        -
-    //                                        (void)applyStrokePropertiesToContext:(CGContextRef)context
+    // Discussion
+    // Call this method when a change in the path information would require you to recreate the overlay’s  path. This method sets the path property to nil and tells the overlay renderer to redisplay its contents.
+//      Drawing the Path
+//  applyStrokePropertiesToContext:atZoomScale:
+    // Applies the receiver’s current stroke-related drawing properties to the specified graphics context.
+
+    // applyStrokePropertiesToContext(_ // context: CGContext,
+    // atZoomScale zoomScale: MKZoomScale)
+    // OBJECTIVE-C
+    // -
+    // (void)applyStrokePropertiesToContext:(CGContextRef)context
     //                                        atZoomScale:(MKZoomScale)zoomScale
-    //                                        Parameters
-    //                                        context
-    //                                        The graphics context used to draw
-    //                                        the view’s contents.
-    //                                        zoomScale
-    //                                        The current zoom scale used for
-    //                                        drawing.
-    //                                            Discussion
-    //                                            This is a convenience method
-    //                                            for applying all of the
-    //                                            drawing properties used when
-    //                                            stroking a path. This method
-    //                                            applies the stroke color, line
-    //                                            width, line join, line cap,
-    //                                            miter limit, line dash phase,
-    //                                            and line dash attributes to
-    //                                            the specified graphics
-    //                                            context. This method applies
-    //                                            the scale factor in the
-    //                                            zoomScale parameter to the
-    //                                            line width and line dash
-    //                                            pattern automatically so that
-    //                                            lines scale appropriately.
+    // Parameters
+    // context
+    // The graphics context used to draw the view’s contents.
+    
+      // zoomScale
+    // The current zoom scale used for drawing.
+    // Discussion
+    // This is a convenience method for applying all of the drawing properties used when     // stroking a path. This method applies the stroke color, line width, line join, line cap, miter limit, line dash phase, and line dash attributes to the specified graphics context. This method applies the scale factor in the zoomScale parameter to the line width and line dash pattern automatically so that lines scale appropriately.
     //
-    //                                                This method does not save
-    //                                                the current graphics state
-    //                                                before applying the new
-    //                                                attributes. If you want to
-    //                                                preserve the existing
-    //                                                state, you must save it
-    //                                                yourself and restore it
-    //                                                later when you finish
-    //                                                drawing.
-    //
-    //                                                Availability
-    //                                                Available in iOS 7.0 and
-    //                                                later.
-    //                                                -
-    //                                                applyFillPropertiesToContext:atZoomScale:
-    //                                                Applies the receiver’s
-    //                                                current fill-related
-    //                                                drawing properties to the
-    //                                                specified graphics
-    //                                                context.
-    //
-    //                                                Declaration
-    //                                                SWIFT
-    //                                                func
-    //                                                applyFillPropertiesToContext(_
-    //                                                context: CGContext,
-    //                                                                                  atZoomScale zoomScale: MKZoomScale)
-    //                                                OBJECTIVE-C
-    //                                                -
-    //                                                (void)applyFillPropertiesToContext:(CGContextRef)context
-    //                                                atZoomScale:(MKZoomScale)zoomScale
-    //                                                Parameters
-    //                                                context
-    //                                                The graphics context used
-    //                                                to draw the view’s
-    //                                                contents.
-    //                                                zoomScale
-    //                                                The current zoom scale
-    //                                                used for drawing.
-    //                                                    Discussion
-    //                                                    This is a convenience
-    //                                                    method for applying
-    //                                                    all of the drawing
-    //                                                    properties used when
-    //                                                    filling a path. This
-    //                                                    method applies the
-    //                                                    current fill color to
-    //                                                    the specified graphics
-    //                                                    context.
-    //
-    //                                                        Availability
-    //                                                        Available in iOS
-    //                                                        7.0 and later.
-    //                                                        -
-    //                                                        strokePath:inContext:
-    //                                                        Draws a line along
-    //                                                        the specified
-    //                                                        path.
-    //
-    //                                                        Declaration
-    //                                                        SWIFT
-    //                                                        func strokePath(_
-    //                                                        path: CGPath,
-    //                                                                        inContext
-    //                                                                        context:
-    //                                                                        CGContext)
-    //                                                        OBJECTIVE-C
-    //                                                        -
-    //                                                        (void)strokePath:(CGPathRef)path
-    //                                                        inContext:(CGContextRef)context
-    //                                                        Parameters
-    //                                                        path
-    //                                                        The path to draw.
-    //                                                        context
-    //                                                        The graphics
-    //                                                        context in which
-    //                                                        to draw the path.
-    //                                                        Discussion
-    //                                                        You must set the
-    //                                                        current stroke
-    //                                                        color before
-    //                                                        calling this
-    //                                                        method. Typically
-    //                                                        you do this by
-    //                                                        calling the
-    //                                                        applyStrokePropertiesToContext:atZoomScale:
-    //                                                        method prior to
-    //                                                        drawing. If the
-    //                                                        strokeColor
-    //                                                        property is
-    //                                                        currently nil,
-    //                                                        this method does
-    //                                                        nothing.
-    //
-    //                                                            Availability
-    //                                                            Available in
-    //                                                            iOS 7.0 and
-    //                                                            later.
-    //                                                            See Also
-    //                                                            –
-    //                                                            applyStrokePropertiesToContext:atZoomScale:
-    //
-    //                                                            -
-    //                                                            fillPath:inContext:
-    //                                                            Fills the area
-    //                                                            enclosed by
-    //                                                            the specified
-    //                                                            path.
-    //
-    //                                                            Declaration
-    //                                                            SWIFT
-    //                                                            func
-    //                                                            fillPath(_
-    //                                                            path: CGPath,
-    //                                                                          inContext context: CGContext)
-    //                                                            OBJECTIVE-C
-    //                                                            -
-    //                                                            (void)fillPath:(CGPathRef)path
-    //                                                            inContext:(CGContextRef)context
-    //                                                            Parameters
-    //                                                            path
-    //                                                            The path to
-    //                                                            fill.
-    //                                                            context
-    //                                                            The graphics
-    //                                                            context in
-    //                                                            which to draw
-    //                                                            the path.
-    //                                                            Discussion
-    //                                                            You must set
-    //                                                            the current
-    //                                                            fill color
-    //                                                            before calling
-    //                                                            this method.
-    //                                                            Typically you
-    //                                                            do this by
-    //                                                            calling the
-    //                                                            applyFillPropertiesToContext:atZoomScale:
-    //                                                            method prior
-    //                                                            to drawing. If
-    //                                                            the fillColor
-    //                                                            property is
-    //                                                            currently nil,
-    //                                                            this method
-    //                                                            does nothing.
-    //
-    //                                                                Availability
-    //                                                                Available
-    //                                                                in iOS 7.0
-    //                                                                and later.
+    // This method does not save the current graphics state  before applying the new attributes. If you want to preserve the existing state, you must save it yourself and restore it later when you finish // drawing.
+// applyFillPropertiesToContext:atZoomScale:
+    // Applies the receiver’s current fill-related drawing properties to the specified graphics context.
+      
+//  (void)applyFillPropertiesToContext:(CGContextRef)context
+    // atZoomScale:(MKZoomScale)zoomScale     // Parameters     // context     // The graphics context used to draw the view’s contents.
+    // zoomScale // The current zoom scale     // used for drawing.
+    // Discussion This is a convenience method for applying all of the drawing properties used when filling a path. This method applies the current fill color to  the specified graphicscontext.
+   
+  //  applyStrokePropertiesToContext:atZoomScale:
+
+    // fillPath:inContext:
+    // Fills the area
+    // enclosed
+    // the specified path.  Declaration
+
+ // (void)fillPath:(CGPathRef)path
+    // inContext:(CGContextRef)context
+    // Parameters path The path to fill. context The graphics context in which to draw the path.Discussion You must set the current fill color before calling this method. Typically you do this by calling the applyFillPropertiesToContext:atZoomScale: method prior to drawing. If the fillColor   property is  currently nil,  this method  does nothing.
+ 
   }
   return nil;
 }
@@ -1298,27 +1056,28 @@ static bool isMainRoute;
     UITouch *touch = [touches anyObject];
     if (touch.view.subviews && [touch tapCount] == 1) {
 
-      CGPoint point = [touch locationInView:self.view];
+      CGPoint point = [touch locationInView:touch.view];
 
       FBAnnotationClusterView *selectedAnnotationView;
+        
       NSMutableArray *annotationsArray;
-      for (id View in touch.view.subviews) {
+     // for (id View in touch.view.subviews) {
 
-        if ([View isMemberOfClass:[FBAnnotationClusterView class]]) {
+        if ([touch.view isMemberOfClass:[FBAnnotationClusterView class]]) {
 
-          FBAnnotationClusterView *annotationView =
-              (FBAnnotationClusterView *)View;
+         // FBAnnotationClusterView *annotationView =   (FBAnnotationClusterView *)View;
 
           // TODO: test it
-          CGRect frame = [annotationView convertRect:annotationView.frame
-                                              toView:self.view];
+        //  CGRect frame = [touch.view convertRect:touch.view.frame toView:self.view];
 
           // WAS          CGRect frame =
           //              [annotationView
           //              convertRect:annotationView.annotationLabel.frame
           //                                   toView:self.view];
 
-          if (CGRectContainsPoint(frame, point)) {
+        //  if (CGRectContainsPoint(frame, point)) {
+
+
             // annotationsArray = [annotationView.annotation.annotations copy];
 
             // annotationsArray = [NSMutableArray new];
@@ -1327,10 +1086,10 @@ static bool isMainRoute;
             //                     .annotations) {
             //              [annotationsArray addObject:annotation];
             //            }
-            selectedAnnotationView = annotationView;
-            break;
-          }
-        }
+            selectedAnnotationView = (FBAnnotationClusterView *)touch.view;
+           // break;
+         // }
+     //   }
       }
 
       NSArray *array = [selectedAnnotationView.annotation.annotations copy];
