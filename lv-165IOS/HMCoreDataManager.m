@@ -111,6 +111,7 @@
                                                              inManagedObjectContext:[self managedObjectContext]];
     NSDictionary *descriptionDictionary = [placeNSDictionary objectForKey:@"description"];
     
+    
     if (descriptionDictionary[@"description"]) {
         descriptionObj.descriptionString = @"";
         descriptionObj.language = @"en_UK";
@@ -118,17 +119,30 @@
         descriptionObj.version = @1;
         descriptionObj.fk_user = @"";
     } else {
-        descriptionObj.language = [NSString stringWithFormat:@"%@", [[placeNSDictionary objectForKey:@"description"] allKeys]];
-        //Не ищет по НЕ прямому запросу, возможно спецсимвол?
-//        NSLog(@"place ID %@",place.id);
-//        NSLog(@"descriptionDict1 %@",descriptionDict1);
-//        NSLog(@"language %@",descriptionObj.language);
-//        NSDictionary *descriptionDict2 = [descriptionDict1 valueForKey:[NSString stringWithFormat:@"%@",descriptionObj.language]];
-        NSDictionary *descriptionDict = [descriptionDictionary objectForKey:@"en_UK"];
-//        NSLog(@"descriptionDict2 %@",descriptionDict2);
-//        NSLog(@"descriptionDict3 %@",descriptionDict);
+        
+        NSString *langString =  [NSString stringWithFormat:@"%@", [descriptionDictionary allKeys]];
+        NSString *empty = @"";
+        NSString *finalString = [langString stringByReplacingOccurrencesOfString:@" " withString:empty];
+        NSString *String1 = [finalString stringByReplacingOccurrencesOfString:@"\n" withString:empty];
+        NSString *String2 = [String1 stringByReplacingOccurrencesOfString:@"(\"" withString:empty];
+        NSString *String3 = [String2 stringByReplacingOccurrencesOfString:@"\"" withString:empty];
+        NSString *String4 = [String3 stringByReplacingOccurrencesOfString:@")" withString:empty];
+    
+        descriptionObj.language = String4;
+
+
+        NSLog(@"language -%@",descriptionObj.language);
+        NSLog(@"descriptionDictionary -%@",descriptionDictionary);
+        
+#warning  No visible language
+        NSDictionary *descriptionDict = [descriptionDictionary objectForKey:[NSString stringWithFormat:@"%@",descriptionObj.language]];
+
+  
         descriptionObj.descriptionString = [NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"description"]];
-        descriptionObj.language = [NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"language"]];
+
+        NSLog(@"id %@",place.id);
+        NSLog(@"language %@",descriptionObj.language);
+        
 
         NSDateFormatter * df = [[NSDateFormatter alloc] init];
         [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];

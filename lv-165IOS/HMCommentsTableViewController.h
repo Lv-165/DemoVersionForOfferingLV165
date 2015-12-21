@@ -11,7 +11,7 @@
 
 @interface HMCommentsTableViewController : UITableViewController
 
-@property(strong, nonatomic)NSArray *commentsArray;
+@property(strong, nonatomic) NSArray *commentsArray;
 
 @property (strong, nonatomic) Place *create;
 

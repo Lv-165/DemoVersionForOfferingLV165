@@ -68,7 +68,7 @@ static bool isMainRoute;
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
     self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
-    self.pointHasDescription = [userDefaults boolForKey:kSettingsDescription];
+    self.pointHasDescription = [userDefaults boolForKey:kSettingsComments];
     
     // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
     if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
@@ -119,13 +119,14 @@ static bool isMainRoute;
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
     self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
-    self.pointHasDescription = [userDefaults boolForKey:kSettingsDescription];
+    self.pointHasDescription = [userDefaults boolForKey:kSettingsComments];
     
     [self.mapView removeAnnotations:self.mapView.annotations];
     [self printPointWithContinent];
     
     NSLog(@" Points in map array %lu",(unsigned long)[self.mapPointArray count]);
     NSLog(@" point has comments %@",self.pointHasComments ? @"Yes" : @"No");
+    NSLog(@" point has description %@",self.pointHasDescription ? @"Yes" : @"No");
     
     [[self navigationController] setNavigationBarHidden:YES animated:YES];
     
@@ -474,12 +475,15 @@ static bool isMainRoute;
     if(!self.pointHasComments ||!self.pointHasDescription) {
         [fetchRequest setPredicate:ratingPredicate];
     } else {
-        NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(descript,$description,$description.length > %@).@count > 0",@0];
-//        NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@ AND SUBQUERY($student.previousCourses, $course, $course.name == 'CompSci-101').@count >0) ",@0];
+      #warning PREDICATEEE!!!
+//        NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"",@0];
+        NSPredicate* descriptionPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@ OR SUBQUERY(descript,$description,$description.descriptionString.length > %@).@count != 0",@0,@0];
+
+//      NSPredicate* descriptionPredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(childItems, $child, $child.columnName IN %@).@count != 0", arrayOfThingsToMatchOn]
+//      NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(descript,$description,$description.length > %@).@count > 0",@0];
+
         
-        //предикат для дескрипшина
-//        NSPredicate* descriptionPredicate = [NSPredicate pre];
-        NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:ratingPredicate, commentsCountPredicate, nil]];
+        NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:ratingPredicate,descriptionPredicate, nil]];
         
         [fetchRequest setPredicate:compoundPredicate];
     }
@@ -495,13 +499,13 @@ static bool isMainRoute;
         
         if ([place.rating intValue] == 0) {
             annotation.ratingForColor = noRating;
-        }else if (([place.rating intValue] >=1) && ([place.rating intValue] <= 2)) {
-            annotation.ratingForColor = badRating;
-        }else if ([place.rating intValue] == 3) {
-            annotation.ratingForColor = normalRating;
-        }else if ([place.rating intValue] == 4) {
-            annotation.ratingForColor = goodRating;
         }else if ([place.rating intValue] == 5) {
+            annotation.ratingForColor = badRating;
+        }else if ([place.rating intValue] == 4) {
+            annotation.ratingForColor = normalRating;
+        }else if ([place.rating intValue] == 3) {
+            annotation.ratingForColor = goodRating;
+        }else if (([place.rating intValue] >=1) && ([place.rating intValue] <= 2)) {
             annotation.ratingForColor = veryGoodRating;
         }
         annotation.coordinate = coordinate;

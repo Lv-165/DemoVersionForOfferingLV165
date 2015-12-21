@@ -29,12 +29,12 @@ static NSString* const CellIdentifier = @"DynamicTableViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-//    NSArray *array = self.create.descript.allObjects;
+//    NSArray *array = self.create.descript.descriptionString;
 //
 //    Description *description = [array objectAtIndex:0];
-    
+//    
     self.commentsArray = self.create.comments.allObjects;
-    self.descriptionInfo = self.create.descript.descriptionString;
+    self.descriptionInfo = self.create.descript;
 
     [[self navigationController] setNavigationBarHidden:NO animated:YES];
 }
@@ -44,9 +44,10 @@ static NSString* const CellIdentifier = @"DynamicTableViewCell";
 - (void)setUpCell:(HMDynamicTableViewCell *)cell atIndexPath:(NSIndexPath *)indexPath {
     
     if (indexPath.section == 0) {
+
         cell.label.text = self.descriptionInfo.descriptionString;
-    }
-    else  if (indexPath.section >= 1){
+
+    } else  if (indexPath.section >= 1){
         Comments *comments = [self.commentsArray objectAtIndex:(indexPath.section-1)];
         cell.label.text = comments.comment;
     }
