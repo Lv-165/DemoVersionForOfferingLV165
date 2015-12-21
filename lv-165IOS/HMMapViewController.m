@@ -571,8 +571,9 @@ static bool isMainRoute;
     CLLocation  *object =
     [notification.userInfo objectForKey:showPlaceNotificationCenterInfoKey];
     CLLocationCoordinate2D point = object.coordinate;
-    MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(point, 800, 800);
-    [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
+    MKCoordinateRegion ragion = self.mapView.region;
+    ragion.center = point;
+    [self.mapView setRegion:[self.mapView regionThatFits:ragion] animated:YES];
 }
 
 #pragma mark - Map Type Saving

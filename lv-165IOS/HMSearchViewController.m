@@ -93,7 +93,7 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     switch (selectedScope) {
         case 0:
         {
-//             = [userDefaults objectForKey:@"PlaceByHistory"];
+            self.arrayOfHistoryPlaces = [userDefaults objectForKey:@"PlaceByHistory"];
             break;
         }
         case 1:
@@ -145,7 +145,9 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
         }
     }
     
-    [self saveMutableArray:self.arrayOfHistoryPlaces string:@"PlaceByHistory"];
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:@"PlaceByHistory"];
+    //[userDefaults setObject:self.arrayOfHistoryPlaces forKey:@"PlaceByHistory"];
     
     NSDictionary *dictionary =
     [NSDictionary dictionaryWithObject:[self.arrayForPlacesMarks[indexPath.row]
@@ -185,19 +187,6 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     }
     [str deleteCharactersInRange:NSMakeRange(0, 1)];
     return str;
-}
-
-- (void)saveMutableArray:(NSMutableArray *)array
-                  string:(NSString *)key {
-    
-    NSMutableArray *archiveArray = [NSMutableArray arrayWithCapacity:array.count];
-    for (NSDictionary *object in array) {
-        NSData *dataOfPoint = [NSKeyedArchiver archivedDataWithRootObject:object];
-        [archiveArray addObject:dataOfPoint];
-    }
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults removeObjectForKey:key];
-    [userDefaults setObject:archiveArray forKey:key];
 }
 
 - (void)didReceiveMemoryWarning {
