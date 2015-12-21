@@ -530,7 +530,7 @@ static bool isMainRoute;
 
 - (void)showPlace:(NSNotification *)notification {
     [self.navigationController popViewControllerAnimated:YES];
-    SVPlacemark *object =
+    CLLocation  *object =
     [notification.userInfo objectForKey:showPlaceNotificationCenterInfoKey];
     CLLocationCoordinate2D point = object.coordinate;
     MKCoordinateRegion region = MKCoordinateRegionMakeWithDistance(point, 800, 800);

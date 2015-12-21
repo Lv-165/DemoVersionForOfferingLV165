@@ -13,13 +13,9 @@
 NSString* const showPlaceNotificationCenter = @"showPlaceNotificationCenter";
 NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCenterInfoKey";
 
-static NSString *historyPlaces = @"historyPlaces";
-static NSString *favouritePlaces = @"favouritePlaces";
-
-
 @interface HMSearchViewController ()
 
-@property (strong, nonatomic)NSArray *arrayForPlacesMarks;
+@property (strong, nonatomic)NSMutableArray *arrayForPlacesMarks;
 @property (strong, nonatomic)NSMutableArray *arrayOfFavouritePlaces;
 @property (strong, nonatomic)NSMutableArray *arrayOfHistoryPlaces;
 
@@ -30,18 +26,12 @@ static NSString *favouritePlaces = @"favouritePlaces";
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    [[self navigationController] setNavigationBarHidden:NO animated:YES];
     self.arrayOfHistoryPlaces = [NSMutableArray array];
     self.arrayOfFavouritePlaces = [NSMutableArray array];
+    self.arrayForPlacesMarks = [NSMutableArray array];
+    
+    [[self navigationController] setNavigationBarHidden:NO animated:YES];
     // Do any additional setup after loading the view.
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    animated = YES;
-}
-
-- (void)viewDidDisappear:(BOOL)animated {
-    animated = YES;
 }
 
 #pragma mark - UISearchBarDelegate
@@ -61,11 +51,22 @@ static NSString *favouritePlaces = @"favouritePlaces";
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     self.tableView.backgroundView = nil;
-    self.arrayForPlacesMarks = [NSArray array];
+    
+    if ([self.arrayForPlacesMarks count]) {
+        [self.arrayForPlacesMarks removeAllObjects];
+    }
     [SVGeocoder geocode:searchBar.text
              completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse, NSError *error) {
                  if ([placemarks count]) {
-                     self.arrayForPlacesMarks = placemarks;
+                     for (SVPlacemark *object in placemarks) {
+                         NSString *stringOfPlace = [self creatingAObjectOfMassive:object];
+                         NSDictionary *place = @{
+                                                 @"StringOfPlace":stringOfPlace,
+                                                 @"Coordinate":object.location,
+                                                 };
+                         
+                         [self.arrayForPlacesMarks addObject:place];
+                     }
                  } else {
                      self.tableView.backgroundView = nil;
                      [self.tableView setBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"search"]]];
@@ -85,15 +86,19 @@ static NSString *favouritePlaces = @"favouritePlaces";
 }
 
 - (void)searchBar:(UISearchBar *)searchBar selectedScopeButtonIndexDidChange:(NSInteger)selectedScope {
+    if ([self.arrayForPlacesMarks count]) {
+        self.arrayForPlacesMarks = nil;
+    }
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     switch (selectedScope) {
         case 0:
         {
-            self.arrayForPlacesMarks = self.arrayOfHistoryPlaces;
+//             = [userDefaults objectForKey:@"PlaceByHistory"];
             break;
         }
         case 1:
         {
-            self.arrayForPlacesMarks = self.arrayOfFavouritePlaces;
+            self.arrayForPlacesMarks = [userDefaults objectForKey:@"PlaceByFavourite"];
             break;
         }
     }
@@ -116,20 +121,56 @@ static NSString *favouritePlaces = @"favouritePlaces";
         cell = [tableView dequeueReusableCellWithIdentifier:identifier];
         cell.selectionStyle = UITableViewCellSelectionStyleBlue;
     }
-    SVPlacemark *object = self.arrayForPlacesMarks[indexPath.row];
+    cell.infoLabel.text = (NSString *)[self.arrayForPlacesMarks[indexPath.row] objectForKey:@"StringOfPlace"];
+    return cell;
+}
+
+#pragma mark - UITableViewDelegate
+
+- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
     
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    cell.accessoryType = UITableViewCellAccessoryNone;
+}
+
+- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    
+    [self.arrayOfHistoryPlaces addObject:self.arrayForPlacesMarks[indexPath.row]];
+    
+    if ([self.arrayOfHistoryPlaces count] >= 20) {
+        for (NSInteger i = 0; i < ([self.arrayOfHistoryPlaces count] - 20); i ++) {
+            [self.arrayOfHistoryPlaces removeObjectAtIndex:i];
+        }
+    }
+    
+    [self saveMutableArray:self.arrayOfHistoryPlaces string:@"PlaceByHistory"];
+    
+    NSDictionary *dictionary =
+    [NSDictionary dictionaryWithObject:[self.arrayForPlacesMarks[indexPath.row]
+                          objectForKey:@"Coordinate"]
+                                forKey:showPlaceNotificationCenterInfoKey];
+    [[NSNotificationCenter defaultCenter] postNotificationName:showPlaceNotificationCenter
+                                                        object:nil
+                                                      userInfo:dictionary];
+}
+
+#pragma mark - for creating elememt of arrayOfFavourite and arrayOfHistory
+
+- (NSString *)creatingAObjectOfMassive:(SVPlacemark *)placeMark {
     NSMutableArray *levelOfLocality = [NSMutableArray array];
-    if (object.formattedAddress) {
-        [levelOfLocality addObject:object.formattedAddress];
+    if (placeMark.formattedAddress) {
+        [levelOfLocality addObject:placeMark.formattedAddress];
     }
-    if (object.administrativeArea) {
-        [levelOfLocality addObject:object.administrativeArea];
+    if (placeMark.administrativeArea) {
+        [levelOfLocality addObject:placeMark.administrativeArea];
     }
-    if (object.subAdministrativeArea) {
-        [levelOfLocality addObject:object.subAdministrativeArea];
+    if (placeMark.subAdministrativeArea) {
+        [levelOfLocality addObject:placeMark.subAdministrativeArea];
     }
-    if (object.thoroughfare) {
-        [levelOfLocality addObject:object.thoroughfare];
+    if (placeMark.thoroughfare) {
+        [levelOfLocality addObject:placeMark.thoroughfare];
     }
     NSInteger count = 0;
     NSMutableString *str = [NSMutableString stringWithFormat:@""];
@@ -143,30 +184,20 @@ static NSString *favouritePlaces = @"favouritePlaces";
         }
     }
     [str deleteCharactersInRange:NSMakeRange(0, 1)];
-    cell.infoLabel.text = [NSString stringWithString:str];
-    return cell;
+    return str;
 }
 
-#pragma mark - UITableViewDelegate
-
-- (void)tableView:(UITableView *)tableView didDeselectRowAtIndexPath:(NSIndexPath *)indexPath {
+- (void)saveMutableArray:(NSMutableArray *)array
+                  string:(NSString *)key {
     
-    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
-    cell.accessoryType = UITableViewCellAccessoryNone;
-}
-
-
-- (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
-    [tableView deselectRowAtIndexPath:indexPath animated:YES];
-    SVPlacemark *object = self.arrayForPlacesMarks[indexPath.row];
-    
-    [self.arrayOfHistoryPlaces addObject:object];
-    
-    NSDictionary *dictionary = [NSDictionary dictionaryWithObject:object
-                                                           forKey:showPlaceNotificationCenterInfoKey];
-    [[NSNotificationCenter defaultCenter] postNotificationName:showPlaceNotificationCenter
-                                                        object:nil
-                                                      userInfo:dictionary];
+    NSMutableArray *archiveArray = [NSMutableArray arrayWithCapacity:array.count];
+    for (NSDictionary *object in array) {
+        NSData *dataOfPoint = [NSKeyedArchiver archivedDataWithRootObject:object];
+        [archiveArray addObject:dataOfPoint];
+    }
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    [userDefaults removeObjectForKey:key];
+    [userDefaults setObject:archiveArray forKey:key];
 }
 
 - (void)didReceiveMemoryWarning {
