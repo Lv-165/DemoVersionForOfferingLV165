@@ -199,6 +199,7 @@
                         <outlet property="downToolBar" destination="cpQ-J0-Ekk" id="A7d-TE-jMF"/>
                         <outlet property="mapView" destination="eIw-hm-dci" id="YBP-2t-6ao"/>
                         <outlet property="upToolBar" destination="7SA-v6-wd0" id="AQi-IA-jjA"/>
+                        <outlet property="viewForPinOfInfo" destination="FYm-s8-iZT" id="eRC-P5-kC4"/>
                         <outlet property="viewToAnimate" destination="FYm-s8-iZT" id="p5n-BR-f6x"/>
                         <segue destination="PwR-jp-DFQ" kind="show" identifier="showSearchViewController" id="X3p-XK-KOt"/>
                         <segue destination="7bs-0b-0Y2" kind="show" identifier="showSettingsViewController" id="FIo-P1-Pcd"/>
