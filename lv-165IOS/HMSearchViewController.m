@@ -34,6 +34,7 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     // Do any additional setup after loading the view.
 }
 
+
 #pragma mark - UISearchBarDelegate
 
 - (BOOL)searchBarShouldBeginEditing:(UISearchBar *)searchBar {
@@ -52,25 +53,32 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     self.tableView.backgroundView = nil;
     
-    if ([self.arrayForPlacesMarks count]) {
-        [self.arrayForPlacesMarks removeAllObjects];
-    }
+    self.arrayForPlacesMarks = [NSMutableArray array];
     [SVGeocoder geocode:searchBar.text
              completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse, NSError *error) {
                  if ([placemarks count]) {
                      for (SVPlacemark *object in placemarks) {
                          NSString *stringOfPlace = [self creatingAObjectOfMassive:object];
+                         
+                         NSNumber *latitude = [[NSNumber alloc] initWithDouble:object.location.coordinate.latitude];
+                         NSNumber *longitude = [[NSNumber alloc] initWithDouble:object.location.coordinate.longitude];
+                         
+                         NSDictionary *coordinate = @{
+                                                      @"latitude":latitude,
+                                                      @"longitude":longitude
+                                                      };
                          NSDictionary *place = @{
                                                  @"StringOfPlace":stringOfPlace,
-                                                 @"Coordinate":object.location,
+                                                 @"Coordinate":coordinate,
                                                  };
                          
                          [self.arrayForPlacesMarks addObject:place];
-                     }
-                 } else {
+                 }
+                 }else {
                      self.tableView.backgroundView = nil;
                      [self.tableView setBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"search"]]];
                  }
+                 
                  [self.tableView reloadData];
              }];
 }
@@ -94,11 +102,13 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
         case 0:
         {
             self.arrayOfHistoryPlaces = [userDefaults objectForKey:@"PlaceByHistory"];
+            self.arrayForPlacesMarks = self.arrayOfHistoryPlaces;
             break;
         }
         case 1:
         {
-            self.arrayForPlacesMarks = [userDefaults objectForKey:@"PlaceByFavourite"];
+            self.arrayOfFavouritePlaces = [userDefaults objectForKey:@"PlaceByFavourite"];
+            self.arrayForPlacesMarks = self.arrayOfFavouritePlaces;
             break;
         }
     }
@@ -136,7 +146,6 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    
     [self.arrayOfHistoryPlaces addObject:self.arrayForPlacesMarks[indexPath.row]];
     
     if ([self.arrayOfHistoryPlaces count] >= 20) {
@@ -147,7 +156,7 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     [userDefaults removeObjectForKey:@"PlaceByHistory"];
-    //[userDefaults setObject:self.arrayOfHistoryPlaces forKey:@"PlaceByHistory"];
+    [userDefaults setObject:self.arrayOfHistoryPlaces forKey:@"PlaceByHistory"];
     
     NSDictionary *dictionary =
     [NSDictionary dictionaryWithObject:[self.arrayForPlacesMarks[indexPath.row]

@@ -564,25 +564,27 @@ static bool isMainRoute;
     }
 }
 
-#pragma mark - methods for Notification
+#pragma mark - methods for Notification//latitude":latitude, @"longitude
 
 - (void)showPlace:(NSNotification *)notification {
     [self.navigationController popViewControllerAnimated:YES];
-    CLLocation  *object =
+    NSDictionary  *object =
     [notification.userInfo objectForKey:showPlaceNotificationCenterInfoKey];
-    CLLocationCoordinate2D point = object.coordinate;
-    MKCoordinateRegion ragion = self.mapView.region;
-    ragion.center = point;
-    [self.mapView setRegion:[self.mapView regionThatFits:ragion] animated:YES];
+    CLLocationCoordinate2D point;
+    
+    point.latitude = [[object valueForKey:@"latitude"] doubleValue];
+    point.longitude = [[object valueForKey:@"longitude"] doubleValue];
+    
+    MKCoordinateRegion region = self.mapView.region;
+    region.center = point;
+    [self.mapView setRegion:[self.mapView regionThatFits:region] animated:YES];
 }
 
 #pragma mark - Map Type Saving
 
 - (void)saveSettings {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    
     [userDefaults setInteger:self.mapView.mapType forKey:@"kMapType"];
-    
     [userDefaults synchronize];
 }
 
@@ -662,7 +664,6 @@ static bool isMainRoute;
 - (void)showAlertWithTitle:(NSString *)title
                 andMessage:(NSString *)message
             andActionTitle:(NSString *)actionTitle {
-    
     
     UIAlertController* alert = [UIAlertController alertControllerWithTitle:title
                                                                    message:message
