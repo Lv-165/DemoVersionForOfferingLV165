@@ -14,6 +14,7 @@
 #import "DescriptionInfo.h"
 #import "Comments.h"
 #import "User.h"
+#import "Waiting.h"
 
 @implementation HMCoreDataManager
 
@@ -127,8 +128,18 @@
     DescriptionInfo *descriptionInfo = [NSEntityDescription insertNewObjectForEntityForName:@"DescriptionInfo"
                                                                      inManagedObjectContext:[self managedObjectContext]];
     
-    NSDictionary* descriptionDictionary = [[placeNSDictionary objectForKey:@"description"] objectForKey:description.language];
+    NSDictionary *descriptionDictionary = [[placeNSDictionary objectForKey:@"description"] objectForKey:description.language];
     descriptionInfo.descriptionString = [descriptionDictionary objectForKey:@"description"];
+    
+    Waiting *waiting = [NSEntityDescription insertNewObjectForEntityForName:@"Waiting"
+                                                     inManagedObjectContext:[self managedObjectContext]];
+    
+    NSDictionary *waitingDictionary = [placeNSDictionary objectForKey:@"waiting_stats"];
+    
+    waiting.avg = [NSNumber numberFromValue:[waitingDictionary valueForKey:@"avg"]];
+    waiting.avg_textual = [NSString stringWithFormat:@"%@",[waitingDictionary valueForKey:@"avg_textual"]];
+    
+    place.waiting = waiting;
     
     description.descriptInfo = descriptionInfo;
     [place addDescriptObject:description];

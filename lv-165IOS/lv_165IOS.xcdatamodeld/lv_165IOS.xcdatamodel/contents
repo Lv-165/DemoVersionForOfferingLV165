@@ -55,12 +55,19 @@
         <relationship name="descript" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Description" inverseName="place" inverseEntity="Description" syncable="YES"/>
         <relationship name="location" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Location" inverseName="place" inverseEntity="Location" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="User" inverseName="place" inverseEntity="User" syncable="YES"/>
+        <relationship name="waiting" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Waiting" inverseName="place" inverseEntity="Waiting" syncable="YES"/>
     </entity>
     <entity name="User" representedClassName="User" syncable="YES">
         <attribute name="id" optional="YES" attributeType="Integer 64" defaultValueString="0" syncable="YES"/>
         <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="comments" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Comments" inverseName="user" inverseEntity="Comments" syncable="YES"/>
         <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Place" inverseName="user" inverseEntity="Place" syncable="YES"/>
+    </entity>
+    <entity name="Waiting" representedClassName="Waiting" syncable="YES">
+        <attribute name="avg" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <attribute name="avg_textual" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="count" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
+        <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Place" inverseName="waiting" inverseEntity="Place" syncable="YES"/>
     </entity>
     <elements>
         <element name="Comments" positionX="-110" positionY="-297" width="128" height="118"/>
@@ -70,7 +77,8 @@
         <element name="Description" positionX="-99" positionY="-160" width="128" height="88"/>
         <element name="DescriptionInfo" positionX="160" positionY="-226" width="128" height="118"/>
         <element name="Location" positionX="-101" positionY="-36" width="128" height="103"/>
-        <element name="Place" positionX="-290" positionY="-225" width="128" height="238"/>
+        <element name="Place" positionX="-290" positionY="-225" width="128" height="253"/>
         <element name="User" positionX="-110" positionY="104" width="128" height="103"/>
+        <element name="Waiting" positionX="-119" positionY="230" width="128" height="103"/>
     </elements>
 </model>

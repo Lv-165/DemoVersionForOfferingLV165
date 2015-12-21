@@ -1,5 +1,5 @@
 //
-//  Country+CoreDataProperties.m
+//  Waiting+CoreDataProperties.m
 //  lv-165IOS
 //
 //  Created by Yurii Huber on 21.12.15.
@@ -9,12 +9,13 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "Country+CoreDataProperties.h"
+#import "Waiting+CoreDataProperties.h"
 
-@implementation Country (CoreDataProperties)
+@implementation Waiting (CoreDataProperties)
 
-@dynamic iso;
-@dynamic name;
-@dynamic location;
+@dynamic avg;
+@dynamic avg_textual;
+@dynamic count;
+@dynamic place;
 
 @end

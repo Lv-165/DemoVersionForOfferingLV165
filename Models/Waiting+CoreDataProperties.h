@@ -1,5 +1,5 @@
 //
-//  Country+CoreDataProperties.h
+//  Waiting+CoreDataProperties.h
 //  lv-165IOS
 //
 //  Created by Yurii Huber on 21.12.15.
@@ -9,15 +9,16 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "Country.h"
+#import "Waiting.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Country (CoreDataProperties)
+@interface Waiting (CoreDataProperties)
 
-@property (nullable, nonatomic, retain) NSString *iso;
-@property (nullable, nonatomic, retain) NSString *name;
-@property (nullable, nonatomic, retain) Location *location;
+@property (nullable, nonatomic, retain) NSNumber *avg;
+@property (nullable, nonatomic, retain) NSString *avg_textual;
+@property (nullable, nonatomic, retain) NSNumber *count;
+@property (nullable, nonatomic, retain) Place *place;
 
 @end
 

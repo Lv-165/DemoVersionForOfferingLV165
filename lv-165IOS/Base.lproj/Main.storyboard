@@ -155,14 +155,65 @@
                                         <animations/>
                                         <items/>
                                     </toolbar>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="remont" translatesAutoresizingMaskIntoConstraints="NO" id="5VU-Oq-hh6">
+                                        <rect key="frame" x="8" y="48" width="240" height="128"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="240" id="Fye-rN-mlE"/>
+                                            <constraint firstAttribute="height" constant="128" id="yAV-IB-dUw"/>
+                                        </constraints>
+                                    </imageView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Waiting time" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="rXC-0X-jfn">
+                                        <rect key="frame" x="8" y="19" width="240" height="21"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="Autor" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fTh-tc-eeU">
+                                        <rect key="frame" x="256" y="19" width="336" height="21"/>
+                                        <fontDescription key="fontDescription" type="italicSystem" pointSize="20"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="751" verticalCompressionResistancePriority="751" text="Label" lineBreakMode="wordWrap" numberOfLines="7" baselineAdjustment="alignBaselines" minimumScaleFactor="0.20000000000000001" adjustsLetterSpacingToFitWidth="YES" preferredMaxLayoutWidth="320" translatesAutoresizingMaskIntoConstraints="NO" id="QL8-JG-Pld">
+                                        <rect key="frame" x="256" y="48" width="336" height="20"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="21" id="qzy-aR-KP9"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <nil key="highlightedColor"/>
+                                        <variation key="default">
+                                            <mask key="constraints">
+                                                <exclude reference="qzy-aR-KP9"/>
+                                            </mask>
+                                        </variation>
+                                    </label>
                                 </subviews>
                                 <animations/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="trailing" secondItem="7SA-v6-wd0" secondAttribute="trailing" id="1Bg-dW-eeK"/>
+                                    <constraint firstItem="QL8-JG-Pld" firstAttribute="top" secondItem="fTh-tc-eeU" secondAttribute="bottom" constant="8" id="2bZ-O2-Tjm"/>
+                                    <constraint firstItem="7SA-v6-wd0" firstAttribute="top" secondItem="QL8-JG-Pld" secondAttribute="bottom" constant="112" id="4IJ-gB-md9"/>
+                                    <constraint firstItem="5VU-Oq-hh6" firstAttribute="top" secondItem="rXC-0X-jfn" secondAttribute="bottom" constant="8" id="70D-Py-2Iy"/>
+                                    <constraint firstItem="QL8-JG-Pld" firstAttribute="height" secondItem="fTh-tc-eeU" secondAttribute="height" constant="-1" id="Aso-OL-K3Z"/>
+                                    <constraint firstAttribute="trailing" secondItem="fTh-tc-eeU" secondAttribute="trailing" constant="8" id="DP4-07-Fxr"/>
+                                    <constraint firstItem="QL8-JG-Pld" firstAttribute="leading" secondItem="5VU-Oq-hh6" secondAttribute="trailing" constant="8" id="Omm-4A-IOF"/>
+                                    <constraint firstItem="rXC-0X-jfn" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="19" id="R1Y-l4-pTm"/>
                                     <constraint firstAttribute="height" constant="224" id="Wd8-K5-dzD"/>
+                                    <constraint firstItem="rXC-0X-jfn" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="Y06-fS-03H"/>
+                                    <constraint firstItem="QL8-JG-Pld" firstAttribute="centerX" secondItem="fTh-tc-eeU" secondAttribute="centerX" id="YeF-KD-Zce"/>
+                                    <constraint firstItem="5VU-Oq-hh6" firstAttribute="width" secondItem="rXC-0X-jfn" secondAttribute="width" id="ae3-Ex-lMh"/>
+                                    <constraint firstItem="fTh-tc-eeU" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="19" id="bR9-cK-3lc"/>
+                                    <constraint firstItem="5VU-Oq-hh6" firstAttribute="centerX" secondItem="rXC-0X-jfn" secondAttribute="centerX" id="cO2-2G-Hkx"/>
+                                    <constraint firstItem="QL8-JG-Pld" firstAttribute="width" secondItem="fTh-tc-eeU" secondAttribute="width" id="f0e-aY-WMV"/>
                                     <constraint firstAttribute="bottom" secondItem="7SA-v6-wd0" secondAttribute="bottom" id="hu6-fx-Bgq"/>
+                                    <constraint firstItem="5VU-Oq-hh6" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="hxU-XP-xyC"/>
+                                    <constraint firstAttribute="trailing" secondItem="QL8-JG-Pld" secondAttribute="trailing" constant="8" id="m7K-C1-Sws"/>
+                                    <constraint firstItem="7SA-v6-wd0" firstAttribute="top" secondItem="5VU-Oq-hh6" secondAttribute="bottom" constant="4" id="t7g-G4-GlX"/>
                                     <constraint firstItem="7SA-v6-wd0" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" id="u8i-6r-dMV"/>
+                                    <constraint firstItem="fTh-tc-eeU" firstAttribute="leading" secondItem="rXC-0X-jfn" secondAttribute="trailing" constant="8" id="vSI-sO-NxE"/>
+                                    <constraint firstItem="5VU-Oq-hh6" firstAttribute="centerY" secondItem="FYm-s8-iZT" secondAttribute="centerY" id="zHB-jU-t7X"/>
                                 </constraints>
                             </view>
                             <toolbar clearsContextBeforeDrawing="NO" tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cpQ-J0-Ekk">
@@ -195,12 +246,15 @@
                     </view>
                     <navigationItem key="navigationItem" id="7Kx-Zu-vjK"/>
                     <connections>
+                        <outlet property="autorDescriptionLable" destination="fTh-tc-eeU" id="RjX-FV-i5P"/>
                         <outlet property="constraitToShowUpToolBar" destination="Wd8-K5-dzD" id="wAV-ZG-ftA"/>
+                        <outlet property="descriptionLable" destination="QL8-JG-Pld" id="7WQ-C0-90h"/>
                         <outlet property="downToolBar" destination="cpQ-J0-Ekk" id="A7d-TE-jMF"/>
                         <outlet property="mapView" destination="eIw-hm-dci" id="YBP-2t-6ao"/>
                         <outlet property="upToolBar" destination="7SA-v6-wd0" id="AQi-IA-jjA"/>
                         <outlet property="viewForPinOfInfo" destination="FYm-s8-iZT" id="eRC-P5-kC4"/>
                         <outlet property="viewToAnimate" destination="FYm-s8-iZT" id="p5n-BR-f6x"/>
+                        <outlet property="waitingTimeLable" destination="rXC-0X-jfn" id="Whx-SP-cn1"/>
                         <segue destination="PwR-jp-DFQ" kind="show" identifier="showSearchViewController" id="X3p-XK-KOt"/>
                         <segue destination="7bs-0b-0Y2" kind="show" identifier="showSettingsViewController" id="FIo-P1-Pcd"/>
                         <segue destination="4Ib-ml-FoI" kind="show" identifier="Comments" id="Bf4-ER-3t1"/>

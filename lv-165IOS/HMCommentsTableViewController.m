@@ -32,7 +32,7 @@ static NSString* const CellIdentifier = @"DynamicTableViewCell";
 
     NSArray *array = self.create.descript.allObjects;
 
-    Description *description = [array objectAtIndex:0];
+    Description *description = [array firstObject];
     
     self.commentsArray = self.create.comments.allObjects;
     self.descriptionInfo = description.descriptInfo;
