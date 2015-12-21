@@ -31,6 +31,7 @@
 
 @property (assign, nonatomic) NSInteger ratingOfPoints;
 @property (assign, nonatomic) BOOL pointHasComments;
+@property (assign, nonatomic) BOOL pointHasDescription;
 
 @property (strong, nonatomic) NSArray *placeArray;
 
@@ -40,6 +41,7 @@
 
 static NSString* kSettingsComments = @"comments";
 static NSString* kSettingsRating = @"rating";
+static NSString* kSettingsDescription = @"description";
 
 @implementation HMMapViewController
 
@@ -66,6 +68,7 @@ static bool isMainRoute;
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
     self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
+    self.pointHasDescription = [userDefaults boolForKey:kSettingsDescription];
     
     // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
     if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
@@ -116,6 +119,8 @@ static bool isMainRoute;
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
     self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
+    self.pointHasDescription = [userDefaults boolForKey:kSettingsDescription];
+    
     [self.mapView removeAnnotations:self.mapView.annotations];
     [self printPointWithContinent];
     
@@ -466,17 +471,21 @@ static bool isMainRoute;
     
     NSPredicate* ratingPredicate = [NSPredicate predicateWithFormat:@"%@ => rating  AND rating >= %@",[NSString stringWithFormat:@" %ld",(long)maxForPoint],[NSString stringWithFormat:@" %ld",(long)minForPoint]];
     
-    if(!self.pointHasComments) {
+    if(!self.pointHasComments ||!self.pointHasDescription) {
         [fetchRequest setPredicate:ratingPredicate];
     } else {
-        NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@",@0];
+        NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"SUBQUERY(descript,$description,$description.length > %@).@count > 0",@0];
+//        NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@ AND SUBQUERY($student.previousCourses, $course, $course.name == 'CompSci-101').@count >0) ",@0];
+        
+        //предикат для дескрипшина
+//        NSPredicate* descriptionPredicate = [NSPredicate pre];
         NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:ratingPredicate, commentsCountPredicate, nil]];
         
         [fetchRequest setPredicate:compoundPredicate];
     }
     self.mapPointArray = [managedObjectContext executeFetchRequest:fetchRequest
                                                               error:nil];
-    NSLog(@"MAP annotation array count %lu",(unsigned long)self.mapPointArray.count);
+//    NSLog(@"MAP annotation array count %lu",(unsigned long)self.mapPointArray.count);
     
     for (Place* place in self.mapPointArray) {
         HMMapAnnotation *annotation = [[HMMapAnnotation alloc] init];

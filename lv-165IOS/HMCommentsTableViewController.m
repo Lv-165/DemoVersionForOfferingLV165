@@ -11,7 +11,6 @@
 #import "Place.h"
 #import "Description.h"
 #import "Comments.h"
-#import "DescriptionInfo.h"
 #import "Countries.h"
 #import "Comments.h"
 #import "User.h"
@@ -19,7 +18,7 @@
 
 @interface HMCommentsTableViewController ()
 
-@property(strong, nonatomic)DescriptionInfo *descriptionInfo;
+@property(strong, nonatomic) Description *descriptionInfo;
 
 @end
 
@@ -30,12 +29,12 @@ static NSString* const CellIdentifier = @"DynamicTableViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    NSArray *array = self.create.descript.allObjects;
-
-    Description *description = [array objectAtIndex:0];
+//    NSArray *array = self.create.descript.allObjects;
+//
+//    Description *description = [array objectAtIndex:0];
     
     self.commentsArray = self.create.comments.allObjects;
-    self.descriptionInfo = description.descriptInfo;
+    self.descriptionInfo = self.create.descript.descriptionString;
 
     [[self navigationController] setNavigationBarHidden:NO animated:YES];
 }

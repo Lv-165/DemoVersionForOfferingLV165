@@ -16,6 +16,7 @@
 static NSString* kSettingsComments = @"comments";
 static NSString* kSettingsRating   = @"rating";
 static NSString* kSettingsCommentsLanguage = @"commentsLanguage";
+static NSString* kSettingsDescription = @"description";
 
 
 @implementation HMFiltersViewController
@@ -69,6 +70,7 @@ static NSString* kSettingsCommentsLanguage = @"commentsLanguage";
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     
     [userDefaults setBool:self.commentsSwitch.isOn forKey:kSettingsComments];
+//    [userDefaults setBool:self.commentsSwitch.inOn forKey:kSettingsDescription];
     [userDefaults setInteger:self.ratingControl.selectedSegmentIndex forKey:kSettingsRating];
     [userDefaults setInteger:[self.pickerView selectedRowInComponent:0] forKey:kSettingsCommentsLanguage];
     

@@ -11,8 +11,7 @@
 #import "Place.h"
 #import "Description.h"
 #import "Comments.h"
-#import "DescriptionInfo.h"
-#import "Comments.h"
+
 #import "User.h"
 
 @implementation HMCoreDataManager
@@ -108,12 +107,46 @@
     user.name = [userDictionary valueForKey:@"name"];
     place.user = user;
     
-    Description *description = [NSEntityDescription insertNewObjectForEntityForName:@"Description"
+    Description *descriptionObj = [NSEntityDescription insertNewObjectForEntityForName:@"Description"
                                                              inManagedObjectContext:[self managedObjectContext]];
+    NSDictionary *descriptionDictionary = [placeNSDictionary objectForKey:@"description"];
+    
+    if (descriptionDictionary[@"description"]) {
+        descriptionObj.descriptionString = @"";
+        descriptionObj.language = @"en_UK";
+        descriptionObj.datetime = nil;
+        descriptionObj.version = @1;
+        descriptionObj.fk_user = @"";
+    } else {
+        descriptionObj.language = [NSString stringWithFormat:@"%@", [[placeNSDictionary objectForKey:@"description"] allKeys]];
+        //Не ищет по НЕ прямому запросу, возможно спецсимвол?
+//        NSLog(@"place ID %@",place.id);
+//        NSLog(@"descriptionDict1 %@",descriptionDict1);
+//        NSLog(@"language %@",descriptionObj.language);
+//        NSDictionary *descriptionDict2 = [descriptionDict1 valueForKey:[NSString stringWithFormat:@"%@",descriptionObj.language]];
+        NSDictionary *descriptionDict = [descriptionDictionary objectForKey:@"en_UK"];
+//        NSLog(@"descriptionDict2 %@",descriptionDict2);
+//        NSLog(@"descriptionDict3 %@",descriptionDict);
+        descriptionObj.descriptionString = [NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"description"]];
+        descriptionObj.language = [NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"language"]];
 
-    //description.language = [NSString stringWithFormat:@"%@", [[placeNSDictionary objectForKey:@"description"] allKeys]];
-    //only English language, yet
-    description.language = @"en_UK";
+        NSDateFormatter * df = [[NSDateFormatter alloc] init];
+        [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        [df setTimeZone:[NSTimeZone systemTimeZone]];
+        [df setFormatterBehavior:NSDateFormatterBehaviorDefault];
+        NSDate *theDate = [df dateFromString:[NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"datetime"]]];
+//        NSLog(@"date: %@", theDate);
+        descriptionObj.datetime = theDate;
+        
+        NSInteger versionCountInteger = [[descriptionDict valueForKey:@"versions"] integerValue];
+        descriptionObj.version = [NSNumber numberWithInteger:versionCountInteger];
+        descriptionObj.fk_user = [NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"fk_user"]];
+    }
+
+//    NSLog(@"descriptionString %@",descriptionObj.descriptionString);
+    descriptionObj.place = place;
+    [place setDescript:descriptionObj];// trouble
+    
     
     if (comCountInteger) {
         
@@ -139,21 +172,18 @@
         }
     }
 
-    DescriptionInfo *descriptionInfo = [NSEntityDescription insertNewObjectForEntityForName:@"DescriptionInfo"
-                                                                     inManagedObjectContext:[self managedObjectContext]];
-    
-    NSDictionary* descriptionDictionary = [[placeNSDictionary objectForKey:@"description"] objectForKey:description.language];
-    descriptionInfo.descriptionString = [descriptionDictionary objectForKey:@"description"];
-    
-    description.descriptInfo = descriptionInfo;
-    [place addDescriptObject:description];
+//    Description *descriptionEntity = [NSEntityDescription insertNewObjectForEntityForName:@"Description"
+//                                                                     inManagedObjectContext:[self managedObjectContext]];
+  
     [countries addPlaceObject:place];
+    
+//    NSLog(@"descriptionInfo %@",descriptionObj);
 
     [self saveContext];
-//    NSError* error = nil;
-//    if (![[self managedObjectContext] save:&error]) {
-//        NSLog(@"%@", [error localizedDescription]);
-//    }
+    NSError* error = nil;
+    if (![[self managedObjectContext] save:&error]) {
+        NSLog(@"%@", [error localizedDescription]);
+    }
 }
 
 - (void) deleteAllObjects {
@@ -181,7 +211,7 @@
     [request setPredicate:predicate];
     NSError* requestError = nil;
     NSArray* resultArray = [self.managedObjectContext executeFetchRequest:request error:&requestError];
-    NSLog(@"Print Country Entities %@",resultArray);
+//    NSLog(@"Print Country Entities %@",resultArray);
 }
 
 - (NSArray*) allObjects {
@@ -197,7 +227,7 @@
     NSError* requestError = nil;
     NSArray* resultArray = [self.managedObjectContext executeFetchRequest:request error:&requestError];
     if (requestError) {
-        NSLog(@"%@", [requestError localizedDescription]);
+//        NSLog(@"%@", [requestError localizedDescription]);
     }
     
     return resultArray;
@@ -240,7 +270,7 @@
         error = [NSError errorWithDomain:@"YOUR_ERROR_DOMAIN" code:9999 userInfo:dict];
         // Replace this with code to handle the error appropriately.
         // abort() causes the application to generate a crash log and terminate. You should not use this function in a shipping application, although it may be useful during development.
-        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
+//        NSLog(@"Unresolved error %@, %@", error, [error userInfo]);
 //        abort();
     }
     
@@ -279,3 +309,5 @@
 
 
 @end
+
+

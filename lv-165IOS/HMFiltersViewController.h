@@ -15,7 +15,6 @@
 @property (weak, nonatomic) IBOutlet UIImageView *commentImage;
 
 
-
 @property (strong, nonatomic) IBOutlet UIPickerView *pickerView;
 @property (strong, nonatomic) NSArray *dataSource;
 @property (strong, nonatomic) NSString *commentsLanguage;
