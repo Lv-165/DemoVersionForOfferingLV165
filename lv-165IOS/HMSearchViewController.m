@@ -152,7 +152,7 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     
     if (self.isAtSearchBar) {
         NSMutableArray *tempArray = [NSMutableArray arrayWithArray:self.arrayOfHistoryPlaces];
-        [tempArray addObject:self.arrayForPlacesMarks[indexPath.row]];
+        [tempArray addObject:self.arrayForPlacesMarks[indexPath.row]];//gyghg
 
     if ([tempArray count] >= 20) {
         for (NSInteger i = 0; i < ([self.arrayOfHistoryPlaces count] - 20); i ++) {
