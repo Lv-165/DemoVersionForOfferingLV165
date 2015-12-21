@@ -15,9 +15,11 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
 
 @interface HMSearchViewController ()
 
-@property (strong, nonatomic)NSMutableArray *arrayForPlacesMarks;
-@property (strong, nonatomic)NSMutableArray *arrayOfFavouritePlaces;
-@property (strong, nonatomic)NSMutableArray *arrayOfHistoryPlaces;
+@property (strong, nonatomic) NSMutableArray *arrayForPlacesMarks;
+@property (strong, nonatomic) NSMutableArray *arrayOfFavouritePlaces;
+@property (strong, nonatomic) NSMutableArray *arrayOfHistoryPlaces;
+
+@property (assign, nonatomic)BOOL isAtSearchBar;
 
 @end
 
@@ -52,7 +54,7 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
 
 - (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText {
     self.tableView.backgroundView = nil;
-    
+    self.isAtSearchBar = YES;
     self.arrayForPlacesMarks = [NSMutableArray array];
     [SVGeocoder geocode:searchBar.text
              completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse, NSError *error) {
@@ -73,7 +75,7 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
                                                  };
                          
                          [self.arrayForPlacesMarks addObject:place];
-                 }
+                     }
                  }else {
                      self.tableView.backgroundView = nil;
                      [self.tableView setBackgroundView:[[UIImageView alloc] initWithImage:[UIImage imageNamed:@"search"]]];
@@ -102,20 +104,22 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
         case 0:
         {
             self.arrayOfHistoryPlaces = [userDefaults objectForKey:@"PlaceByHistory"];
-            self.arrayForPlacesMarks = self.arrayOfHistoryPlaces;
+            self.arrayForPlacesMarks = [[NSMutableArray alloc] initWithArray:self.arrayOfHistoryPlaces];
             break;
         }
         case 1:
         {
             self.arrayOfFavouritePlaces = [userDefaults objectForKey:@"PlaceByFavourite"];
-            self.arrayForPlacesMarks = self.arrayOfFavouritePlaces;
+            self.arrayForPlacesMarks = [[NSMutableArray alloc] initWithArray:self.arrayOfFavouritePlaces];
             break;
         }
     }
+    self.isAtSearchBar = NO;
     [self.tableView reloadData];
 }
 
 #pragma mark - UITableViewDataSource
+
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     return [self.arrayForPlacesMarks count];
 }
@@ -146,21 +150,23 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
 - (void) tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    [self.arrayOfHistoryPlaces addObject:self.arrayForPlacesMarks[indexPath.row]];
-    
-    if ([self.arrayOfHistoryPlaces count] >= 20) {
-        for (NSInteger i = 0; i < ([self.arrayOfHistoryPlaces count] - 20); i ++) {
-            [self.arrayOfHistoryPlaces removeObjectAtIndex:i];
+    if (self.isAtSearchBar) {
+        NSMutableArray *tempArray = [NSMutableArray arrayWithArray:self.arrayOfHistoryPlaces];
+        [tempArray addObject:self.arrayForPlacesMarks[indexPath.row]];//gyghg
+        
+        if ([tempArray count] >= 20) {
+            for (NSInteger i = 0; i < ([self.arrayOfHistoryPlaces count] - 20); i ++) {
+                [tempArray removeObjectAtIndex:i];
+            }
         }
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        [userDefaults removeObjectForKey:@"PlaceByHistory"];
+        [userDefaults setObject:tempArray forKey:@"PlaceByHistory"];
     }
-    
-    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    [userDefaults removeObjectForKey:@"PlaceByHistory"];
-    [userDefaults setObject:self.arrayOfHistoryPlaces forKey:@"PlaceByHistory"];
     
     NSDictionary *dictionary =
     [NSDictionary dictionaryWithObject:[self.arrayForPlacesMarks[indexPath.row]
-                          objectForKey:@"Coordinate"]
+                                        objectForKey:@"Coordinate"]
                                 forKey:showPlaceNotificationCenterInfoKey];
     [[NSNotificationCenter defaultCenter] postNotificationName:showPlaceNotificationCenter
                                                         object:nil
