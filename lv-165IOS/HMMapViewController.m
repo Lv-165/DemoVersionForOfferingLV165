@@ -89,7 +89,13 @@ static bool isMainRoute;
                          ];
     
     NSArray *buttonsForUpToolBar = @[
-                                     [self createColorButton:@"compass" selector:@selector(showYourCurrentLocation:)]//To check do correct
+                                     [self createColorButton:@"sharing30_30" selector:@selector(sharingForSocialNetworking:)],
+                                     flexibleItem,
+                                     [self createColorButton:@"favptite30_30" selector:@selector(addToFavourite:)],
+                                     flexibleItem,
+                                     [self createColorButton:@"info30_3-0" selector:@selector(infoMethod:)],
+                                     flexibleItem,
+                                     [self createColorButton:@"road30_30" selector:@selector(showRoudFromThisPlaceToMyLocation:)]
                                      ];
     
     [self.downToolBar setItems:buttonsForDownToolBar animated:YES];
@@ -170,13 +176,10 @@ static bool isMainRoute;
 }
 
 - (void)moveToToolsController:(UIBarButtonItem *)sender {
-    
     [self performSegueWithIdentifier:@"showSettingsViewController" sender:sender];
-    
 }
 
 - (void)moveToFilterController:(UIBarButtonItem *)sender {
-    
     [self performSegueWithIdentifier:@"showFilterViewController" sender:sender];
     
 }
@@ -186,6 +189,13 @@ static bool isMainRoute;
     [self performSegueWithIdentifier:@"showSearchViewController" sender:sender];
     
 }
+
+#pragma mark - Tool Bar for Pin
+
+- (void)sharingForSocialNetworking:(UIBarButtonItem *)sender {}
+- (void)addToFavourite:(UIBarButtonItem *)sender {}
+- (void)infoMethod:(UIBarButtonItem *)sender {}
+- (void)showRoudFromThisPlaceToMyLocation:(UIBarButtonItem *)sender {}
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -349,7 +359,7 @@ static bool isMainRoute;
     MKDirectionsRequest *request = [[MKDirectionsRequest alloc] init];
     MKPlacemark *startPlacemark = [[MKPlacemark alloc] initWithCoordinate:startCoordinate
                                                         addressDictionary:nil];
-    MKMapItem* startDestination = [[MKMapItem alloc] initWithPlacemark:startPlacemark];
+    MKMapItem *startDestination = [[MKMapItem alloc] initWithPlacemark:startPlacemark];
     request.source = startDestination;
     MKPlacemark *endPlacemark = [[MKPlacemark alloc] initWithCoordinate:endCoordinate
                                                       addressDictionary:nil];
@@ -579,9 +589,11 @@ static bool isMainRoute;
     [self.mapView setVisibleMapRect:zoomRect
                         edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
                            animated:YES];
+    
     self.downToolBar.hidden = YES;
     self.constraitToShowUpToolBar.constant = 210.f;
     [self.viewToAnimate setNeedsUpdateConstraints];
+    
     [UIView animateWithDuration:1.f animations:^{
         [self.viewToAnimate layoutIfNeeded];
     }];
@@ -590,6 +602,7 @@ static bool isMainRoute;
     self.downToolBar.hidden = NO;
     self.constraitToShowUpToolBar.constant = 0.f;
     [self.viewToAnimate setNeedsUpdateConstraints];
+    
     [UIView animateWithDuration:1.f animations:^{
         [self.viewToAnimate layoutIfNeeded];
     }];

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 
 @interface HMSettingsViewController : UITableViewController
+
 @property (weak, nonatomic) IBOutlet UISegmentedControl *segmentedControlForMapType;
 @property (strong, nonatomic) NSArray *dataSource;
 
