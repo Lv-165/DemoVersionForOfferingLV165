@@ -19,6 +19,10 @@
 #import "SVGeocoder.h"
 #import "HMCommentsTableViewController.h"
 #import "HMAnnotationView.h"
+#import "User.h"
+#import "DescriptionInfo.h"
+#import "Description.h"
+#import "Waiting.h"
 
 @interface HMMapViewController ()
 
@@ -117,7 +121,7 @@ static bool isMainRoute;
     
     self.mapView.showsScale = YES;
     
-    //
+    
     [self.viewForPinOfInfo setUserInteractionEnabled:YES];
     
     UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
@@ -130,9 +134,23 @@ static bool isMainRoute;
     // Adding the swipe gesture on image view
     [self.viewForPinOfInfo addGestureRecognizer:swipeUp];
     [self.viewForPinOfInfo addGestureRecognizer:swipeDown];
+}
+
+- (void)viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
     
-    //self.annotationView = [[MKAnnotationView alloc] init];
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
+    self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
+    [self.mapView removeAnnotations:self.mapView.annotations];
+    [self printPointWithContinent];
     
+    NSLog(@" Points in map array %lu",(unsigned long)[self.mapPointArray count]);
+    NSLog(@" point has comments %@",self.pointHasComments ? @"Yes" : @"No");
+    
+    [[self navigationController] setNavigationBarHidden:YES animated:YES];
+    
+    [self loadSettings];
 }
 
 - (void)handleSwipe:(UISwipeGestureRecognizer *)swipe {
@@ -153,24 +171,6 @@ static bool isMainRoute;
         NSArray *arr = self.mapView.selectedAnnotations;
         [self.mapView deselectAnnotation:[arr firstObject] animated:YES];
     }
-    
-}
-
-- (void)viewWillAppear:(BOOL)animated {
-    [super viewWillAppear:animated];
-    
-    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
-    self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
-    [self.mapView removeAnnotations:self.mapView.annotations];
-    [self printPointWithContinent];
-    
-    NSLog(@" Points in map array %lu",(unsigned long)[self.mapPointArray count]);
-    NSLog(@" point has comments %@",self.pointHasComments ? @"Yes" : @"No");
-    
-    [[self navigationController] setNavigationBarHidden:YES animated:YES];
-    
-    [self loadSettings];
 }
 
 #pragma mark - for creating buttons
@@ -440,11 +440,11 @@ static bool isMainRoute;
 #pragma mark Action to pin button
 
 - (void) actionDescription:(UIButton*) sender {
-    MKAnnotationView* annotationView = [sender superAnnotationView];
-    NSString *stringId = [NSString stringWithFormat:@"%ld",
-                     (long)((HMMapAnnotation *)annotationView.annotation).idPlace];
-    
-    self.placeArray = [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
+//    MKAnnotationView* annotationView = [sender superAnnotationView];
+//    NSString *stringId = [NSString stringWithFormat:@"%ld",
+//                     (long)((HMMapAnnotation *)annotationView.annotation).idPlace];
+//    
+//    self.placeArray = [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
     
     [self performSegueWithIdentifier:@"Comments" sender:self];
 }
@@ -640,7 +640,45 @@ static bool isMainRoute;
     [UIView animateWithDuration:1.f animations:^{
         [self.viewToAnimate layoutIfNeeded];
     }];
+    
+    NSString *stringId = [NSString stringWithFormat:@"%ld",
+                          (long)((HMMapAnnotation *)view.annotation).idPlace];
+    
+    self.placeArray = [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
+    
+    Place *place = [self.placeArray firstObject];
+    User *user = place.user;
+    
+    NSArray *array = place.descript.allObjects;
+    Description *description = [array firstObject];
+    DescriptionInfo *descriptionInfo = description.descriptInfo;
+    
+    self.autorDescriptionLable.text = user.name;
+    
+//    self.descriptionLable.numberOfLines = 0;
+//    self.descriptionLable.lineBreakMode = NSLineBreakByWordWrapping;
+//    CGSize maximumLabelSize = CGSizeMake(self.descriptionLable.frame.size.width, CGFLOAT_MAX);
+//    CGSize expectSize = [self.descriptionLable sizeThatFits:maximumLabelSize];
+//    self.descriptionLable.frame = CGRectMake(self.descriptionLable.frame.origin.x, self.descriptionLable.frame.origin.y, expectSize.width, expectSize.height);
+
+//    CGSize lLabelSize = [descriptionInfo.descriptionString
+//                         sizeWithFont: self.descriptionLable.font
+//                         forWidth:self.descriptionLable.frame.size.width
+//                         lineBreakMode:self.descriptionLable.lineBreakMode];
+//    
+//    self.descriptionLable.frame = CGRectMake(self.descriptionLable.frame.origin.x,
+//                                             self.descriptionLable.frame.origin.y,
+//                                             self.descriptionLable.frame.size.width,
+//                                             lLabelSize.height);
+//    
+    
+    self.descriptionLable.text = descriptionInfo.descriptionString;
+    [self.descriptionLable sizeToFit];
+    
+    Waiting *waiting = place.waiting;
+    self.waitingTimeLable.text = [NSString stringWithFormat:@"Average waiting time: %@", waiting.avg_textual];
 }
+
 - (void)mapView:(MKMapView *)mapView didDeselectAnnotationView:(MKAnnotationView *)view NS_AVAILABLE(10_9, 4_0) {
     self.downToolBar.hidden = NO;
     self.constraitToShowUpToolBar.constant = 0.f;
@@ -650,8 +688,6 @@ static bool isMainRoute;
         [self.viewToAnimate layoutIfNeeded];
     }];
 }
-
-
 
 - (void)locationManager:(CLLocationManager *)manager didUpdateHeading:(CLHeading *)newHeading {
     

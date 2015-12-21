@@ -1,5 +1,5 @@
 //
-//  User.h
+//  Waiting.h
 //  lv-165IOS
 //
 //  Created by Yurii Huber on 21.12.15.
@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Comments, Place;
+@class Place;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface User : NSManagedObject
+@interface Waiting : NSManagedObject
 
 // Insert code here to declare functionality of your managed object subclass
 
@@ -21,4 +21,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-#import "User+CoreDataProperties.h"
+#import "Waiting+CoreDataProperties.h"

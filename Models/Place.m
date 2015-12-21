@@ -2,7 +2,7 @@
 //  Place.m
 //  lv-165IOS
 //
-//  Created by Admin on 04.12.15.
+//  Created by Yurii Huber on 21.12.15.
 //  Copyright © 2015 SS. All rights reserved.
 //
 
@@ -12,6 +12,7 @@
 #import "Description.h"
 #import "Location.h"
 #import "User.h"
+#import "Waiting.h"
 
 @implementation Place
 

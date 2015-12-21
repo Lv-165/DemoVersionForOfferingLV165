@@ -2,7 +2,7 @@
 //  Location+CoreDataProperties.m
 //  lv-165IOS
 //
-//  Created by Admin on 04.12.15.
+//  Created by Yurii Huber on 21.12.15.
 //  Copyright © 2015 SS. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
