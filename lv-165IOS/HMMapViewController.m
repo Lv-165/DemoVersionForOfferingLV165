@@ -714,4 +714,10 @@ static bool isMainRoute;
     
 }
 
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    
+    return UIInterfaceOrientationMaskAll;
+    
+}
+
 @end
