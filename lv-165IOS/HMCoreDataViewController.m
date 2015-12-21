@@ -80,7 +80,6 @@
 
 - (NSFetchedResultsController *)fetchedResultsController
 {
-    
     return nil;
     
 }    
