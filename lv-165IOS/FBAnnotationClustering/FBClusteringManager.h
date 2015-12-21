@@ -6,10 +6,10 @@
 //  Copyright (c) 2014 Infinum Ltd. All rights reserved.
 //
 
+@import Foundation;
 #import "FBAnnotationCluster.h"
 #import "FBQuadTreeNode.h"
-#import <Foundation/Foundation.h>
-
+#import "FBClusteringManager.h"
 @class FBClusteringManager;
 
 @protocol FBClusteringManagerDelegate <NSObject>
@@ -35,6 +35,11 @@
 @property(nonatomic, strong) NSNumber *scale;
 @property(nonatomic, assign) id<FBClusteringManagerDelegate> delegate;
 
+@property(strong, nonatomic) UIColor *goodRatingColour;
+@property(strong, nonatomic) UIColor *badRatingColour;
+@property(strong, nonatomic) UIColor *noneRatingColour;
+@property(strong, nonatomic) UIColor * strokeColour;
+
 /**
  Creates a new instance of @c FBClusterManager with array of annotations.
 
@@ -48,6 +53,7 @@
 
  @param annotations Custom annotation objects.
  */
+
 - (void)setAnnotations:(NSArray *)annotations;
 
 /**

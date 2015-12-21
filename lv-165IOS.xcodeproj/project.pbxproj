@@ -276,12 +276,8 @@
 		0C93B26C1C11DB840032A3AE /* FBAnnotationClustering */ = {
 			isa = PBXGroup;
 			children = (
-				0CB5FF911C1EFA6B009B1209 /* ClusterViewPieChart.h */,
-				0CB5FF921C1EFA6B009B1209 /* ClusterViewPieChart.m */,
 				0CB9D9471C1EEB3700D00678 /* FBAnnotationClusterView.h */,
 				0CB9D9481C1EEB3700D00678 /* FBAnnotationClusterView.m */,
-				0CF4B12E1C209AF30096ABE3 /* ClusterOverlayView.h */,
-				0CF4B12F1C209AF30096ABE3 /* ClusterOverlayView.m */,
 				0C93B2761C11DECB0032A3AE /* FBAnnotationCluster.h */,
 				0C93B2771C11DECB0032A3AE /* FBAnnotationCluster.m */,
 				0C93B2781C11DECB0032A3AE /* FBAnnotationClustering.h */,
@@ -291,6 +287,10 @@
 				0C93B27C1C11DECB0032A3AE /* FBQuadTree.m */,
 				0C93B27D1C11DECB0032A3AE /* FBQuadTreeNode.h */,
 				0C93B27E1C11DECB0032A3AE /* FBQuadTreeNode.m */,
+				0CB5FF911C1EFA6B009B1209 /* ClusterViewPieChart.h */,
+				0CB5FF921C1EFA6B009B1209 /* ClusterViewPieChart.m */,
+				0CF4B12E1C209AF30096ABE3 /* ClusterOverlayView.h */,
+				0CF4B12F1C209AF30096ABE3 /* ClusterOverlayView.m */,
 			);
 			name = FBAnnotationClustering;
 			sourceTree = "<group>";

@@ -6,7 +6,7 @@
 //
 //
 
-#import <Foundation/Foundation.h>
+@import Foundation;
 
 #ifndef _FBANNOTATIONCLUSTERING_
 #define _FBANNOTATIONCLUSTERING_
