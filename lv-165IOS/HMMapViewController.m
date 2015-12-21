@@ -36,6 +36,8 @@
 
 @property (weak, nonatomic) MKAnnotationView *userLocationPin;
 
+@property (weak , nonatomic) MKAnnotationView* annotationView;
+
 @end
 
 static NSString* kSettingsComments = @"comments";
@@ -114,6 +116,44 @@ static bool isMainRoute;
     [self.locationManager startUpdatingHeading];
     
     self.mapView.showsScale = YES;
+    
+    //
+    [self.viewForPinOfInfo setUserInteractionEnabled:YES];
+    
+    UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
+    UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
+    
+    // Setting the swipe direction.
+    [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
+    [swipeDown setDirection:UISwipeGestureRecognizerDirectionDown];
+    
+    // Adding the swipe gesture on image view
+    [self.viewForPinOfInfo addGestureRecognizer:swipeUp];
+    [self.viewForPinOfInfo addGestureRecognizer:swipeDown];
+    
+    //self.annotationView = [[MKAnnotationView alloc] init];
+    
+}
+
+- (void)handleSwipe:(UISwipeGestureRecognizer *)swipe {
+    
+    if (swipe.direction == UISwipeGestureRecognizerDirectionUp) {
+        NSLog(@"Up Swipe");
+        
+        NSString *stringId = [NSString stringWithFormat:@"%ld",
+                              (long)((HMMapAnnotation *)self.annotationView.annotation).idPlace];
+        
+        self.placeArray = [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
+        
+        [self performSegueWithIdentifier:@"Comments" sender:self];
+    }
+    
+    if (swipe.direction == UISwipeGestureRecognizerDirectionDown) {
+        NSLog(@"Down Swipe");
+        NSArray *arr = self.mapView.selectedAnnotations;
+        [self.mapView deselectAnnotation:[arr firstObject] animated:YES];
+    }
+    
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -211,7 +251,7 @@ static bool isMainRoute;
         // sending smth to destinationViewController
         
     } else if ([[segue identifier] isEqualToString:@"Comments"]) {
-        Place  *place = [self.placeArray objectAtIndex:0];
+        Place  *place = [self.placeArray firstObject];
         HMCommentsTableViewController *createViewController = segue.destinationViewController;
         createViewController.create = place;
     }
@@ -404,8 +444,6 @@ static bool isMainRoute;
     NSString *stringId = [NSString stringWithFormat:@"%ld",
                      (long)((HMMapAnnotation *)annotationView.annotation).idPlace];
     
-    [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
-    
     self.placeArray = [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
     
     [self performSegueWithIdentifier:@"Comments" sender:self];
@@ -578,6 +616,8 @@ static bool isMainRoute;
 - (void)mapView:(MKMapView *)mapView didSelectAnnotationView:(MKAnnotationView *)view NS_AVAILABLE(10_9, 4_0) {
     MKMapRect zoomRect = MKMapRectNull;
 
+    self.annotationView = view;
+    
     CLLocationCoordinate2D location = view.annotation.coordinate;
     MKMapPoint center = MKMapPointForCoordinate(location);
     
