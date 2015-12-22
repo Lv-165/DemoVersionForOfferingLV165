@@ -35,6 +35,7 @@
 
 @property (assign, nonatomic) NSInteger ratingOfPoints;
 @property (assign, nonatomic) BOOL pointHasComments;
+@property (assign, nonatomic) BOOL pointHasDescription;
 
 @property (strong, nonatomic) NSArray *placeArray;
 
