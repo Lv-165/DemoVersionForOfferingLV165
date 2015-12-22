@@ -44,8 +44,6 @@
 		7FAD6ECF1C283010007E4B92 /* Comments.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EAD1C283010007E4B92 /* Comments.m */; };
 		7FAD6ED01C283010007E4B92 /* Continent+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EAF1C283010007E4B92 /* Continent+CoreDataProperties.m */; };
 		7FAD6ED11C283010007E4B92 /* Continent.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EB11C283010007E4B92 /* Continent.m */; };
-		7FAD6ED21C283010007E4B92 /* Place+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EB31C283010007E4B92 /* Place+CoreDataProperties.m */; };
-		7FAD6ED31C283010007E4B92 /* Place.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EB51C283010007E4B92 /* Place.m */; };
 		7FAD6ED41C283010007E4B92 /* Country+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EB71C283010007E4B92 /* Country+CoreDataProperties.m */; };
 		7FAD6ED51C283010007E4B92 /* Country.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EB91C283010007E4B92 /* Country.m */; };
 		7FAD6ED61C283010007E4B92 /* DescriptionInfo+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EBB1C283010007E4B92 /* DescriptionInfo+CoreDataProperties.m */; };
@@ -54,8 +52,6 @@
 		7FAD6ED91C283010007E4B92 /* Location.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EC11C283010007E4B92 /* Location.m */; };
 		7FAD6EDA1C283010007E4B92 /* Waiting+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EC31C283010007E4B92 /* Waiting+CoreDataProperties.m */; };
 		7FAD6EDB1C283010007E4B92 /* Waiting.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EC51C283010007E4B92 /* Waiting.m */; };
-		7FAD6EDC1C283010007E4B92 /* Description+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EC71C283010007E4B92 /* Description+CoreDataProperties.m */; };
-		7FAD6EDD1C283010007E4B92 /* Description.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FAD6EC91C283010007E4B92 /* Description.m */; };
 		7FE4EC611C0F12160075C9AC /* NSNumber+HMNumber.m in Sources */ = {isa = PBXBuildFile; fileRef = 7FE4EC601C0F12160075C9AC /* NSNumber+HMNumber.m */; };
 		843905861C18E3DC00450FA8 /* HMDynamicTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 843905831C18E3DC00450FA8 /* HMDynamicTableViewCell.m */; };
 		843905871C18E3DC00450FA8 /* HMCommentsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 843905851C18E3DC00450FA8 /* HMCommentsTableViewController.m */; };
@@ -78,6 +74,10 @@
 		C09A7CF61C0A1ED300F6DEBC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C09A7CF51C0A1ED300F6DEBC /* CoreData.framework */; };
 		C0E1A8181C18504500F0DF00 /* HMFiltersViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0E1A8171C18504500F0DF00 /* HMFiltersViewController.m */; };
 		C0E7DA8F1C08B4DB00541E5E /* HMCoreDataManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C0E7DA8E1C08B4DB00541E5E /* HMCoreDataManager.m */; };
+		C0EF51A91C2957AA0098B4F8 /* Description+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = C0EF51A61C2957AA0098B4F8 /* Description+CoreDataProperties.m */; };
+		C0EF51AA1C2957AA0098B4F8 /* Description.m in Sources */ = {isa = PBXBuildFile; fileRef = C0EF51A81C2957AA0098B4F8 /* Description.m */; };
+		C0EF51AF1C29635F0098B4F8 /* Place+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = C0EF51AC1C29635F0098B4F8 /* Place+CoreDataProperties.m */; };
+		C0EF51B01C29635F0098B4F8 /* Place.m in Sources */ = {isa = PBXBuildFile; fileRef = C0EF51AE1C29635F0098B4F8 /* Place.m */; };
 		CE4CC48A1C14EB6F002C4358 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4CC4891C14EB6F002C4358 /* Reachability.m */; };
 /* End PBXBuildFile section */
 
@@ -176,10 +176,6 @@
 		7FAD6EAF1C283010007E4B92 /* Continent+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Continent+CoreDataProperties.m"; path = "Models/Continent+CoreDataProperties.m"; sourceTree = "<group>"; };
 		7FAD6EB01C283010007E4B92 /* Continent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Continent.h; path = Models/Continent.h; sourceTree = "<group>"; };
 		7FAD6EB11C283010007E4B92 /* Continent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Continent.m; path = Models/Continent.m; sourceTree = "<group>"; };
-		7FAD6EB21C283010007E4B92 /* Place+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Place+CoreDataProperties.h"; path = "Models/Place+CoreDataProperties.h"; sourceTree = "<group>"; };
-		7FAD6EB31C283010007E4B92 /* Place+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Place+CoreDataProperties.m"; path = "Models/Place+CoreDataProperties.m"; sourceTree = "<group>"; };
-		7FAD6EB41C283010007E4B92 /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Place.h; path = Models/Place.h; sourceTree = "<group>"; };
-		7FAD6EB51C283010007E4B92 /* Place.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Place.m; path = Models/Place.m; sourceTree = "<group>"; };
 		7FAD6EB61C283010007E4B92 /* Country+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Country+CoreDataProperties.h"; path = "Models/Country+CoreDataProperties.h"; sourceTree = "<group>"; };
 		7FAD6EB71C283010007E4B92 /* Country+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Country+CoreDataProperties.m"; path = "Models/Country+CoreDataProperties.m"; sourceTree = "<group>"; };
 		7FAD6EB81C283010007E4B92 /* Country.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Country.h; path = Models/Country.h; sourceTree = "<group>"; };
@@ -196,10 +192,6 @@
 		7FAD6EC31C283010007E4B92 /* Waiting+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Waiting+CoreDataProperties.m"; path = "Models/Waiting+CoreDataProperties.m"; sourceTree = "<group>"; };
 		7FAD6EC41C283010007E4B92 /* Waiting.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Waiting.h; path = Models/Waiting.h; sourceTree = "<group>"; };
 		7FAD6EC51C283010007E4B92 /* Waiting.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Waiting.m; path = Models/Waiting.m; sourceTree = "<group>"; };
-		7FAD6EC61C283010007E4B92 /* Description+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Description+CoreDataProperties.h"; path = "Models/Description+CoreDataProperties.h"; sourceTree = "<group>"; };
-		7FAD6EC71C283010007E4B92 /* Description+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Description+CoreDataProperties.m"; path = "Models/Description+CoreDataProperties.m"; sourceTree = "<group>"; };
-		7FAD6EC81C283010007E4B92 /* Description.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Description.h; path = Models/Description.h; sourceTree = "<group>"; };
-		7FAD6EC91C283010007E4B92 /* Description.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Description.m; path = Models/Description.m; sourceTree = "<group>"; };
 		7FE4EC5F1C0F12160075C9AC /* NSNumber+HMNumber.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSNumber+HMNumber.h"; path = "Extensions/NSNumber+HMNumber.h"; sourceTree = "<group>"; };
 		7FE4EC601C0F12160075C9AC /* NSNumber+HMNumber.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSNumber+HMNumber.m"; path = "Extensions/NSNumber+HMNumber.m"; sourceTree = "<group>"; };
 		7FE6FF3D1C105F43005C6CB0 /* HMMapAnnotation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMMapAnnotation.h; sourceTree = "<group>"; };
@@ -246,6 +238,14 @@
 		C0E1A8171C18504500F0DF00 /* HMFiltersViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMFiltersViewController.m; sourceTree = "<group>"; };
 		C0E7DA8D1C08B4DB00541E5E /* HMCoreDataManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMCoreDataManager.h; sourceTree = "<group>"; };
 		C0E7DA8E1C08B4DB00541E5E /* HMCoreDataManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMCoreDataManager.m; sourceTree = "<group>"; };
+		C0EF51A51C2957AA0098B4F8 /* Description+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Description+CoreDataProperties.h"; path = "Models/Description+CoreDataProperties.h"; sourceTree = "<group>"; };
+		C0EF51A61C2957AA0098B4F8 /* Description+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "Description+CoreDataProperties.m"; path = "Models/Description+CoreDataProperties.m"; sourceTree = "<group>"; };
+		C0EF51A71C2957AA0098B4F8 /* Description.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Description.h; path = Models/Description.h; sourceTree = "<group>"; };
+		C0EF51A81C2957AA0098B4F8 /* Description.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = Description.m; path = Models/Description.m; sourceTree = "<group>"; };
+		C0EF51AB1C29635F0098B4F8 /* Place+CoreDataProperties.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "Place+CoreDataProperties.h"; sourceTree = "<group>"; };
+		C0EF51AC1C29635F0098B4F8 /* Place+CoreDataProperties.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "Place+CoreDataProperties.m"; sourceTree = "<group>"; };
+		C0EF51AD1C29635F0098B4F8 /* Place.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Place.h; sourceTree = "<group>"; };
+		C0EF51AE1C29635F0098B4F8 /* Place.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Place.m; sourceTree = "<group>"; };
 		CE4CC4881C14EB6F002C4358 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		CE4CC4891C14EB6F002C4358 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -596,6 +596,14 @@
 		C0E7DA8C1C08B3AA00541E5E /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				C0EF51AB1C29635F0098B4F8 /* Place+CoreDataProperties.h */,
+				C0EF51AC1C29635F0098B4F8 /* Place+CoreDataProperties.m */,
+				C0EF51AD1C29635F0098B4F8 /* Place.h */,
+				C0EF51AE1C29635F0098B4F8 /* Place.m */,
+				C0EF51A51C2957AA0098B4F8 /* Description+CoreDataProperties.h */,
+				C0EF51A61C2957AA0098B4F8 /* Description+CoreDataProperties.m */,
+				C0EF51A71C2957AA0098B4F8 /* Description.h */,
+				C0EF51A81C2957AA0098B4F8 /* Description.m */,
 				7FAD6EA21C283010007E4B92 /* Countries+CoreDataProperties.h */,
 				7FAD6EA31C283010007E4B92 /* Countries+CoreDataProperties.m */,
 				7FAD6EA41C283010007E4B92 /* Countries.h */,
@@ -612,10 +620,6 @@
 				7FAD6EAF1C283010007E4B92 /* Continent+CoreDataProperties.m */,
 				7FAD6EB01C283010007E4B92 /* Continent.h */,
 				7FAD6EB11C283010007E4B92 /* Continent.m */,
-				7FAD6EB21C283010007E4B92 /* Place+CoreDataProperties.h */,
-				7FAD6EB31C283010007E4B92 /* Place+CoreDataProperties.m */,
-				7FAD6EB41C283010007E4B92 /* Place.h */,
-				7FAD6EB51C283010007E4B92 /* Place.m */,
 				7FAD6EB61C283010007E4B92 /* Country+CoreDataProperties.h */,
 				7FAD6EB71C283010007E4B92 /* Country+CoreDataProperties.m */,
 				7FAD6EB81C283010007E4B92 /* Country.h */,
@@ -632,10 +636,6 @@
 				7FAD6EC31C283010007E4B92 /* Waiting+CoreDataProperties.m */,
 				7FAD6EC41C283010007E4B92 /* Waiting.h */,
 				7FAD6EC51C283010007E4B92 /* Waiting.m */,
-				7FAD6EC61C283010007E4B92 /* Description+CoreDataProperties.h */,
-				7FAD6EC71C283010007E4B92 /* Description+CoreDataProperties.m */,
-				7FAD6EC81C283010007E4B92 /* Description.h */,
-				7FAD6EC91C283010007E4B92 /* Description.m */,
 			);
 			name = Models;
 			sourceTree = "<group>";
@@ -795,17 +795,15 @@
 				0C93B2801C11DECB0032A3AE /* FBClusteringManager.m in Sources */,
 				CE4CC48A1C14EB6F002C4358 /* Reachability.m in Sources */,
 				302A11D41C0371C3002F8FF0 /* UIButton+AFNetworking.m in Sources */,
-				7FAD6ED31C283010007E4B92 /* Place.m in Sources */,
 				0C93B27F1C11DECB0032A3AE /* FBAnnotationCluster.m in Sources */,
 				7FAD6ED61C283010007E4B92 /* DescriptionInfo+CoreDataProperties.m in Sources */,
 				302A11D71C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m in Sources */,
 				7FAD6ED51C283010007E4B92 /* Country.m in Sources */,
 				A1C5EDEB1C0CC4D500F94400 /* HMSearchViewController.m in Sources */,
 				7FAD6ED11C283010007E4B92 /* Continent.m in Sources */,
-				7FAD6EDD1C283010007E4B92 /* Description.m in Sources */,
 				7FAD6ECF1C283010007E4B92 /* Comments.m in Sources */,
+				C0EF51B01C29635F0098B4F8 /* Place.m in Sources */,
 				0C93B2821C11DECB0032A3AE /* FBQuadTreeNode.m in Sources */,
-				7FAD6ED21C283010007E4B92 /* Place+CoreDataProperties.m in Sources */,
 				7FAD6ECA1C283010007E4B92 /* Countries+CoreDataProperties.m in Sources */,
 				302A11D31C0371C3002F8FF0 /* UIAlertView+AFNetworking.m in Sources */,
 				7FAD6ED01C283010007E4B92 /* Continent+CoreDataProperties.m in Sources */,
@@ -815,13 +813,13 @@
 				302A11CC1C0371C3002F8FF0 /* AFSecurityPolicy.m in Sources */,
 				C01442E61C0333A5000F8F6F /* HMAppDelegate.m in Sources */,
 				302A11C91C0371C3002F8FF0 /* AFHTTPRequestOperationManager.m in Sources */,
+				C0EF51AA1C2957AA0098B4F8 /* Description.m in Sources */,
 				302A11CD1C0371C3002F8FF0 /* AFURLConnectionOperation.m in Sources */,
 				7FAD6ECC1C283010007E4B92 /* User+CoreDataProperties.m in Sources */,
 				302A11D51C0371C3002F8FF0 /* UIImageView+AFNetworking.m in Sources */,
 				302A11C81C0371C3002F8FF0 /* AFHTTPRequestOperation.m in Sources */,
 				A10299261C0F153E00BA5896 /* HMMapAnnotation.m in Sources */,
 				301896301C0895DC00178A04 /* HMServerManager.m in Sources */,
-				7FAD6EDC1C283010007E4B92 /* Description+CoreDataProperties.m in Sources */,
 				7FA55BE81C0DB08200B99CC1 /* UIView+HMUItableViewCell.m in Sources */,
 				C0E7DA8F1C08B4DB00541E5E /* HMCoreDataManager.m in Sources */,
 				302A11D21C0371C3002F8FF0 /* UIActivityIndicatorView+AFNetworking.m in Sources */,
@@ -830,7 +828,9 @@
 				302A11CE1C0371C3002F8FF0 /* AFURLRequestSerialization.m in Sources */,
 				302A11CA1C0371C3002F8FF0 /* AFHTTPSessionManager.m in Sources */,
 				302A11CB1C0371C3002F8FF0 /* AFNetworkReachabilityManager.m in Sources */,
+				C0EF51A91C2957AA0098B4F8 /* Description+CoreDataProperties.m in Sources */,
 				7FAD6ED71C283010007E4B92 /* DescriptionInfo.m in Sources */,
+				C0EF51AF1C29635F0098B4F8 /* Place+CoreDataProperties.m in Sources */,
 				302A11CF1C0371C3002F8FF0 /* AFURLResponseSerialization.m in Sources */,
 				843905861C18E3DC00450FA8 /* HMDynamicTableViewCell.m in Sources */,
 				302A11D81C0371C3002F8FF0 /* UIWebView+AFNetworking.m in Sources */,

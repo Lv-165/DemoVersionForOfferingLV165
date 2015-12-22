@@ -2,7 +2,7 @@
 //  Place.m
 //  lv-165IOS
 //
-//  Created by Yurii Huber on 21.12.15.
+//  Created by AG on 12/22/15.
 //  Copyright © 2015 SS. All rights reserved.
 //
 

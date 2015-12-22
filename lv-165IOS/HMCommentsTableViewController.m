@@ -19,7 +19,7 @@
 
 @interface HMCommentsTableViewController ()
 
-@property(strong, nonatomic)DescriptionInfo *descriptionInfo;
+@property(strong, nonatomic) Description *descriptionInfo;
 
 @end
 
@@ -30,13 +30,9 @@ static NSString* const CellIdentifier = @"DynamicTableViewCell";
 - (void)viewDidLoad {
     [super viewDidLoad];
 
-    NSArray *array = self.create.descript.allObjects;
-
-    Description *description = [array firstObject];
-    
     self.commentsArray = self.create.comments.allObjects;
-    self.descriptionInfo = description.descriptInfo;
-
+    self.descriptionInfo = self.create.descript;
+    
     [[self navigationController] setNavigationBarHidden:NO animated:YES];
 }
 
@@ -46,8 +42,13 @@ static NSString* const CellIdentifier = @"DynamicTableViewCell";
     
     if (indexPath.section == 0) {
         cell.label.text = self.descriptionInfo.descriptionString;
-    }
-    else  if (indexPath.section >= 1){
+    } else  if (indexPath.section == 1){
+        Comments *comments = [self.commentsArray objectAtIndex:(indexPath.section-1)];
+        
+        NSString *str = @"Comment:";
+         
+        cell.label.text = [NSString stringWithFormat:@"%@ %@",str,comments.comment];
+    }else  if (indexPath.section > 1){
         Comments *comments = [self.commentsArray objectAtIndex:(indexPath.section-1)];
         cell.label.text = comments.comment;
     }

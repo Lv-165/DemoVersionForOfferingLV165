@@ -73,6 +73,7 @@ static bool isMainRoute;
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
     self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
+    self.pointHasDescription = [userDefaults boolForKey:kSettingsComments];
     
     // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
     if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
@@ -143,6 +144,7 @@ static bool isMainRoute;
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
     self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
     self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
+    self.pointHasDescription = [userDefaults boolForKey:kSettingsComments];
     [self.mapView removeAnnotations:self.mapView.annotations];
     [self printPointWithContinent];
     
@@ -516,18 +518,12 @@ static bool isMainRoute;
     NSString *startRating = [NSString stringWithFormat:@" %ld",(long)maxForPoint];
     NSString *endRating = [NSString stringWithFormat:@" %ld",(long)minForPoint];
     
-    if(!self.pointHasComments) {
+    if(!self.pointHasComments ||!self.pointHasDescription) {
         
         self.mapPointArray  = [[HMCoreDataManager sharedManager] getPlaceWithStartRating:startRating
                                                                                endRating:endRating];
-        
-        //[fetchRequest setPredicate:ratingPredicate];
     } else {
-//        NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@",@0];
-//        NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:ratingPredicate, commentsCountPredicate, nil]];
-//        
-//        [fetchRequest setPredicate:compoundPredicate];
-        
+  
         self.mapPointArray = [[HMCoreDataManager sharedManager] getPlaceWithCommentsStartRating:startRating
                                                                                       endRating:endRating];
     }
@@ -544,13 +540,13 @@ static bool isMainRoute;
         
         if ([place.rating intValue] == 0) {
             annotation.ratingForColor = noRating;
-        }else if (([place.rating intValue] >=1) && ([place.rating intValue] <= 2)) {
-            annotation.ratingForColor = badRating;
-        }else if ([place.rating intValue] == 3) {
-            annotation.ratingForColor = normalRating;
-        }else if ([place.rating intValue] == 4) {
-            annotation.ratingForColor = goodRating;
         }else if ([place.rating intValue] == 5) {
+            annotation.ratingForColor = badRating;
+        }else if ([place.rating intValue] == 4) {
+            annotation.ratingForColor = normalRating;
+        }else if ([place.rating intValue] == 3) {
+            annotation.ratingForColor = goodRating;
+        }else if (([place.rating intValue] >=1) && ([place.rating intValue] <= 2)) {
             annotation.ratingForColor = veryGoodRating;
         }
         annotation.coordinate = coordinate;
@@ -649,31 +645,12 @@ static bool isMainRoute;
     
     Place *place = [self.placeArray firstObject];
     User *user = place.user;
-    
-    NSArray *array = place.descript.allObjects;
-    Description *description = [array firstObject];
-    DescriptionInfo *descriptionInfo = description.descriptInfo;
-    
+ 
     self.autorDescriptionLable.text = user.name;
-    
-//    self.descriptionLable.numberOfLines = 0;
-//    self.descriptionLable.lineBreakMode = NSLineBreakByWordWrapping;
-//    CGSize maximumLabelSize = CGSizeMake(self.descriptionLable.frame.size.width, CGFLOAT_MAX);
-//    CGSize expectSize = [self.descriptionLable sizeThatFits:maximumLabelSize];
-//    self.descriptionLable.frame = CGRectMake(self.descriptionLable.frame.origin.x, self.descriptionLable.frame.origin.y, expectSize.width, expectSize.height);
 
-//    CGSize lLabelSize = [descriptionInfo.descriptionString
-//                         sizeWithFont: self.descriptionLable.font
-//                         forWidth:self.descriptionLable.frame.size.width
-//                         lineBreakMode:self.descriptionLable.lineBreakMode];
-//    
-//    self.descriptionLable.frame = CGRectMake(self.descriptionLable.frame.origin.x,
-//                                             self.descriptionLable.frame.origin.y,
-//                                             self.descriptionLable.frame.size.width,
-//                                             lLabelSize.height);
-//    
+    Description *desc = place.descript;
     
-    self.descriptionLable.text = descriptionInfo.descriptionString;
+    self.descriptionLable.text = desc.descriptionString;
     [self.descriptionLable sizeToFit];
     
     Waiting *waiting = place.waiting;

@@ -94,12 +94,54 @@
     user.name = [userDictionary valueForKey:@"name"];
     place.user = user;
     
-    Description *description = [NSEntityDescription insertNewObjectForEntityForName:@"Description"
-                                                             inManagedObjectContext:[self managedObjectContext]];
-
-    //description.language = [NSString stringWithFormat:@"%@", [[placeNSDictionary objectForKey:@"description"] allKeys]];
-    //only English language, yet
-    description.language = @"en_UK";
+    Description *descriptionObj = [NSEntityDescription insertNewObjectForEntityForName:@"Description"
+                                                                inManagedObjectContext:[self managedObjectContext]];
+    NSDictionary *descriptionDictionary = [placeNSDictionary objectForKey:@"description"];
+    
+    
+    if (![[descriptionDictionary allKeys]containsObject:@"description"]) {
+        descriptionObj.descriptionString = @"No Description";
+        descriptionObj.language = @"en_UK";
+        descriptionObj.datetime = nil;
+        descriptionObj.versions = @1;
+        descriptionObj.fk_user = @"";
+    } else {
+        
+        NSString *langString =  [NSString stringWithFormat:@"%@", [descriptionDictionary allKeys]];
+        NSString *empty = @"";
+        NSString *finalString = [langString stringByReplacingOccurrencesOfString:@" " withString:empty];
+        NSString *String1 = [finalString stringByReplacingOccurrencesOfString:@"\n" withString:empty];
+        NSString *String2 = [String1 stringByReplacingOccurrencesOfString:@"(\"" withString:empty];
+        NSString *String3 = [String2 stringByReplacingOccurrencesOfString:@"\"" withString:empty];
+        NSString *String4 = [String3 stringByReplacingOccurrencesOfString:@")" withString:empty];
+        
+        descriptionObj.language = String4;
+        
+#warning  No visible language
+        NSDictionary *descriptionDict = [descriptionDictionary objectForKey:[NSString stringWithFormat:@"%@",descriptionObj.language]];
+        
+        descriptionObj.descriptionString = [NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"description"]];
+        
+        NSLog(@"id %@",place.id);
+        NSLog(@"language %@",descriptionObj.language);
+        
+        
+        NSDateFormatter * df = [[NSDateFormatter alloc] init];
+        [df setDateFormat:@"yyyy-MM-dd HH:mm:ss"];
+        [df setTimeZone:[NSTimeZone systemTimeZone]];
+        [df setFormatterBehavior:NSDateFormatterBehaviorDefault];
+        NSDate *theDate = [df dateFromString:[NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"datetime"]]];
+        //        NSLog(@"date: %@", theDate);
+        descriptionObj.datetime = theDate;
+        
+        NSInteger versionCountInteger = [[descriptionDict valueForKey:@"versions"] integerValue];
+        descriptionObj.versions = [NSNumber numberWithInteger:versionCountInteger];
+        descriptionObj.fk_user = [NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"fk_user"]];
+    }
+    
+    NSLog(@"descriptionString %@",descriptionObj.descriptionString);
+    descriptionObj.place = place;
+    [place setDescript:descriptionObj];// trouble
     
     if (comCountInteger) {
         
@@ -124,13 +166,7 @@
             [place addCommentsObject:comment];
         }
     }
-
-    DescriptionInfo *descriptionInfo = [NSEntityDescription insertNewObjectForEntityForName:@"DescriptionInfo"
-                                                                     inManagedObjectContext:[self managedObjectContext]];
-    
-    NSDictionary *descriptionDictionary = [[placeNSDictionary objectForKey:@"description"] objectForKey:description.language];
-    descriptionInfo.descriptionString = [descriptionDictionary objectForKey:@"description"];
-    
+  
     Waiting *waiting = [NSEntityDescription insertNewObjectForEntityForName:@"Waiting"
                                                      inManagedObjectContext:[self managedObjectContext]];
     
@@ -140,9 +176,6 @@
     waiting.avg_textual = [NSString stringWithFormat:@"%@",[waitingDictionary valueForKey:@"avg_textual"]];
     
     place.waiting = waiting;
-    
-    description.descriptInfo = descriptionInfo;
-    [place addDescriptObject:description];
     [countries addPlaceObject:place];
 
     [self saveContext];
@@ -186,7 +219,8 @@
     NSPredicate* ratingPredicate = [NSPredicate predicateWithFormat:@"%@ => rating  AND rating >= %@",startRating, endRating];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Place"];
     
-    NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@",@0];
+//    NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@",@0];
+     NSPredicate* commentsCountPredicate = [NSPredicate predicateWithFormat:@"comments_count > %@ OR SUBQUERY(descript,$description,$description.descriptionString.length > %@).@count != 0",@0,@0];
     NSPredicate *compoundPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:[NSArray arrayWithObjects:ratingPredicate, commentsCountPredicate, nil]];
     
     [fetchRequest setPredicate:compoundPredicate];

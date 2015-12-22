@@ -2,7 +2,7 @@
 //  Place+CoreDataProperties.h
 //  lv-165IOS
 //
-//  Created by Yurii Huber on 21.12.15.
+//  Created by AG on 12/22/15.
 //  Copyright © 2015 SS. All rights reserved.
 //
 //  Choose "Create NSManagedObject Subclass…" from the Core Data editor menu
@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nullable, nonatomic, retain) NSNumber *rating_count;
 @property (nullable, nonatomic, retain) NSSet<Comments *> *comments;
 @property (nullable, nonatomic, retain) Countries *countries;
-@property (nullable, nonatomic, retain) NSSet<Description *> *descript;
+@property (nullable, nonatomic, retain) Description *descript;
 @property (nullable, nonatomic, retain) Location *location;
 @property (nullable, nonatomic, retain) User *user;
 @property (nullable, nonatomic, retain) Waiting *waiting;
@@ -38,11 +38,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)removeCommentsObject:(Comments *)value;
 - (void)addComments:(NSSet<Comments *> *)values;
 - (void)removeComments:(NSSet<Comments *> *)values;
-
-- (void)addDescriptObject:(Description *)value;
-- (void)removeDescriptObject:(Description *)value;
-- (void)addDescript:(NSSet<Description *> *)values;
-- (void)removeDescript:(NSSet<Description *> *)values;
 
 @end
 

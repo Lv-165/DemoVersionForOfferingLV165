@@ -81,7 +81,7 @@ static NSString* kSettingsCommentsLanguage = @"commentsLanguage";
     
     self.commentsSwitch.on = [userDefaults boolForKey:kSettingsComments];
     self.ratingControl.selectedSegmentIndex = [userDefaults integerForKey:kSettingsRating];
-    //self.pickerView. =[userDefaults integerForKey:kSettingsCommentsLanguage];//picker data downloading
+   
 }
 
 #pragma mark - Actions

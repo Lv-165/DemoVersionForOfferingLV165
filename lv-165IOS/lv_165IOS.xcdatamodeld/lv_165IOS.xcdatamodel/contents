@@ -24,7 +24,11 @@
         <relationship name="location" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Location" inverseName="country" inverseEntity="Location" syncable="YES"/>
     </entity>
     <entity name="Description" representedClassName="Description" syncable="YES">
+        <attribute name="datetime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="descriptionString" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="fk_user" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="language" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="versions" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="descriptInfo" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DescriptionInfo" inverseName="descript" inverseEntity="DescriptionInfo" syncable="YES"/>
         <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Place" inverseName="descript" inverseEntity="Place" syncable="YES"/>
     </entity>
@@ -52,7 +56,7 @@
         <attribute name="rating_count" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Comments" inverseName="place" inverseEntity="Comments" syncable="YES"/>
         <relationship name="countries" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Countries" inverseName="place" inverseEntity="Countries" syncable="YES"/>
-        <relationship name="descript" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Description" inverseName="place" inverseEntity="Description" syncable="YES"/>
+        <relationship name="descript" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Description" inverseName="place" inverseEntity="Description" syncable="YES"/>
         <relationship name="location" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Location" inverseName="place" inverseEntity="Location" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="User" inverseName="place" inverseEntity="User" syncable="YES"/>
         <relationship name="waiting" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Waiting" inverseName="place" inverseEntity="Waiting" syncable="YES"/>
@@ -74,8 +78,8 @@
         <element name="Continent" positionX="160" positionY="-72" width="128" height="88"/>
         <element name="Countries" positionX="-596" positionY="-171" width="128" height="103"/>
         <element name="Country" positionX="160" positionY="36" width="128" height="88"/>
-        <element name="Description" positionX="-99" positionY="-160" width="128" height="88"/>
-        <element name="DescriptionInfo" positionX="160" positionY="-226" width="128" height="118"/>
+        <element name="Description" positionX="-83" positionY="-198" width="128" height="148"/>
+        <element name="DescriptionInfo" positionX="90" positionY="-226" width="128" height="118"/>
         <element name="Location" positionX="-101" positionY="-36" width="128" height="103"/>
         <element name="Place" positionX="-290" positionY="-225" width="128" height="253"/>
         <element name="User" positionX="-110" positionY="104" width="128" height="103"/>
