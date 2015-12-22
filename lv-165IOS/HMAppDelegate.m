@@ -10,7 +10,7 @@
 #import "HMCountriesViewController.h"
 #import "AFNetworkActivityIndicatorManager.h"
 #import "Reachability.h"
-#import <Branch/Branch.h>
+#import "Branch/Branch.h"
 
 @interface HMAppDelegate ()
 
@@ -20,6 +20,16 @@
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    
+    Branch *branch = [Branch getInstance];
+    [branch initSessionWithLaunchOptions:launchOptions
+              andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
+                  if (!error) {
+                      NSLog(@"Finished init with params: %@", [params description]);
+                  } else {
+                      NSLog(@"Failed init: %@", error);
+                  }
+              }];
     
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
   
@@ -39,21 +49,21 @@
         
         self.window.rootViewController = vc;
     }
-    Branch *branch = [Branch getInstance];
-    [branch initSessionWithLaunchOptions:launchOptions andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
-        if (!error) {
-            NSLog(@"params: %@", params.description);
-        }
-    }];
-    
     return YES;
 }
 
 - (BOOL)application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation {
-    // pass the url to the handle deep link call
+    
     [[Branch getInstance] handleDeepLink:url];
-    // do other deep link routing for the Facebook SDK, Pinterest SDK, etc
+    NSDictionary *params = [[Branch getInstance] getLatestReferringParams];
+    NSLog(@"Opened app from URL %@ and handled params: %@", [url description], params.description);
     return YES;
+}
+
+- (BOOL)application:(UIApplication *)application continueUserActivity:(NSUserActivity *)userActivity restorationHandler:(void(^)(NSArray * __nullable restorableObjects))restorationHandler {
+    
+    BOOL handledByBranch = [[Branch getInstance] continueUserActivity:userActivity];
+    return handledByBranch;
 }
 
 

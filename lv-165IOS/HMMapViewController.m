@@ -23,6 +23,8 @@
 #import "DescriptionInfo.h"
 #import "Description.h"
 #import "Waiting.h"
+#import "Branch/BranchUniversalObject.h"
+#import "Branch/BranchLinkProperties.h"
 
 @interface HMMapViewController ()
 
@@ -97,7 +99,7 @@ static bool isMainRoute;
                          ];
     
     NSArray *buttonsForUpToolBar = @[
-                                     [self createColorButton:@"sharing30_30" selector:@selector(sharingForSocialNetworking:)],
+                                     [self createColorButton:@"filter" selector:@selector(sharingForSocialNetworking:)],
                                      flexibleItem,
                                      [self createColorButton:@"favptite30_30" selector:@selector(addToFavourite:)],
                                      flexibleItem,
@@ -235,7 +237,52 @@ static bool isMainRoute;
 
 #pragma mark - Tool Bar for Pin
 
-- (void)sharingForSocialNetworking:(UIBarButtonItem *)sender {}
+- (void)sharingForSocialNetworking:(UIBarButtonItem *)sender {
+
+    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc]
+                                                    initWithCanonicalIdentifier:@"1000"];
+    [branchUniversalObject registerView];
+    
+    Place *place = [self.placeArray firstObject];
+  
+    branchUniversalObject.title = place.descript.descriptionString;
+    branchUniversalObject.contentDescription = [NSString stringWithFormat:@"Lat: %@, Lon: %@", place.lat, place.lon];
+    UIGraphicsBeginImageContext(self.mapView.frame.size);
+    [self.mapView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    UIImage *locationImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    NSData *data = UIImagePNGRepresentation(locationImage);
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+//    NSString *imageName = [NSString stringWithFormat:@"locationImage"];
+    NSString *stringPath = [documentsDirectory stringByAppendingPathComponent:@"locationImage.png"];
+    [data writeToFile:stringPath atomically:YES];
+//    NSURL *dataURL = [[NSBundle mainBundle] URLForResource: @"locationImage" withExtension:@"png"];
+    
+    branchUniversalObject.imageUrl = stringPath;
+    
+    BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
+    
+    linkProperties.feature = @"sharing";
+    linkProperties.channel = @"default";
+    [linkProperties addControlParam:@"$desktop_url" withValue:@"http://hitchwiki.org/"];
+    [linkProperties addControlParam:@"$ios_url" withValue:@"hitchwiki.iosmobile://"];
+    
+    [branchUniversalObject getShortUrlWithLinkProperties:linkProperties
+                                             andCallback:^(NSString *url, NSError *error) {
+        if (!error) {
+            NSLog(@"Success getting url: %@", url);
+        }
+    }];
+        
+    [branchUniversalObject showShareSheetWithLinkProperties:linkProperties
+                                               andShareText:nil
+                                         fromViewController:self
+                                                andCallback:^{
+                                                    NSLog(@"Finished presenting");
+                                                }];
+}
+
 - (void)addToFavourite:(UIBarButtonItem *)sender {}
 - (void)infoMethod:(UIBarButtonItem *)sender {}
 - (void)showRoudFromThisPlaceToMyLocation:(UIBarButtonItem *)sender {}
