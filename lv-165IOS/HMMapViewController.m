@@ -501,14 +501,14 @@ static bool isMainRoute;
         }
         case 1:
         {
-            minForPoint = 1;
-            maxForPoint = 3;
+            minForPoint = 4;
+            maxForPoint = 5;
             break;
         }
         case 2:
         {
-            minForPoint = 4;
-            maxForPoint = 5;
+            minForPoint = 1;
+            maxForPoint = 3;
             break;
         }
         default:
@@ -528,8 +528,6 @@ static bool isMainRoute;
                                                                                       endRating:endRating];
     }
     
-    //self.mapPointArray = [managedObjectContext executeFetchRequest:fetchRequest
-     //                                                         error:nil];
     NSLog(@"MAP annotation array count %lu",(unsigned long)self.mapPointArray.count);
     
     for (Place* place in self.mapPointArray) {
@@ -587,7 +585,6 @@ static bool isMainRoute;
 
 - (void)loadSettings {
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-    
     self.mapView.mapType = [userDefaults integerForKey:@"kMapType"];
 }
 
