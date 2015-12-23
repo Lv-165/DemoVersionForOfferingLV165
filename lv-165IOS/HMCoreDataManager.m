@@ -97,9 +97,18 @@
     Description *descriptionObj = [NSEntityDescription insertNewObjectForEntityForName:@"Description"
                                                                 inManagedObjectContext:[self managedObjectContext]];
     NSDictionary *descriptionDictionary = [placeNSDictionary objectForKey:@"description"];
+   
+    NSString *langString =  [NSString stringWithFormat:@"%@", [descriptionDictionary allKeys]];
+    NSString *empty = @"";
+    NSString *finalString = [langString stringByReplacingOccurrencesOfString:@" " withString:empty];
+    NSString *String1 = [finalString stringByReplacingOccurrencesOfString:@"\n" withString:empty];
+    NSString *String2 = [String1 stringByReplacingOccurrencesOfString:@"(\"" withString:empty];
+    NSString *String3 = [String2 stringByReplacingOccurrencesOfString:@"\"" withString:empty];
+    NSString *String4 = [String3 stringByReplacingOccurrencesOfString:@")" withString:empty];
+    descriptionObj.language = String4;
+    NSDictionary *descriptionDict = [descriptionDictionary objectForKey:[NSString stringWithFormat:@"%@",descriptionObj.language]];
     
-    
-    if (![[descriptionDictionary allKeys]containsObject:@"description"]) {
+    if (![[descriptionDictionary allKeys]containsObject:String4]) {
         descriptionObj.descriptionString = @"No Description";
         descriptionObj.language = @"en_UK";
         descriptionObj.datetime = nil;
@@ -107,21 +116,8 @@
         descriptionObj.fk_user = @"";
     } else {
         
-        NSString *langString =  [NSString stringWithFormat:@"%@", [descriptionDictionary allKeys]];
-        NSString *empty = @"";
-        NSString *finalString = [langString stringByReplacingOccurrencesOfString:@" " withString:empty];
-        NSString *String1 = [finalString stringByReplacingOccurrencesOfString:@"\n" withString:empty];
-        NSString *String2 = [String1 stringByReplacingOccurrencesOfString:@"(\"" withString:empty];
-        NSString *String3 = [String2 stringByReplacingOccurrencesOfString:@"\"" withString:empty];
-        NSString *String4 = [String3 stringByReplacingOccurrencesOfString:@")" withString:empty];
-        
-        descriptionObj.language = String4;
-        
-#warning  No visible language
-        NSDictionary *descriptionDict = [descriptionDictionary objectForKey:[NSString stringWithFormat:@"%@",descriptionObj.language]];
-        
         descriptionObj.descriptionString = [NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"description"]];
-        
+
         NSLog(@"id %@",place.id);
         NSLog(@"language %@",descriptionObj.language);
         
