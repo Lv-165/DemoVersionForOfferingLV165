@@ -118,8 +118,8 @@
         
         descriptionObj.descriptionString = [NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"description"]];
 
-        NSLog(@"id %@",place.id);
-        NSLog(@"language %@",descriptionObj.language);
+        //NSLog(@"id %@",place.id);
+        //NSLog(@"language %@",descriptionObj.language);
         
         
         NSDateFormatter * df = [[NSDateFormatter alloc] init];
@@ -135,7 +135,7 @@
         descriptionObj.fk_user = [NSString stringWithFormat:@"%@",[descriptionDict objectForKey:@"fk_user"]];
     }
     
-    NSLog(@"descriptionString %@",descriptionObj.descriptionString);
+    //NSLog(@"descriptionString %@",descriptionObj.descriptionString);
     descriptionObj.place = place;
     [place setDescript:descriptionObj];// trouble
     
@@ -227,21 +227,21 @@
 
 #pragma mark - Print Objects
 
-- (void) printCountryA{
-    
-    NSFetchRequest* request = [[NSFetchRequest alloc] init];
-    
-    NSEntityDescription* description =
-    [NSEntityDescription entityForName:@"Country"
-                inManagedObjectContext:self.managedObjectContext];
-    
-    [request setEntity:description];
-    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"name BEGINSWITH %@", @"A"];
-    [request setPredicate:predicate];
-    NSError* requestError = nil;
-    NSArray* resultArray = [self.managedObjectContext executeFetchRequest:request error:&requestError];
-    NSLog(@"Print Country Entities %@",resultArray);
-}
+//- (void) printCountryA{
+//    
+//    NSFetchRequest* request = [[NSFetchRequest alloc] init];
+//    
+//    NSEntityDescription* description =
+//    [NSEntityDescription entityForName:@"Country"
+//                inManagedObjectContext:self.managedObjectContext];
+//    
+//    [request setEntity:description];
+//    NSPredicate* predicate = [NSPredicate predicateWithFormat:@"name BEGINSWITH %@", @"A"];
+//    [request setPredicate:predicate];
+//    NSError* requestError = nil;
+//    NSArray* resultArray = [self.managedObjectContext executeFetchRequest:request error:&requestError];
+//    //NSLog(@"Print Country Entities %@",resultArray);
+//}
 
 - (NSArray*) allObjects {
     

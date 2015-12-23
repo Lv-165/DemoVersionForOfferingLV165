@@ -43,7 +43,7 @@
                                               inManagedObjectContext:self.managedObjectContext];
     [fetchRequest setEntity:entity];
 
-    NSLog(@"%@",fetchRequest);
+    //NSLog(@"%@",fetchRequest);
     NSError* error;
     
     NSUInteger count = [[self managedObjectContext] countForFetchRequest:fetchRequest
@@ -165,7 +165,6 @@
     
     if ([countries.place count] >= 1) {
         [cell.downloadSwitch setOn:YES];
-        NSLog(@"%@",countries.place);
     }
     else {
         [cell.downloadSwitch setOn:NO];

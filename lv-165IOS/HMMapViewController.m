@@ -694,8 +694,8 @@ static bool isMainRoute;
 
     Description *desc = place.descript;
     
-    self.descriptionLable.text = desc.descriptionString;
-    [self.descriptionLable sizeToFit];
+    self.descriptionTextView.text = desc.descriptionString;
+    //[self.descriptionLable sizeToFit];
     
     Waiting *waiting = place.waiting;
     self.waitingTimeLable.text = [NSString stringWithFormat:@"Average waiting time: %@", waiting.avg_textual];
