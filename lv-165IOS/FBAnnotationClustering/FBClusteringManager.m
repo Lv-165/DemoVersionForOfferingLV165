@@ -165,11 +165,11 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
 
       NSInteger count = [annotations count];
 
-      if (count < 4) {
+      if (count < 10) {
         [clusteredAnnotations addObjectsFromArray:annotations];
       }
 
-      if (count > 3) {
+      if (count > 9) {
 
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(
             totalLatitude / count, totalLongitude / count);
