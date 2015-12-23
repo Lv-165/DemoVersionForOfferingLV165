@@ -24,7 +24,7 @@
 @property (weak, nonatomic) IBOutlet UIView *viewForPinOfInfo;
 @property (weak, nonatomic) IBOutlet UILabel *waitingTimeLable;
 @property (weak, nonatomic) IBOutlet UILabel *autorDescriptionLable;
-@property (weak, nonatomic) IBOutlet UILabel *descriptionLable;
+@property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 
 
 @end
