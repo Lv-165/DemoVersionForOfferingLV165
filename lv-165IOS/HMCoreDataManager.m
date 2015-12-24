@@ -109,7 +109,7 @@
     NSDictionary *descriptionDict = [descriptionDictionary objectForKey:[NSString stringWithFormat:@"%@",descriptionObj.language]];
     
     if (![[descriptionDictionary allKeys]containsObject:String4]) {
-        descriptionObj.descriptionString = @"No Description";
+        descriptionObj.descriptionString = @"";
         descriptionObj.language = @"en_UK";
         descriptionObj.datetime = nil;
         descriptionObj.versions = @1;
