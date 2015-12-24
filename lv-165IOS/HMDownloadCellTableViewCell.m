@@ -20,4 +20,12 @@
     // Configure the view for the selected state
 }
 
+- (void)downloadSwitchOn {
+    self.downloadSwitch.enabled = YES;
+}
+
+- (void)downloadSwitchOff {
+    self.downloadSwitch.enabled = NO;
+}
+
 @end

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="MnQ-Mm-xcN">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9059" systemVersion="14F27" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="MnQ-Mm-xcN">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9049"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
         <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
@@ -57,13 +57,16 @@
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Continent" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="meP-3h-9RX">
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Continent" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="meP-3h-9RX">
                                             <rect key="frame" x="66" y="8" width="411" height="33"/>
                                             <animations/>
                                             <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                             <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                             <nil key="highlightedColor"/>
                                         </label>
+                                        <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="02y-eR-PXD">
+                                            <rect key="frame" x="0.0" y="47" width="600" height="2"/>
+                                        </progressView>
                                     </subviews>
                                     <animations/>
                                     <constraints>
@@ -87,7 +90,8 @@
                                     <outlet property="continentLable" destination="meP-3h-9RX" id="4x9-DA-9Mv"/>
                                     <outlet property="continentsImage" destination="atr-sK-mVK" id="AHf-VN-ngC"/>
                                     <outlet property="countLable" destination="fEH-Sh-DkC" id="pOX-7X-SwO"/>
-                                    <outlet property="downloadSwitch" destination="8CK-8n-ZSf" id="9aB-VN-kly"/>
+                                    <outlet property="downloadProgress" destination="02y-eR-PXD" id="prT-Rv-D4H"/>
+                                    <outlet property="downloadSwitch" destination="8CK-8n-ZSf" id="h0y-Gl-RYH"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -105,6 +109,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="readyButton" destination="fKa-qV-98M" id="I8Q-8S-oSm"/>
+                        <outlet property="tableView" destination="BJD-79-KdI" id="zSZ-Jw-6R3"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yby-eI-Ej4" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -61,24 +61,24 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
   if (self) {
     _lock = [NSRecursiveLock new];
     self.scale = [[NSNumber alloc] initWithDouble:1];
-      
-      _noneRatingColour =
-      [UIColor colorWithRed:0.620 green:0.625 blue:0.612 alpha:1.000];
-      
-      _badRatingColour =
-      [UIColor colorWithRed:0.871 green:0.000 blue:0.126 alpha:1.000];
 
-      _normalRatingColour =
-      [UIColor colorWithRed:0.641 green:0.871 blue:0.533 alpha:1.000];
-      
+    _noneRatingColour =
+        [UIColor colorWithRed:0.620 green:0.625 blue:0.612 alpha:1.000];
+
+    _badRatingColour =
+        [UIColor colorWithRed:0.871 green:0.000 blue:0.126 alpha:1.000];
+
+    _normalRatingColour =
+        [UIColor colorWithRed:0.641 green:0.871 blue:0.533 alpha:1.000];
+
     _goodRatingColour =
-    [UIColor colorWithRed:0.301 green:0.756 blue:0.274 alpha:1.000];
-      
-      _veryGoodRatingColour =
-      [UIColor colorWithRed:0.000 green:1.000 blue:0.050 alpha:1.000];
-      
+        [UIColor colorWithRed:0.301 green:0.756 blue:0.274 alpha:1.000];
+
+    _veryGoodRatingColour =
+        [UIColor colorWithRed:0.000 green:1.000 blue:0.050 alpha:1.000];
+
     _strokeColour = [UIColor colorWithRed:1 green:1 blue:1 alpha:1.000];
-      
+
     [self addAnnotations:annotations];
   }
   return self;

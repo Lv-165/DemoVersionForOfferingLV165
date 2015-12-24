@@ -14,5 +14,10 @@
 @property (weak, nonatomic) IBOutlet UILabel *continentLable;
 @property (weak, nonatomic) IBOutlet UILabel *countLable;
 @property (weak, nonatomic) IBOutlet UISwitch *downloadSwitch;
+@property (weak, nonatomic) IBOutlet UIProgressView *downloadProgress;
+
+
+- (void)downloadSwitchOff;
+- (void)downloadSwitchOn;
 
 @end
