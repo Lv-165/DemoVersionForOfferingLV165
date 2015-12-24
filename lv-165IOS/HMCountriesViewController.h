@@ -13,5 +13,8 @@
 
 - (IBAction)actionDwnloadSwitch:(id)sender;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *readyButton;
+@property (weak, nonatomic) IBOutlet UISwitch *downloadSwitcher;
+@property (weak, nonatomic) IBOutlet UIProgressView *downloadProgress;
+//@property (strong, nonatomic) IBOutlet UITableView *tableView;
 
 @end
