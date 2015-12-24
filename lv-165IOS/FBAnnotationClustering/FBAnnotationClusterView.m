@@ -457,23 +457,24 @@ static CGFloat radianConversionFactor = M_PI / 180;
 
         // currentAngle = endAngle;
 UIColor *color = coloursArray[segmentType.unsignedIntegerValue];
-//
-//CGContextRef context = UIGraphicsGetCurrentContext();
-//
-//CGMutablePathRef arc = CGPathCreateMutable();
-//CGPathMoveToPoint(arc, NULL, center.x, center.y);
-//
-//// RatingForPin rating = (RatingForPin)segment[@"type"];
-//
-//CGContextSetFillColorWithColor(context, color.CGColor);
-//
-//CGContextSetStrokeColorWithColor(
-//context, _clusteringManager.strokeColour.CGColor);
-//
-//
-//
-//CGPathAddArc(arc, NULL, center.x, center.y, rect.size.width / 2,startAngle, endAngle, YES);
+
+CGContextRef context = UIGraphicsGetCurrentContext();
+
+CGMutablePathRef arc = CGPathCreateMutable();
+CGPathMoveToPoint(arc, NULL, center.x, center.y);
+
+// RatingForPin rating = (RatingForPin)segment[@"type"];
+
+CGContextSetFillColorWithColor(context, color.CGColor);
+
+CGContextSetStrokeColorWithColor(
+context, _clusteringManager.strokeColour.CGColor);
+
+
+
+CGPathAddArc(arc, NULL, center.x, center.y, rect.size.width / 2,startAngle, endAngle, YES);
  
+   
    
           
           
@@ -515,36 +516,39 @@ UIColor *color = coloursArray[segmentType.unsignedIntegerValue];
         //  }
   
   
+          
+          
       
           
 //MARK: BLOCK TO GET SEGMENT CENTER using UIBezierPath
 //UIBezierPath * aPath = [UIBezierPath bezierPathWithCGPath
           
-UIBezierPath * aPath = [UIBezierPath bezierPath];
-[aPath moveToPoint:CGPointMake(center.x, center.y)];
-[aPath addArcWithCenter:CGPointMake(center.x, center.y) radius:rect.size.width / 2 startAngle:startAngle endAngle:endAngle clockwise:YES];
+//UIBezierPath * aPath = [UIBezierPath bezierPath];
+//[aPath moveToPoint:CGPointMake(center.x, center.y)];
+//[aPath addArcWithCenter:CGPointMake(center.x, center.y) radius:rect.size.width / 2 startAngle:startAngle endAngle:endAngle clockwise:YES];
+//          
+//UIBezierPath * pathForStartPoint = [UIBezierPath bezierPath];
+//CGPoint startPoint = [pathForStartPoint currentPoint];
+//          
+//UIBezierPath * pathForEndPoint = [UIBezierPath bezierPath];
+//CGPoint endPoint = [pathForEndPoint currentPoint];
+//          
+////check that it's not null
+//if(!startAngle == 0){
+//
+//[pathForStartPoint addArcWithCenter:CGPointMake(center.x, center.y) radius:rect.size.width / 2 startAngle:(endAngle - 0.001) endAngle:endAngle clockwise:YES];
+//}
+// 
+//[pathForEndPoint addArcWithCenter:CGPointMake(center.x, center.y) radius:rect.size.width / 2 startAngle:(startAngle - 0.001) endAngle:startAngle clockwise:YES];
+//
+//          
+//CGPoint arcMidPoint = {abs(endPoint.x - startPoint.x)/2,abs(endPoint.y - startPoint.y)/2};
+//          
+//CGPoint segmentMidPoint = {abs(endPoint.x - startPoint.x)/2,abs(endPoint.y - startPoint.y)/2};
           
-UIBezierPath * pathForStartPoint = [UIBezierPath bezierPath];
-CGPoint startPoint = [pathForStartPoint currentPoint];
           
-UIBezierPath * pathForEndPoint = [UIBezierPath bezierPath];
-CGPoint endPoint = [pathForEndPoint currentPoint];
-          
-//check that it's not null
-if(!startAngle == 0){
 
-[pathForStartPoint addArcWithCenter:CGPointMake(center.x, center.y) radius:rect.size.width / 2 startAngle:(endAngle - 0.001) endAngle:endAngle clockwise:YES];
-}
- 
-[pathForEndPoint addArcWithCenter:CGPointMake(center.x, center.y) radius:rect.size.width / 2 startAngle:(startAngle - 0.001) endAngle:startAngle clockwise:YES];
-
           
-CGPoint arcMidPoint = {abs(endPoint.x - startPoint.x)/2,abs(endPoint.y - startPoint.y)/2};
-          
-CGPoint segmentMidPoint = {abs(endPoint.x - startPoint.x)/2,abs(endPoint.y - startPoint.y)/2};
-          
-          
-
           
 // UIColor *color = coloursArray[segmentType.unsignedIntegerValue];
           
@@ -565,14 +569,14 @@ CGPoint segmentMidPoint = {abs(endPoint.x - startPoint.x)/2,abs(endPoint.y - sta
 //
 //[aPath addQuadCurveToPoint:p2 controlPoint:cp2];
           
-[aPath closePath];
-          //set the stoke color
-[color setStroke];
-[[_clusteringManager strokeColour]setFill];
-          
-//draw the path
-[aPath stroke];
-[aPath fill];
+//[aPath closePath];
+//          //set the stoke color
+//[color setStroke];
+//[[_clusteringManager strokeColour]setFill];
+//          
+////draw the path
+//[aPath stroke];
+//[aPath fill];
  
           
 //[aPath addLineToPoint:CGPointMake(CGRectGetMaxX(rect), CGRectGetMinY(rect))];
@@ -581,10 +585,10 @@ CGPoint segmentMidPoint = {abs(endPoint.x - startPoint.x)/2,abs(endPoint.y - sta
    
 
 //MARK: WAS
-//CGPathCloseSubpath(arc);
-//CGContextAddPath(context, arc);
-//CGContextDrawPath(context, kCGPathFillStroke);
-//CGContextFillPath(context);
+CGPathCloseSubpath(arc);
+CGContextAddPath(context, arc);
+CGContextDrawPath(context, kCGPathFillStroke);
+CGContextFillPath(context);
 
           
         //      CGContextAddArc(context, center.x, center.y, radius,

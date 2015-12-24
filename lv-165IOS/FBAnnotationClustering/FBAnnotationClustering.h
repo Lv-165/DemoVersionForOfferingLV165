@@ -12,6 +12,6 @@
 #define _FBANNOTATIONCLUSTERING_
 
 #import "FBAnnotationCluster.h"
-//#import "FBAnnotationClusterView.h"
+#import "FBAnnotationClusterView.h"
 #import "FBClusteringManager.h"
 #endif /* _FBANNOTATIONCLUSTERING_ */
