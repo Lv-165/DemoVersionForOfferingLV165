@@ -41,9 +41,7 @@
 @property(strong, nonatomic) UIColor *goodRatingColour;
 @property(strong, nonatomic) UIColor *veryGoodRatingColour;
 
-
-
-@property(strong, nonatomic) UIColor * strokeColour;
+@property(strong, nonatomic) UIColor *strokeColour;
 
 /**
  Creates a new instance of @c FBClusterManager with array of annotations.
