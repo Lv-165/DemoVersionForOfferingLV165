@@ -195,8 +195,6 @@
                         }
                         [self downloadPlaces:countries];
                         
-                        
-                        
                     } onFailure:^(NSError *error, NSInteger statusCode) {
                         
                         [self showAlertWithTitle:@"Oops! No Internet"

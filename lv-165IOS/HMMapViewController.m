@@ -26,6 +26,7 @@
 #import "Branch/BranchUniversalObject.h"
 #import "Branch/BranchLinkProperties.h"
 #import "FBAnnotationClustering/FBAnnotationClustering.h"
+#import "HMWeatherManager.h"
 
 @interface HMMapViewController ()
 
@@ -48,6 +49,7 @@
 @property(weak, nonatomic) MKAnnotationView *annotationView;
 @property(strong, nonatomic) FBClusteringManager *clusteringManager;
 @property(strong, nonatomic) NSMutableArray *clusteredAnnotations;
+@property (strong, nonatomic) NSDictionary *weatherDict;
 
 @end
 
@@ -70,9 +72,9 @@ static bool isMainRoute;
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  // Do any additional setup after loading the view, typically from a nib.
-
-  self.locationManager = [[CLLocationManager alloc] init];
+  // Do any additional setup after loading the view, typically from a nib
+    
+    self.locationManager = [[CLLocationManager alloc] init];
 
   [[NSNotificationCenter defaultCenter] addObserver:self
                                            selector:@selector(showPlace:)
@@ -810,9 +812,24 @@ static bool isMainRoute;
 
     Place *place = [self.placeArray firstObject];
     User *user = place.user;
+    
+    
+    
+#warning weather!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    
+    self.weatherDict = [[NSDictionary alloc]init];
+    [[HMWeatherManager sharedManager] getWeatherByCoordinate:place onSuccess:^(NSDictionary *weather) {
+       
+    self.weatherDict = weather;
+        NSLog(@"%@",self.weatherDict);
+    } onFailure:^(NSError *error, NSInteger statusCode) {
+    
+    NSLog(@"%@%ld",error,(long)statusCode);
+    }];
 
     self.autorDescriptionLable.text = user.name;
-
+    
     Description *desc = place.descript;
 
     self.descriptionTextView.text = desc.descriptionString;
