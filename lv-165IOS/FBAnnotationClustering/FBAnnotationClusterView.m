@@ -396,6 +396,7 @@ static CGFloat radianConversionFactor = M_PI / 180;
 
     CGPathCloseSubpath(arc);
 
+
     // pieSegmentCenter
 
     // MARK: !!!!get segment bpunding box
@@ -531,8 +532,138 @@ static CGFloat radianConversionFactor = M_PI / 180;
     //      //clean up
     //      if (drawFrame) CFRelease(drawFrame);
     //      CGPathRelease(mainPath);
+
+
+      //MARK:UIGraphicsBeginImageContextWithOptions
+//try opaque context
+//    UIGraphicsBeginImageContextWithOptions(<#CGSize size#>, yes, <#CGFloat scale#>)
+
+//   CGContextRef context = UIGraphicsGetCurrentContext();
+
+//      UIGraphicsEndImageContext();
+//      UIGraphicsPopContext();
+
+
+//      // First fill the background with white.
+//      CGContextSetRGBFillColor(context, 1.0,1.0,1.0,1.0);
+//      CGContextFillRect(context,pageRect);
+//      CGContextSaveGState(context);
+//
+//
+//      // Flip the context so that the PDF page is rendered right side up
+//      CGContextTranslateCTM(context, 0.0, pageRect.size.height);
+//      CGContextScaleCTM(context, 1.0, -1.0);
+
+//Coordinate space transformations
+
+// Scale the context so that the PDF page is rendered at the
+
+// correct size for the zoom level.
+
+// Scale the current graphics state's transformation matrix (the CTM)
+
+// CGContextScaleCTM(context, pdfScale,pdfScale);
+
+//      CGContextDrawPDFPage(context, page);
+
+//      CGContextRestoreGState(context);
+
+//      UIImage *backgroundImage = UIGraphicsGetImageFromCurrentImageContext();
+
+//      UIGraphicsEndImageContext();
+
+
   }];
 }
+
+- (void)appendBezierArcWithCenter:(CGPoint)center radius:(CGFloat)radius startAngle:(CGFloat)startAngle endAngle:(CGFloat)endAngle fillColor:(UIColor*)color toBezierPath:(UIBezierPath*)path{
+
+   // attach to UIBezierPath *path = [UIBezierPath bezierPath];
+    UIBezierPath *slicePath = [UIBezierPath bezierPathWithArcCenter:center radius:radius
+  startAngle:startAngle endAngle:endAngle clockwise:YES];
+    [path moveToPoint:center];
+    [path appendPath:slicePath];
+    [path addLineToPoint:center];
+    [color setFill];
+    [[UIColor whiteColor]setStroke];
+    [path stroke];
+    [path fill];
+}
+
+- (CGPoint)findArcEndPointInView:(UIView *) view withRadius:(CGFloat)radius angle:(CGFloat)angle{
+
+CGFloat shortest_side = MIN(view.bounds.size.width, view.bounds.size.height);
+CGFloat x = roundf(cosf(angle)* radius+shortest_side/2) ;
+CGFloat y = roundf(sinf(angle)* radius+shortest_side/2);
+CGPoint point = CGPointMake (x, y);
+    return point;
+}
+
+
+////try UIBezierPath methods with controlPoints
+//- (void)addCurveToPoint:(CGPoint)endPoint controlPoint1:(CGPoint)controlPoint1 controlPoint2:(CGPoint)controlPoint2;
+//- (void)addQuadCurveToPoint:(CGPoint)endPoint controlPoint:(CGPoint)controlPoint;
+
+
+
+//MARK:Animation
+//-(void)drawCircleInView:(UIView *)view {
+//
+//CAShapeLayer *layer = [CAShapeLayer layer];
+//layer.strokeStart = 0;
+//layer.strokeEnd = 0;
+//layer.delegate = view;
+//
+//NSTimer *timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(update) userInfo:nil repeats:YES];
+//layer.strokeColor = [UIColor redColor].CGColor;
+//layer.fillColor = [UIColor clearColor].CGColor;
+//UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(60, 100, 200, 200)];
+//layer.path = path.CGPath;
+////ViewController
+////self.layer = layer;
+////[self.view.layer addSublayer:view.layer];
+//}
+//- (void)update {
+////ViewController
+//    if (self.layer.strokeEnd >= 1.0) {
+//        if (self.layer.strokeStart <= 1.0) {
+//            self.layer.strokeStart += 0.05;
+//        }else{
+//
+//            self.layer.strokeEnd = 0;
+//            self.layer.strokeStart = 0;
+//        }
+//    }else {
+//        self.layer.strokeEnd += 0.05;
+//
+//    }
+//}
+
+
+//// fill with yellow
+//rectShape.fillColor = UIColor.yellowColor().CGColor
+//
+//// 1
+//// begin with a circle with a 50 points radius
+//let startShape = UIBezierPath(roundedRect: bounds, cornerRadius: 50).CGPath
+//// animation end with a large circle with 500 points radius
+//let endShape = UIBezierPath(roundedRect: CGRect(x: -450, y: -450, width: 1000, height: 1000), cornerRadius: 500).CGPath
+//
+//// set initial shape
+//rectShape.path = startShape
+//
+//// 2
+//// animate the `path`
+//let animation = CABasicAnimation(keyPath: "path")
+//animation.toValue = endShape
+//animation.duration = 1 // duration is 1 sec
+//// 3
+//animation.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseOut) // animation curve is Ease Out
+//animation.fillMode = kCAFillModeBoth // keep to value after finishing
+//animation.removedOnCompletion = false // don't remove after finishing
+//// 4
+//rectShape.addAnimation(animation, forKey: animation.keyPath)
+
 
 //-(CGFloat)scaleToAspectFit:(CGSize)source into:(CGSize)into
 // padding:(float)padding
