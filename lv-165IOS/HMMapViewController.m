@@ -572,7 +572,7 @@ static bool isMainRoute;
 
           [self showAlertWithTitle:@"No direction"
                         andMessage:@"There is no connection between your "
-                                   @"position and this point"
+                        @"position and this point"
                     andActionTitle:@"OK"];
 
         } else if ([response.routes count] == 0) {
@@ -788,9 +788,9 @@ static bool isMainRoute;
     zoomRect = MKMapRectUnion(zoomRect, rect);
     zoomRect = [self.mapView mapRectThatFits:zoomRect];
 
-//    [self.mapView setVisibleMapRect:zoomRect
-//                        edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
-//                           animated:YES];
+    //    [self.mapView setVisibleMapRect:zoomRect
+    //                        edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
+    //                           animated:YES];
 
     self.downToolBar.hidden = YES;
     self.constraitToShowUpToolBar.constant = 210.f;
@@ -887,14 +887,17 @@ static bool isMainRoute;
 
 - (void)mapView:(MKMapView *)mapView
     didDeselectAnnotationView:(MKAnnotationView *)view NS_AVAILABLE(10_9, 4_0) {
-  self.downToolBar.hidden = NO;
-  self.constraitToShowUpToolBar.constant = 0.f;
-  [self.viewToAnimate setNeedsUpdateConstraints];
 
-  [UIView animateWithDuration:1.f
-                   animations:^{
-                     [self.viewToAnimate layoutIfNeeded];
-                   }];
+  if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
+    self.downToolBar.hidden = NO;
+    self.constraitToShowUpToolBar.constant = 0.f;
+    [self.viewToAnimate setNeedsUpdateConstraints];
+
+    [UIView animateWithDuration:1.f
+                     animations:^{
+                       [self.viewToAnimate layoutIfNeeded];
+                     }];
+  }
 }
 
 - (void)locationManager:(CLLocationManager *)manager
