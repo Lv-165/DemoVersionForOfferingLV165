@@ -28,6 +28,7 @@
 #import "FBAnnotationClustering/FBAnnotationClustering.h"
 #import "HMWeatherManager.h"
 
+
 @interface HMMapViewController ()
 
 @property(strong, nonatomic) CLLocationManager *locationManager;
@@ -121,7 +122,7 @@ static bool isMainRoute;
     [self createColorButton:@"road30_30"
                    selector:@selector(showRoudFromThisPlaceToMyLocation:)]
   ];
-
+    
   [self.downToolBar setItems:buttonsForDownToolBar animated:YES];
 
   [self.upToolBar setItems:buttonsForUpToolBar animated:YES];
@@ -175,44 +176,44 @@ static bool isMainRoute;
   [self loadSettings];
 
   // Clustering Manager
-//  if (!self.clusteringManager) {
-//
-//    [[NSOperationQueue new] addOperationWithBlock:^{
-//      double scale =
-//          _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
-//      self.clusteringManager = [[FBClusteringManager alloc]
-//          initWithAnnotations:_clusteredAnnotations];
-//      NSArray *annotations = [self.clusteringManager
-//          clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
-//                              withZoomScale:scale];
-//      self.clusteringManager.scale = [[NSNumber alloc] initWithDouble:1.6];
-//      ;
-//      [self.clusteringManager displayAnnotations:annotations
-//                                       onMapView:_mapView];
-//    }];
-//  } else {
-//    [[NSOperationQueue new] addOperationWithBlock:^{
-//      double scale =
-//          _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
-//      NSArray *annotations = [self.clusteringManager
-//          clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
-//                              withZoomScale:scale];
-//      [self.clusteringManager displayAnnotations:annotations
-//                                       onMapView:_mapView];
-//    }];
-//  }
+  if (!self.clusteringManager) {
+
+    [[NSOperationQueue new] addOperationWithBlock:^{
+      double scale =
+          _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
+      self.clusteringManager = [[FBClusteringManager alloc]
+          initWithAnnotations:_clusteredAnnotations];
+      NSArray *annotations = [self.clusteringManager
+          clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
+                              withZoomScale:scale];
+      self.clusteringManager.scale = [[NSNumber alloc] initWithDouble:1.6];
+      ;
+      [self.clusteringManager displayAnnotations:annotations
+                                       onMapView:_mapView];
+    }];
+  } else {
+    [[NSOperationQueue new] addOperationWithBlock:^{
+      double scale =
+          _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
+      NSArray *annotations = [self.clusteringManager
+          clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
+                              withZoomScale:scale];
+      [self.clusteringManager displayAnnotations:annotations
+                                       onMapView:_mapView];
+    }];
+  }
 }
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-//  [[NSOperationQueue new] addOperationWithBlock:^{
-//    double scale =
-//        self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
-//    NSArray *annotations = [self.clusteringManager
-//        clusteredAnnotationsWithinMapRect:mapView.visibleMapRect
-//                            withZoomScale:scale];
-//
-//    [self.clusteringManager displayAnnotations:annotations onMapView:mapView];
-//  }];
+  [[NSOperationQueue new] addOperationWithBlock:^{
+    double scale =
+        self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
+    NSArray *annotations = [self.clusteringManager
+        clusteredAnnotationsWithinMapRect:mapView.visibleMapRect
+                            withZoomScale:scale];
+
+    [self.clusteringManager displayAnnotations:annotations onMapView:mapView];
+  }];
 }
 
 - (void)handleSwipe:(UISwipeGestureRecognizer *)swipe {
@@ -345,7 +346,6 @@ static bool isMainRoute;
                             NSLog(@"Success getting url: %@", url);
                           }
                         }];
-
   [branchUniversalObject showShareSheetWithLinkProperties:linkProperties
                                              andShareText:nil
                                        fromViewController:self
@@ -355,9 +355,53 @@ static bool isMainRoute;
 }
 
 - (void)addToFavourite:(UIBarButtonItem *)sender {
+    CLLocationCoordinate2D coordinate = self.annotationView.annotation.coordinate;
+    [SVGeocoder reverseGeocode:coordinate completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse, NSError *error) {
+        NSString* message = nil;
+        if (error) {
+            message = [error localizedDescription];
+        } else {
+            if ([placemarks count] > 0) {
+                SVPlacemark* placeMark = [placemarks firstObject];
+                NSString *stringOfPlace = [self creatingAObjectOfMassive:placeMark];
+                
+                NSNumber *latitude = [[NSNumber alloc] initWithDouble:placeMark.location.coordinate.latitude];
+                NSNumber *longitude = [[NSNumber alloc] initWithDouble:placeMark.location.coordinate.longitude];
+                
+                NSDictionary *coordinate = @{
+                                             @"latitude":latitude,
+                                             @"longitude":longitude
+                                             };
+                NSDictionary *place = @{
+                                        @"StringOfPlace":stringOfPlace,
+                                        @"Coordinate":coordinate,
+                                        };
+                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                NSArray *tempArrayOne = [userDefaults objectForKey:@"PlaceByFavourite"];
+                NSInteger i = 0;
+                for (NSDictionary *placeInDict in tempArrayOne) {
+                    if ([[placeInDict objectForKey:@"StringOfPlace"] isEqualToString:stringOfPlace]) {
+                        i++;
+                    }
+                }
+                if (i == 0) {
+                NSMutableArray *tempArrayTwo = [[NSMutableArray alloc] initWithArray:tempArrayOne];
+                [tempArrayTwo addObject:place];
+                [userDefaults removeObjectForKey:@"PlaceByFavourite"];
+                [userDefaults setObject:tempArrayTwo forKey:@"PlaceByFavourite"];
+            }
+            } else {
+                message = @"No Placemarks Found";
+            }
+        }
+    }];
+
+    
 }
+
 - (void)infoMethod:(UIBarButtonItem *)sender {
 }
+
 - (void)showRoudFromThisPlaceToMyLocation:(UIBarButtonItem *)sender {
 }
 
@@ -415,17 +459,14 @@ static bool isMainRoute;
 
     self.userLocationPin = pin;
     return pin;
-}
-//  else if ([annotation isKindOfClass:[FBAnnotationCluster class]]) {
-//    FBAnnotationCluster *clusterAnnotation = annotation;
-//
-//    FBAnnotationClusterView *clusterAnnotationView =
-//        [[FBAnnotationClusterView alloc] initWithAnnotation:clusterAnnotation
-//                                          clusteringManager:_clusteringManager];
-//
-//    clusterAnnotationView.userInteractionEnabled = YES;
-//    return clusterAnnotationView;
-//  } else{
+  } else if ([annotation isKindOfClass:[FBAnnotationCluster class]]) {
+    FBAnnotationCluster *clusterAnnotation = annotation;
+
+    FBAnnotationClusterView *clusterAnnotationView =
+        [[FBAnnotationClusterView alloc] initWithAnnotation:clusterAnnotation
+                                          clusteringManager:_clusteringManager];
+    return clusterAnnotationView;
+  } else {
     if (!pin) {
       pin = [[MKPinAnnotationView alloc] initWithAnnotation:annotation
                                             reuseIdentifier:identifier];
@@ -481,7 +522,7 @@ static bool isMainRoute;
     pin.leftCalloutAccessoryView = directionButton;
 
     return pin;
-
+  }
 }
 
 #pragma mark - MKMapViewDelegate -
@@ -717,12 +758,12 @@ static bool isMainRoute;
         stringWithFormat:@"%.5g, %.5g", annotation.coordinate.latitude,
                          annotation.coordinate.longitude];
     annotation.idPlace = [place.id integerValue];
-   // [_clusteredAnnotations addObject:annotation];
-    [self.mapView addAnnotation:annotation];
+    [_clusteredAnnotations addObject:annotation];
+    //[self.mapView addAnnotation:annotation];
   }
 }
 
-#pragma mark - methods for Notification//latitude":latitude, @"longitude
+#pragma mark - methods for Notification
 
 - (void)showPlace:(NSNotification *)notification {
   [self.navigationController popViewControllerAnimated:YES];
@@ -774,7 +815,7 @@ static bool isMainRoute;
 - (void)mapView:(MKMapView *)mapView
     didSelectAnnotationView:(MKAnnotationView *)view NS_AVAILABLE(10_9, 4_0) {
 
- // if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
+  if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
 
     MKMapRect zoomRect = MKMapRectNull;
 
@@ -840,78 +881,82 @@ static bool isMainRoute;
         stringWithFormat:@"Average waiting time: %@", waiting.avg_textual];
 
 }
+}
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
 
-//  if ([touches count] == 1) {
-//    UITouch *touch = [touches anyObject];
-//    if (touch.view.subviews && [touch tapCount] == 1) {
-//
-//      CGPoint point = [touch locationInView:touch.view];
-//
-//      FBAnnotationClusterView *selectedAnnotationView;
-//
-//      NSMutableArray *annotationsArray;
-//      // for (id View in touch.view.subviews) {
-//
-//      if ([touch.view isMemberOfClass:[FBAnnotationClusterView class]]) {
-//
-//        // FBAnnotationClusterView *annotationView =   (FBAnnotationClusterView
-//        // *)View;
-//
-//        // TODO: test it
-//        //  CGRect frame = [touch.view convertRect:touch.view.frame
-//        //  toView:self.view];
-//
-//        // WAS          CGRect frame =
-//        //              [annotationView
-//        //              convertRect:annotationView.annotationLabel.frame
-//        //                                   toView:self.view];
-//
-//        //  if (CGRectContainsPoint(frame, point)) {
-//
-//        // annotationsArray = [annotationView.annotation.annotations copy];
-//
-//        // annotationsArray = [NSMutableArray new];
-//        //            for (HMMapAnnotation *annotation in
-//        //            annotationView.annotation
-//        //                     .annotations) {
-//        //              [annotationsArray addObject:annotation];
-//        //            }
-//        selectedAnnotationView = (FBAnnotationClusterView *)touch.view;
-//        // break;
-//        // }
-//        //   }
-//      }
-//
-//      NSArray *array = [selectedAnnotationView.annotation.annotations copy];
-//      [self.mapView showAnnotations:array animated:YES];
-//
-//      [[NSOperationQueue new] addOperationWithBlock:^{
-//        double scale = self.mapView.bounds.size.width /
-//                       self.mapView.visibleMapRect.size.width;
-//
-//        NSArray *annotations = [self.clusteringManager
-//            clusteredAnnotationsWithinMapRect:self.mapView.visibleMapRect
-//                                withZoomScale:scale];
-//
-//        [self.clusteringManager displayAnnotations:annotations
-//                                         onMapView:self.mapView];
-//      }];
-//    }
-//  }
+  if ([touches count] == 1) {
+    UITouch *touch = [touches anyObject];
+    if (touch.view.subviews && [touch tapCount] == 1) {
+
+      CGPoint point = [touch locationInView:touch.view];
+
+      FBAnnotationClusterView *selectedAnnotationView;
+
+      NSMutableArray *annotationsArray;
+      // for (id View in touch.view.subviews) {
+
+      if ([touch.view isMemberOfClass:[FBAnnotationClusterView class]]) {
+
+        // FBAnnotationClusterView *annotationView =   (FBAnnotationClusterView
+        // *)View;
+
+        // TODO: test it
+        //  CGRect frame = [touch.view convertRect:touch.view.frame
+        //  toView:self.view];
+
+        // WAS          CGRect frame =
+        //              [annotationView
+        //              convertRect:annotationView.annotationLabel.frame
+        //                                   toView:self.view];
+
+        //  if (CGRectContainsPoint(frame, point)) {
+
+        // annotationsArray = [annotationView.annotation.annotations copy];
+
+        // annotationsArray = [NSMutableArray new];
+        //            for (HMMapAnnotation *annotation in
+        //            annotationView.annotation
+        //                     .annotations) {
+        //              [annotationsArray addObject:annotation];
+        //            }
+        selectedAnnotationView = (FBAnnotationClusterView *)touch.view;
+        // break;
+        // }
+        //   }
+      }
+
+      NSArray *array = [selectedAnnotationView.annotation.annotations copy];
+      [self.mapView showAnnotations:array animated:YES];
+
+      [[NSOperationQueue new] addOperationWithBlock:^{
+        double scale = self.mapView.bounds.size.width /
+                       self.mapView.visibleMapRect.size.width;
+
+        NSArray *annotations = [self.clusteringManager
+            clusteredAnnotationsWithinMapRect:self.mapView.visibleMapRect
+                                withZoomScale:scale];
+
+        [self.clusteringManager displayAnnotations:annotations
+                                         onMapView:self.mapView];
+      }];
+    }
+  }
 }
 
 - (void)mapView:(MKMapView *)mapView
     didDeselectAnnotationView:(MKAnnotationView *)view NS_AVAILABLE(10_9, 4_0) {
-  self.downToolBar.hidden = NO;
-  self.constraitToShowUpToolBar.constant = 0.f;
-  [self.viewToAnimate setNeedsUpdateConstraints];
 
-  [UIView animateWithDuration:1.f
-                   animations:^{
-                     [self.viewToAnimate layoutIfNeeded];
-                   }];
+  if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
+    self.downToolBar.hidden = NO;
+    self.constraitToShowUpToolBar.constant = 0.f;
+    [self.viewToAnimate setNeedsUpdateConstraints];
+
+    [UIView animateWithDuration:1.f
+                     animations:^{
+                       [self.viewToAnimate layoutIfNeeded];
+                     }];
+  }
 }
 
 - (void)locationManager:(CLLocationManager *)manager
@@ -946,5 +991,35 @@ static bool isMainRoute;
 
   return UIInterfaceOrientationMaskAll;
 }
+
+- (NSString *)creatingAObjectOfMassive:(SVPlacemark *)placeMark {
+    NSMutableArray *levelOfLocality = [NSMutableArray array];
+    if (placeMark.formattedAddress) {
+        [levelOfLocality addObject:placeMark.formattedAddress];
+    }
+    if (placeMark.administrativeArea) {
+        [levelOfLocality addObject:placeMark.administrativeArea];
+    }
+    if (placeMark.subAdministrativeArea) {
+        [levelOfLocality addObject:placeMark.subAdministrativeArea];
+    }
+    if (placeMark.thoroughfare) {
+        [levelOfLocality addObject:placeMark.thoroughfare];
+    }
+    NSInteger count = 0;
+    NSMutableString *str = [NSMutableString stringWithFormat:@""];
+    for (id dataOfLocality in levelOfLocality) {
+        if (count >= 3) {
+            break;
+        }
+        if (dataOfLocality) {
+            [str appendFormat:@", %@",dataOfLocality];
+            count ++;
+        }
+    }
+    [str deleteCharactersInRange:NSMakeRange(0, 1)];
+    return str;
+}
+
 
 @end

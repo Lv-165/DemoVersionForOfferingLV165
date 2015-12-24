@@ -55,19 +55,6 @@
     
     self.arrayOfContries = [[NSMutableArray alloc] init];
     self.arrayOfPlaces = [[NSMutableArray alloc] init];
-    
-#warning don't work, ASK!
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(blocButton)
-//                                                 name:AFNetworkingOperationDidStartNotification
-//                                               object:nil];
-//    
-//    [[NSNotificationCenter defaultCenter] addObserver:self
-//                                             selector:@selector(anblocButton)
-//                                                 name:AFNetworkingTaskDidResumeNotification
-//                                               object:nil];
-    
-    // Do any additional setup after loading the view.
 }
 
 - (void)getContinentFromServer {
@@ -88,10 +75,8 @@
                 [self showAlertWithTitle:@"Oops! No Internet"
                               andMessage:@"Check your connection"
                           andActionTitle:@"OK"];
-                
             }];
     });
-
 }
 
 
@@ -161,7 +146,10 @@
     [cell.continentsImage setImageWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://www.geonames.org/flags/x/%@.gif",countriesIso]]
                          placeholderImage:[UIImage imageNamed:@"noFlag"]];
     
-    //cell.downloadProgress.hidden = YES;
+    if (fabsf(cell.downloadProgress.progress) < FLT_EPSILON ||
+        fabsf(cell.downloadProgress.progress - 1.f) < FLT_EPSILON) {
+        cell.downloadProgress.hidden = YES;
+    }
     
     if ([countries.place count] >= 1) {
         [cell.downloadSwitch setOn:YES];
@@ -203,8 +191,6 @@
                         
                         ((UISwitch *)sender).on = NO;
                     }];
-                    
-                    
                 });
             }
         }
@@ -224,17 +210,28 @@
     }
 }
 
-- (void) downloadPlaces:(Countries*)countries {
+- (void) downloadPlaces:(Countries*)countries sender:(id)sender{
     
-    //self.readyButton.enabled = NO;
+    self.readyButton.enabled = NO;
+    self.tableView.scrollEnabled = NO;
+
+    NSArray *arrayCell =  [self.tableView visibleCells];
+    for (HMDownloadCellTableViewCell *cell in arrayCell) {
+        cell.downloadSwitch.enabled = NO;
+    }
+    
+    HMDownloadCellTableViewCell* cell = [sender superCell];
+//    self.activeCell = cell;
+    cell.downloadProgress.hidden = NO;
+    [cell.downloadProgress setProgress:0.f animated:YES];
     
     for (NSInteger i=0; i<self.arrayOfPlaces.count; i++) {
         
-//        static NSInteger countPlace;
-//        
-//        if (i == 0) {
-//            countPlace = 0;
-//        }
+        static NSInteger countPlace;
+        
+        if (i == 0) {
+            countPlace = 0;
+        }
         
         NSString *idPlaces = [NSString stringWithFormat:@"%@", [self.arrayOfPlaces objectAtIndex:i]];
         
@@ -244,10 +241,23 @@
                 
                 [[HMCoreDataManager sharedManager] savePlaceToCoreDataWithNSArray:places contries:countries];
                 
-//                countPlace++;
-//                if (countPlace == self.arrayOfPlaces.count) {
-//                    self.readyButton.enabled = YES;
-//                }
+                countPlace++;
+                CGFloat value = (CGFloat)countPlace / (CGFloat)self.arrayOfPlaces.count;
+                cell.downloadProgress.hidden = NO;
+                [cell.downloadProgress setProgress:value animated:YES];
+                if (countPlace == self.arrayOfPlaces.count) {
+                    self.readyButton.enabled = YES;
+                    self.tableView.scrollEnabled = YES;
+//                    isBlockCell = NO;
+                    
+                    [cell.downloadProgress setProgress:0.f animated:YES];
+
+                    NSArray *arrayCell =  [self.tableView visibleCells];
+                    for (HMDownloadCellTableViewCell *cell in arrayCell) {
+                        cell.downloadSwitch.enabled = YES;
+                        cell.downloadProgress.hidden = YES;
+                    }
+                }
                 
             } onFailure:^(NSError *error, NSInteger statusCode) {
                     NSLog(@"err");
@@ -255,15 +265,6 @@
         });
     }
 }
-
-#warning don't work, ASK!
-//- (void) blocButton {
-//    self.readyButton.enabled = NO;
-//}
-//
-//- (void) anblocButton {
-//    self.readyButton.enabled = YES;
-//}
 
 #pragma mark - UISearchBarDelegate
 
