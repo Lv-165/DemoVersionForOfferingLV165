@@ -10,7 +10,6 @@
 #import "HMMapAnnotation.h"
 #import "math.h"
 
-
 @import QuartzCore;
 @import CoreText;
 
@@ -278,8 +277,9 @@ static CGFloat radianConversionFactor = M_PI / 180;
 
     // FBAnnotationCluster *clusterAnnotation = (FBAnnotationCluster
     // *)annotation;
-
-    self.frame = CGRectMake(0, 0, 40, 40);
+     
+    self.frame = CGRectMake(0, 0, _clusteringManager.clusterAnnotationViewRadius, _clusteringManager.clusterAnnotationViewRadius);
+      
     self.backgroundColor = [UIColor clearColor];
 
     // self.opaque = YES;
@@ -329,7 +329,7 @@ static CGFloat radianConversionFactor = M_PI / 180;
                                        _clusteringManager.strokeColour, nil];
 
   CGRect circleRect = CGRectInset(self.bounds, 1, 1);
-    
+
   CGPoint center =
       CGPointMake(CGRectGetMidX(circleRect), CGRectGetMidY(circleRect));
 
@@ -384,24 +384,42 @@ static CGFloat radianConversionFactor = M_PI / 180;
   // segment color - array index
 
   // NSDictionary * previousSegment;
-  __block CGFloat previousSegmentAngle;
-
+    
+__block CGFloat previousSegmentAngle;
+//__block UIBezierPath *aPath = [UIBezierPath bezierPath];
+__block CGFloat currentPointOnArcX;
+__block CGFloat currentPointOnArcY;
+    
   [_segmentsArray
       enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-
+       
+        UIBezierPath *aPath = [UIBezierPath bezierPath];
         NSMutableDictionary *segment = [obj mutableCopy];
         // _segmentsArray[idx];
 
         NSNumber *segmentType = segment[@"type"];
-        //   NSUInteger segmentTypeInteger = segmentType.integerValue;
+        NSUInteger segmentTypeInteger = segmentType.integerValue;
 
+        UIColor *color = coloursArray[segmentType.unsignedIntegerValue];
+          
         NSNumber *segmentSize = segment[@"size"];
-//  double segmentSizeDouble = segmentSize.doubleValue;
-// NSNumber *numberOfAnnotations = segment[@"annotationsCount"];
-//   double numberOfAnnotationsDouble = numberOfAnnotations.doubleValue;
+       double segmentSizeDouble = segmentSize.doubleValue;
+          
+        NSNumber *numberOfAnnotations = segment[@"annotationsCount"];
+        double numberOfAnnotationsDouble = numberOfAnnotations.doubleValue;
+          
         CGFloat startAngle;
         CGFloat endAngle;
+
+        // UIBezierPath * aPath = [UIBezierPath bezierPathWithCGPath
           
+         //[aPath addQuadCurveToPoint:p2 controlPoint:cp2];
+
+        // UIBezierPath * pathForStartPoint = [UIBezierPath bezierPath];
+        // CGPoint startPoint = [pathForStartPoint currentPoint];
+        //
+        // UIBezierPath * pathForEndPoint = [UIBezierPath bezierPath];
+        // CGPoint endPoint = [pathForEndPoint currentPoint];
 
         // start angle
         if (idx == 0) {
@@ -410,11 +428,20 @@ static CGFloat radianConversionFactor = M_PI / 180;
           // forKey:@"startAngle"];
           // *stop = YES;    // Stop enumerating
           // return;
-        } else {
-
+        } else if (previousSegmentAngle){
+            
+            startAngle = previousSegmentAngle;
+            
+            //BLOCK TO ADD NUMBER
+       //if (!_clusteringManager.currentPointOnArcX == 0){
+       // CGFloat point = _clusteringManager.currentPointOnArcX;
+            
+            
           // NSDictionary *previousSegment = _segmentsArray[idx - 1];
-          // startAngle = [previousSegment[@"endAngle"] doubleValue];
-          startAngle = (double)previousSegmentAngle;
+          //  startAngle = [previousSegment[@"endAngle"] doubleValue];
+            
+           //WAS startAngle = (double)previousSegmentAngle;
+            
           //   [segment setObject:[NSNumber numberWithFloat:startAngle]
           //   forKey:@"startAngle"];
           // startAngle = currentAngle;
@@ -422,17 +449,146 @@ static CGFloat radianConversionFactor = M_PI / 180;
 
         // end angle
         if (idx == _segmentsArray.count - 1) {
-          endAngle = 360 * radianConversionFactor;
+            endAngle = 2* M_PI;
+            previousSegmentAngle = 0;
+            currentPointOnArcX = 0;
+            currentPointOnArcY = 0;
+//            CGFloat pointX = _clusteringManager.currentPointOnArcX;
+//            CGFloat pointY = _clusteringManager.currentPointOnArcY;
+
+            //360 * radianConversionFactor;
           //  [segment setObject:[NSNumber numberWithFloat:endAngle]
           //  forKey:@"startAngle"];
         } else {
 
-          endAngle = 360 * radianConversionFactor * segmentSize.doubleValue;
+          endAngle =  2* M_PI * segmentSizeDouble;
+            previousSegmentAngle = endAngle;
           //  [segment setObject:[NSNumber numberWithFloat:endAngle]
           //  forKey:@"startAngle"];
         }
+          
+      
+          [aPath moveToPoint:CGPointMake(center.x, center.y)];
+          
+          [aPath addArcWithCenter:CGPointMake(center.x, center.y)
+                           radius:rect.size.width / 2
+                       startAngle:startAngle
+                         endAngle:endAngle
+                        clockwise:YES];
+         
+          CGPoint currentPoint = [aPath currentPoint];
+          
+          [aPath setLineWidth:3];
+       //WAS previousSegmentAngle = endAngle;
+  
+        [aPath closePath];
+        // set the stoke color
+    
+        [color setFill];
+        [[_clusteringManager strokeColour] setStroke];
 
-        previousSegmentAngle = endAngle;
+        // draw the path
+        [aPath stroke];
+        [aPath fill];
+          
+         
+//          if (!_clusteringManager.currentPointOnArcX == 0){
+//           //test
+//         // CGPoint currentPoint1 = [aPath currentPoint];
+//
+//          CGFloat arcMidPointX = (fabs(_clusteringManager.currentPointOnArcX - currentPoint.x))/2;
+//          CGFloat arcMidPointY = (fabs(_clusteringManager.currentPointOnArcY - currentPoint.y))/2;
+//          CGPoint arcMidPoint = {arcMidPointX,arcMidPointY};
+//          }else {
+        
+          //          CGPoint arcMidPoint = {fabs(_clusteringManager.currentPointOnArcX - currentPoint.x))/2,fabs(_clusteringManager.currentPointOnArcY - currentPoint.y))/2};
+         
+          CGPoint midPoint;
+          NSLog(@"%f",segmentSizeDouble);
+          
+          
+          if (segmentSizeDouble > 0.5){
+              
+              CGFloat minOperandX = MIN(currentPointOnArcX,currentPoint.x);
+              CGFloat maxOperandX = MAX(currentPointOnArcX,currentPoint.x);
+              CGFloat arcMidPointX = minOperandX + (maxOperandX - minOperandX)/3;
+              
+              CGFloat minOperandY = MIN(currentPointOnArcY,currentPoint.y);
+              CGFloat maxOperandY = MAX(currentPointOnArcY,currentPoint.y);
+              CGFloat arcMidPointY = minOperandY + (maxOperandY - minOperandY)/3;
+              CGPoint arcMidPoint = {arcMidPointX,arcMidPointY};
+              
+              minOperandX = MIN(arcMidPoint.x,center.x);
+              maxOperandX = MAX(arcMidPoint.x,center.x);
+              CGFloat midPointX = minOperandX + (maxOperandX - minOperandX)/3;
+              
+              minOperandY = MIN(arcMidPoint.y,center.y);
+              maxOperandY = MAX(arcMidPoint.y,center.y);
+              CGFloat midPointY = minOperandY + (maxOperandY - minOperandY)/3;
+              
+              midPoint = CGPointMake(midPointX,midPointY);
+              
+          }else if (segmentSizeDouble > 0.3){
+             
+          CGFloat minOperandX = MIN(currentPointOnArcX,currentPoint.x);
+          CGFloat maxOperandX = MAX(currentPointOnArcX,currentPoint.x);
+           CGFloat arcMidPointX = minOperandX + (maxOperandX - minOperandX)/2.5;
+          
+          CGFloat minOperandY = MIN(currentPointOnArcY,currentPoint.y);
+          CGFloat maxOperandY = MAX(currentPointOnArcY,currentPoint.y);
+          CGFloat arcMidPointY = minOperandY + (maxOperandY - minOperandY)/2.5;
+         CGPoint arcMidPoint = {arcMidPointX,arcMidPointY};
+
+          minOperandX = MIN(arcMidPoint.x,center.x);
+          maxOperandX = MAX(arcMidPoint.x,center.x);
+          CGFloat midPointX = minOperandX + (maxOperandX - minOperandX)/2.5;
+          
+          minOperandY = MIN(arcMidPoint.y,center.y);
+          maxOperandY = MAX(arcMidPoint.y,center.y);
+          CGFloat midPointY = minOperandY + (maxOperandY - minOperandY)/2.5;
+
+          midPoint = CGPointMake(midPointX,midPointY);
+          }else{
+              //not putting text for very small area
+          }
+          
+          UIBezierPath *bezierTestCircle = [UIBezierPath bezierPath];
+          [[_clusteringManager strokeColour] setFill];
+          
+          [bezierTestCircle addArcWithCenter:midPoint radius:2 startAngle:0 endAngle:2 * M_PI clockwise:YES];
+          
+          [bezierTestCircle stroke];
+          [bezierTestCircle fill];
+         
+          
+          currentPointOnArcX = currentPoint.x;
+          currentPointOnArcY = currentPoint.y;
+          
+       
+          //[aPath moveToPoint:CGPointMake(center.x, center.y)];
+          //[aPath addLineToPoint:CGPointMake(center.x, center.y)];
+//
+//          //BLOCK TO DRAW TEXT
+//          
+//          //got point for text
+         
+          
+          
+//           CAShapeLayer *progressLayer = [[CAShapeLayer alloc] init];
+//           [progressLayer setPath:bezierPath.CGPath];
+//           [progressLayer setStrokeColor:[UIColor colorWithWhite:1.0 alpha:0.2].CGColor];
+//           [progressLayer setFillColor:[UIColor clearColor].CGColor];
+//           [progressLayer setLineWidth:0.3 * self.bounds.size.width];
+//           [progressLayer setStrokeEnd:volume/100];
+//           [_circleView.layer addSublayer:progressLayer];
+          
+           
+           
+        
+          
+//        [aPath addLineToPoint:CGPointMake(CGRectGetMaxX(rect),
+//                                          CGRectGetMinY(rect))];
+
         //  previousSegment =  [segment copy];
 
         //  for (unsigned int i = 0; i < _segmentSizesArray.count; i++) {
@@ -456,141 +612,140 @@ static CGFloat radianConversionFactor = M_PI / 180;
         //    }
 
         // currentAngle = endAngle;
-UIColor *color = coloursArray[segmentType.unsignedIntegerValue];
 
-CGContextRef context = UIGraphicsGetCurrentContext();
+        // CGContextRef context = UIGraphicsGetCurrentContext();
+        //
+        // CGMutablePathRef arc = CGPathCreateMutable();
+        // CGPathMoveToPoint(arc, NULL, center.x, center.y);
+        //
+        //// RatingForPin rating = (RatingForPin)segment[@"type"];
+        //
+        // CGContextSetFillColorWithColor(context, color.CGColor);
+        //
+        // CGContextSetStrokeColorWithColor(
+        // context, _clusteringManager.strokeColour.CGColor);
+        //
+        //
+        // CGPathAddArc(arc, NULL, center.x, center.y, rect.size.width /
+        // 2,startAngle, endAngle, YES);
 
-CGMutablePathRef arc = CGPathCreateMutable();
-CGPathMoveToPoint(arc, NULL, center.x, center.y);
+        // MARK: BLOCK TO GET SEGMENT CENTER using CGPathApply
 
-// RatingForPin rating = (RatingForPin)segment[@"type"];
+        // pieSegmentCenter
 
-CGContextSetFillColorWithColor(context, color.CGColor);
+        // MARK: !!!!get segment bounding box
+        //   CGRect pieSegmentRect = CGPathGetPathBoundingBox(arc);
 
-CGContextSetStrokeColorWithColor(
-context, _clusteringManager.strokeColour.CGColor);
+        //      CGPoint pieSegmentCenter =
+        //      CGPointMake(CGRectGetMidX(pieSegmentRect),
+        //      CGRectGetMidY(pieSegmentRect));
 
+        // NSLog(@"pieSegmentCenter
+        // x:%f,y:%f",pieSegmentCenter.x,pieSegmentCenter.y);
 
+        // NSLog(@"%@",pieSegmentRect);
 
-CGPathAddArc(arc, NULL, center.x, center.y, rect.size.width / 2,startAngle, endAngle, YES);
- 
-   
-   
-          
-          
-//MARK: BLOCK TO GET SEGMENT CENTER using CGPathApply
-  
-// pieSegmentCenter
+        // CGMutablePathRef arc1 = CGPathCreateMutable();
+        // CGPathAddArc(arc1, NULL, center.x, center.y, rect.size.width / 2,
+        //   startAngle, endAngle/2, YES);
 
-// MARK: !!!!get segment bounding box
-//   CGRect pieSegmentRect = CGPathGetPathBoundingBox(arc);
+        // try change radius here and grab cooridnate
 
-//      CGPoint pieSegmentCenter =
-//      CGPointMake(CGRectGetMidX(pieSegmentRect),
-//      CGRectGetMidY(pieSegmentRect));
+        // CGPathMoveToPoint(arc1, NULL, center.x, center.y);
 
-// NSLog(@"pieSegmentCenter
-// x:%f,y:%f",pieSegmentCenter.x,pieSegmentCenter.y);
-
-// NSLog(@"%@",pieSegmentRect);
-          
-//CGMutablePathRef arc1 = CGPathCreateMutable();
-//CGPathAddArc(arc1, NULL, center.x, center.y, rect.size.width / 2,
-//   startAngle, endAngle/2, YES);
-          
-// try change radius here and grab cooridnate
-          
-// CGPathMoveToPoint(arc1, NULL, center.x, center.y);
-          
-//          CGPathAddLineToPoint(arc, NULL, center.x, center.y );
-//          CGPathApply(arc1, <#void * _Nullable info#>, <#CGPathApplierFunction  _Nullable function#>);
-//          CGPoint center = CGPointMake
-//          
-//          NSMutableArray *pathElements = [NSMutableArray arrayWithCapacity:1];
-//          // This contains an array of paths, drawn to this current view
-//          CFMutableArrayRef existingPaths = displayingView.pathArray;
-//          CFIndex pathCount = CFArrayGetCount(existingPaths);
-//          for( int i=0; i < pathCount; i++ ) {
-//              CGMutablePathRef pRef = (CGMutablePathRef) CFArrayGetValueAtIndex(existingPaths, i);
-//              CGPathApply(arc1, pathElements, processPathElement);
+        //          CGPathAddLineToPoint(arc, NULL, center.x, center.y );
+        //          CGPathApply(arc1, <#void * _Nullable info#>,
+        //          <#CGPathApplierFunction  _Nullable function#>);
+        //          CGPoint center = CGPointMake
+        //
+        //          NSMutableArray *pathElements = [NSMutableArray
+        //          arrayWithCapacity:1];
+        //          // This contains an array of paths, drawn to this current
+        //          view
+        //          CFMutableArrayRef existingPaths = displayingView.pathArray;
+        //          CFIndex pathCount = CFArrayGetCount(existingPaths);
+        //          for( int i=0; i < pathCount; i++ ) {
+        //              CGMutablePathRef pRef = (CGMutablePathRef)
+        //              CFArrayGetValueAtIndex(existingPaths, i);
+        //              CGPathApply(arc1, pathElements, processPathElement);
         //  }
-  
-  
-          
-          
-      
-          
-//MARK: BLOCK TO GET SEGMENT CENTER using UIBezierPath
-//UIBezierPath * aPath = [UIBezierPath bezierPathWithCGPath
-          
-//UIBezierPath * aPath = [UIBezierPath bezierPath];
-//[aPath moveToPoint:CGPointMake(center.x, center.y)];
-//[aPath addArcWithCenter:CGPointMake(center.x, center.y) radius:rect.size.width / 2 startAngle:startAngle endAngle:endAngle clockwise:YES];
-//          
-//UIBezierPath * pathForStartPoint = [UIBezierPath bezierPath];
-//CGPoint startPoint = [pathForStartPoint currentPoint];
-//          
-//UIBezierPath * pathForEndPoint = [UIBezierPath bezierPath];
-//CGPoint endPoint = [pathForEndPoint currentPoint];
-//          
-////check that it's not null
-//if(!startAngle == 0){
-//
-//[pathForStartPoint addArcWithCenter:CGPointMake(center.x, center.y) radius:rect.size.width / 2 startAngle:(endAngle - 0.001) endAngle:endAngle clockwise:YES];
-//}
-// 
-//[pathForEndPoint addArcWithCenter:CGPointMake(center.x, center.y) radius:rect.size.width / 2 startAngle:(startAngle - 0.001) endAngle:startAngle clockwise:YES];
-//
-//          
-//CGPoint arcMidPoint = {abs(endPoint.x - startPoint.x)/2,abs(endPoint.y - startPoint.y)/2};
-//          
-//CGPoint segmentMidPoint = {abs(endPoint.x - startPoint.x)/2,abs(endPoint.y - startPoint.y)/2};
-          
-          
 
-          
-          
-// UIColor *color = coloursArray[segmentType.unsignedIntegerValue];
-          
-////the point look to be at 80% down
-//[aPath addLineToPoint:CGPointMake(CGRectGetMaxX(rect), CGRectGetMaxY(rect) * .8)];
+        // MARK: BLOCK TO GET SEGMENT CENTER using UIBezierPath
+        // UIBezierPath * aPath = [UIBezierPath bezierPathWithCGPath
 
-////1st arc
-////The end point look to be at 1/4 at left, bottom
-//CGPoint p = CGPointMake(CGRectGetMaxX(rect) / 4, CGRectGetMaxY(rect));
-//CGPoint cp = CGPointMake( (CGRectGetMaxX(rect) / 4) + ((CGRectGetMaxX(rect) - (CGRectGetMaxX(rect) / 4)) / 2) , CGRectGetMaxY(rect) * .8);
+        // UIBezierPath * aPath = [UIBezierPath bezierPath];
+        //[aPath moveToPoint:CGPointMake(center.x, center.y)];
+        //[aPath addArcWithCenter:CGPointMake(center.x, center.y)
+        //radius:rect.size.width / 2 startAngle:startAngle endAngle:endAngle
+        //clockwise:YES];
 
-//[aPath addQuadCurveToPoint:p controlPoint:cp];
+        // UIBezierPath * pathForStartPoint = [UIBezierPath bezierPath];
+        // CGPoint startPoint = [pathForStartPoint currentPoint];
+        //
+        // UIBezierPath * pathForEndPoint = [UIBezierPath bezierPath];
+        // CGPoint endPoint = [pathForEndPoint currentPoint];
+        // _clusteringManager.currentPointOnArc = [aPath currentPoint];
 
-////2nd arc
-////The end point look to be at 80% downt at left,
-//CGPoint p2 = CGPointMake(CGRectGetMinX(rect), CGRectGetMaxY(rect) * .8);
-//CGPoint cp2 = CGPointMake( (CGRectGetMaxX(rect) / 4) / 2 , CGRectGetMaxY(rect) * .8);
-//
-//[aPath addQuadCurveToPoint:p2 controlPoint:cp2];
-          
-//[aPath closePath];
-//          //set the stoke color
-//[color setStroke];
-//[[_clusteringManager strokeColour]setFill];
-//          
-////draw the path
-//[aPath stroke];
-//[aPath fill];
- 
-          
-//[aPath addLineToPoint:CGPointMake(CGRectGetMaxX(rect), CGRectGetMinY(rect))];
-    
-          
-   
+        // check that it's not null
+        // if(!startAngle == 0){
 
-//MARK: WAS
-CGPathCloseSubpath(arc);
-CGContextAddPath(context, arc);
-CGContextDrawPath(context, kCGPathFillStroke);
-CGContextFillPath(context);
+        //[pathForStartPoint addArcWithCenter:CGPointMake(center.x, center.y)
+        //radius:rect.size.width / 2 startAngle:(endAngle - 0.001)
+        //endAngle:endAngle clockwise:YES];
+        // }
 
-          
+        //[pathForEndPoint addArcWithCenter:CGPointMake(center.x, center.y)
+        //radius:rect.size.width / 2 startAngle:(startAngle - 0.001)
+        //endAngle:startAngle clockwise:YES];
+
+        // CGPoint arcMidPoint = {abs(endPoint.x -
+        // startPoint.x)/2,abs(endPoint.y - startPoint.y)/2};
+        // CGPoint segmentMidPoint = {abs(endPoint.x -
+        // startPoint.x)/2,abs(endPoint.y - startPoint.y)/2};
+
+        // UIColor *color = coloursArray[segmentType.unsignedIntegerValue];
+
+        ////the point look to be at 80% down
+        //[aPath addLineToPoint:CGPointMake(CGRectGetMaxX(rect),
+        //CGRectGetMaxY(rect) * .8)];
+
+        ////1st arc
+        ////The end point look to be at 1/4 at left, bottom
+        // CGPoint p = CGPointMake(CGRectGetMaxX(rect) / 4,
+        // CGRectGetMaxY(rect));
+        // CGPoint cp = CGPointMake( (CGRectGetMaxX(rect) / 4) +
+        // ((CGRectGetMaxX(rect) - (CGRectGetMaxX(rect) / 4)) / 2) ,
+        // CGRectGetMaxY(rect) * .8);
+
+        //[aPath addQuadCurveToPoint:p controlPoint:cp];
+
+        ////2nd arc
+        ////The end point look to be at 80% downt at left,
+        // CGPoint p2 = CGPointMake(CGRectGetMinX(rect), CGRectGetMaxY(rect) *
+        // .8);
+        // CGPoint cp2 = CGPointMake( (CGRectGetMaxX(rect) / 4) / 2 ,
+        // CGRectGetMaxY(rect) * .8);
+        //
+        //[aPath addQuadCurveToPoint:p2 controlPoint:cp2];
+
+        //[aPath closePath];
+        //          //set the stoke color
+        //[color setStroke];
+        //[[_clusteringManager strokeColour]setFill];
+        //
+        ////draw the path
+        //[aPath stroke];
+        //[aPath fill];
+
+        //[aPath addLineToPoint:CGPointMake(CGRectGetMaxX(rect),
+        //CGRectGetMinY(rect))];
+
+        // MARK: WAS
+        // CGPathCloseSubpath(arc);
+        // CGContextAddPath(context, arc);
+        // CGContextDrawPath(context, kCGPathFillStroke);
+        // CGContextFillPath(context);
+
         //      CGContextAddArc(context, center.x, center.y, radius,
         //      startAngle,angle1, 0);
         //      CGContextClosePath(context);
@@ -600,8 +755,7 @@ CGContextFillPath(context);
         //    lineWidth, kCGLineCapButt, kCGLineJoinMiter, 10);
         //    CGContextAddPath(context, donutSegment);
 
-          
-//MARK: BLOCK TO DRAW TEXT
+        // MARK: BLOCK TO DRAW TEXT
         // CGRect textRect = CGRectMake(xPosition, yPosition, canvasWidth,
         // canvasHeight);
 

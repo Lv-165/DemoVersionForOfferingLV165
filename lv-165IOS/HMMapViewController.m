@@ -157,7 +157,8 @@ static bool isMainRoute;
 
 - (void)viewWillAppear:(BOOL)animated {
   [super viewWillAppear:animated];
-
+    
+    
   NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
   self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
   self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
@@ -189,17 +190,25 @@ static bool isMainRoute;
                                        onMapView:_mapView];
     }];
   } else {
-    [[NSOperationQueue new] addOperationWithBlock:^{
-      double scale =
-          _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
-      NSArray *annotations = [self.clusteringManager
-          clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
-                              withZoomScale:scale];
-      [self.clusteringManager displayAnnotations:annotations
-                                       onMapView:_mapView];
-    }];
+      //    _clusteringManager.clusteringFactor = 10;
+      //    _clusteringManager.clusterAnnotationViewRadius = 60;
+     [self reloadClustering];
+
   }
 }
+
+-(void)reloadClustering{
+    [[NSOperationQueue new] addOperationWithBlock:^{
+        double scale =
+        _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
+        NSArray *annotations = [self.clusteringManager
+                                clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
+                                withZoomScale:scale];
+        [self.clusteringManager displayAnnotations:annotations
+                                         onMapView:_mapView];
+    }];
+}
+
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
   [[NSOperationQueue new] addOperationWithBlock:^{

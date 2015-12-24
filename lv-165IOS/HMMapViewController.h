@@ -26,6 +26,7 @@
 @property (weak, nonatomic) IBOutlet UILabel *autorDescriptionLable;
 @property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 
+-(void)reloadClustering;
 
 @end
 

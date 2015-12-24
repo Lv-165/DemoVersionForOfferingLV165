@@ -41,6 +41,11 @@
 @property(strong, nonatomic) UIColor *goodRatingColour;
 @property(strong, nonatomic) UIColor *veryGoodRatingColour;
 
+@property(assign, nonatomic) CGPoint currentPointOnArc;
+@property(assign, nonatomic) CGFloat currentPointOnArcX;
+@property(assign, nonatomic) CGFloat currentPointOnArcY;
+@property(assign, nonatomic) CGFloat clusterAnnotationViewRadius;
+@property(assign, nonatomic) CGFloat clusteringFactor;
 @property(strong, nonatomic) UIColor *strokeColour;
 
 /**

@@ -61,7 +61,7 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
   if (self) {
     _lock = [NSRecursiveLock new];
     self.scale = [[NSNumber alloc] initWithDouble:1];
-
+      _clusteringFactor = 22;
     _noneRatingColour =
         [UIColor colorWithRed:0.620 green:0.625 blue:0.612 alpha:1.000];
 
@@ -78,7 +78,7 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
         [UIColor colorWithRed:0.000 green:1.000 blue:0.050 alpha:1.000];
 
     _strokeColour = [UIColor colorWithRed:1 green:1 blue:1 alpha:1.000];
-
+      _clusterAnnotationViewRadius = 60;
     [self addAnnotations:annotations];
   }
   return self;
@@ -165,11 +165,12 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
 
       NSInteger count = [annotations count];
 
-      if (count < 10) {
+      
+      if (count < _clusteringFactor) {
         [clusteredAnnotations addObjectsFromArray:annotations];
       }
 
-      if (count > 9) {
+      if (count > _clusteringFactor - 1) {
 
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(
             totalLatitude / count, totalLongitude / count);
