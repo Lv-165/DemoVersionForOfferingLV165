@@ -108,13 +108,13 @@ static bool isMainRoute;
   ];
 
   NSArray *buttonsForUpToolBar = @[
-    [self createColorButton:@"filter"
+    [self createColorButton:@"sharing30_30"
                    selector:@selector(sharingForSocialNetworking:)],
     flexibleItem,
     [self createColorButton:@"favptite30_30"
                    selector:@selector(addToFavourite:)],
     flexibleItem,
-    [self createColorButton:@"info30_3-0" selector:@selector(infoMethod:)],
+    [self createColorButton:@"info30_30" selector:@selector(infoMethod:)],
     flexibleItem,
     [self createColorButton:@"road30_30"
                    selector:@selector(showRoudFromThisPlaceToMyLocation:)]
@@ -569,7 +569,7 @@ static bool isMainRoute;
 
           [self showAlertWithTitle:@"No direction"
                         andMessage:@"There is no connection between your "
-                        @"position and this point"
+                                   @"position and this point"
                     andActionTitle:@"OK"];
 
         } else if ([response.routes count] == 0) {
@@ -785,9 +785,9 @@ static bool isMainRoute;
     zoomRect = MKMapRectUnion(zoomRect, rect);
     zoomRect = [self.mapView mapRectThatFits:zoomRect];
 
-    //    [self.mapView setVisibleMapRect:zoomRect
-    //                        edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
-    //                           animated:YES];
+//    [self.mapView setVisibleMapRect:zoomRect
+//                        edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
+//                           animated:YES];
 
     self.downToolBar.hidden = YES;
     self.constraitToShowUpToolBar.constant = 210.f;
@@ -818,7 +818,8 @@ static bool isMainRoute;
     Waiting *waiting = place.waiting;
     self.waitingTimeLable.text = [NSString
         stringWithFormat:@"Average waiting time: %@", waiting.avg_textual];
-  }
+
+}
 }
 
 - (void)touchesEnded:(NSSet *)touches withEvent:(UIEvent *)event {
