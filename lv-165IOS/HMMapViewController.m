@@ -108,13 +108,13 @@ static bool isMainRoute;
   ];
 
   NSArray *buttonsForUpToolBar = @[
-    [self createColorButton:@"filter"
+    [self createColorButton:@"sharing30_30"
                    selector:@selector(sharingForSocialNetworking:)],
     flexibleItem,
     [self createColorButton:@"favptite30_30"
                    selector:@selector(addToFavourite:)],
     flexibleItem,
-    [self createColorButton:@"info30_3-0" selector:@selector(infoMethod:)],
+    [self createColorButton:@"info30_30" selector:@selector(infoMethod:)],
     flexibleItem,
     [self createColorButton:@"road30_30"
                    selector:@selector(showRoudFromThisPlaceToMyLocation:)]
