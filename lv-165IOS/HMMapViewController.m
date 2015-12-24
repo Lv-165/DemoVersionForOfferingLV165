@@ -27,6 +27,7 @@
 #import "Branch/BranchLinkProperties.h"
 #import "FBAnnotationClustering/FBAnnotationClustering.h"
 
+
 @interface HMMapViewController ()
 
 @property(strong, nonatomic) CLLocationManager *locationManager;
@@ -119,7 +120,7 @@ static bool isMainRoute;
     [self createColorButton:@"road30_30"
                    selector:@selector(showRoudFromThisPlaceToMyLocation:)]
   ];
-
+    
   [self.downToolBar setItems:buttonsForDownToolBar animated:YES];
 
   [self.upToolBar setItems:buttonsForUpToolBar animated:YES];
@@ -352,7 +353,6 @@ static bool isMainRoute;
                             NSLog(@"Success getting url: %@", url);
                           }
                         }];
-
   [branchUniversalObject showShareSheetWithLinkProperties:linkProperties
                                              andShareText:nil
                                        fromViewController:self
@@ -362,9 +362,53 @@ static bool isMainRoute;
 }
 
 - (void)addToFavourite:(UIBarButtonItem *)sender {
+    CLLocationCoordinate2D coordinate = self.annotationView.annotation.coordinate;
+    [SVGeocoder reverseGeocode:coordinate completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse, NSError *error) {
+        NSString* message = nil;
+        if (error) {
+            message = [error localizedDescription];
+        } else {
+            if ([placemarks count] > 0) {
+                SVPlacemark* placeMark = [placemarks firstObject];
+                NSString *stringOfPlace = [self creatingAObjectOfMassive:placeMark];
+                
+                NSNumber *latitude = [[NSNumber alloc] initWithDouble:placeMark.location.coordinate.latitude];
+                NSNumber *longitude = [[NSNumber alloc] initWithDouble:placeMark.location.coordinate.longitude];
+                
+                NSDictionary *coordinate = @{
+                                             @"latitude":latitude,
+                                             @"longitude":longitude
+                                             };
+                NSDictionary *place = @{
+                                        @"StringOfPlace":stringOfPlace,
+                                        @"Coordinate":coordinate,
+                                        };
+                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                NSArray *tempArrayOne = [userDefaults objectForKey:@"PlaceByFavourite"];
+                NSInteger i = 0;
+                for (NSDictionary *placeInDict in tempArrayOne) {
+                    if ([[placeInDict objectForKey:@"StringOfPlace"] isEqualToString:stringOfPlace]) {
+                        i++;
+                    }
+                }
+                if (i == 0) {
+                NSMutableArray *tempArrayTwo = [[NSMutableArray alloc] initWithArray:tempArrayOne];
+                [tempArrayTwo addObject:place];
+                [userDefaults removeObjectForKey:@"PlaceByFavourite"];
+                [userDefaults setObject:tempArrayTwo forKey:@"PlaceByFavourite"];
+            }
+            } else {
+                message = @"No Placemarks Found";
+            }
+        }
+    }];
+
+    
 }
+
 - (void)infoMethod:(UIBarButtonItem *)sender {
 }
+
 - (void)showRoudFromThisPlaceToMyLocation:(UIBarButtonItem *)sender {
 }
 
@@ -726,7 +770,7 @@ static bool isMainRoute;
   }
 }
 
-#pragma mark - methods for Notification//latitude":latitude, @"longitude
+#pragma mark - methods for Notification
 
 - (void)showPlace:(NSNotification *)notification {
   [self.navigationController popViewControllerAnimated:YES];
@@ -939,5 +983,35 @@ static bool isMainRoute;
 
   return UIInterfaceOrientationMaskAll;
 }
+
+- (NSString *)creatingAObjectOfMassive:(SVPlacemark *)placeMark {
+    NSMutableArray *levelOfLocality = [NSMutableArray array];
+    if (placeMark.formattedAddress) {
+        [levelOfLocality addObject:placeMark.formattedAddress];
+    }
+    if (placeMark.administrativeArea) {
+        [levelOfLocality addObject:placeMark.administrativeArea];
+    }
+    if (placeMark.subAdministrativeArea) {
+        [levelOfLocality addObject:placeMark.subAdministrativeArea];
+    }
+    if (placeMark.thoroughfare) {
+        [levelOfLocality addObject:placeMark.thoroughfare];
+    }
+    NSInteger count = 0;
+    NSMutableString *str = [NSMutableString stringWithFormat:@""];
+    for (id dataOfLocality in levelOfLocality) {
+        if (count >= 3) {
+            break;
+        }
+        if (dataOfLocality) {
+            [str appendFormat:@", %@",dataOfLocality];
+            count ++;
+        }
+    }
+    [str deleteCharactersInRange:NSMakeRange(0, 1)];
+    return str;
+}
+
 
 @end
