@@ -11,6 +11,9 @@
 #import "HMCoreDataManager.h"
 #import "HMServerManager.h"
 
+extern NSString* const addToMyFavourite;
+extern NSString* const addToMyFavouriteInfoKey;
+
 @interface HMMapViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIView *viewToAnimate;

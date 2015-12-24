@@ -9,9 +9,13 @@
 #import "HMSearchViewController.h"
 #import "SVGeocoder.h"
 #import "UICellForInfo.h"
+#import "HMMapViewController.h"
+#import "HMMapAnnotation.h"
 
 NSString* const showPlaceNotificationCenter = @"showPlaceNotificationCenter";
 NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCenterInfoKey";
+
+
 
 @interface HMSearchViewController ()
 
@@ -33,6 +37,8 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     self.arrayForPlacesMarks = [NSMutableArray array];
     
     [[self navigationController] setNavigationBarHidden:NO animated:YES];
+    
+    [self searchBar:self.searchBar selectedScopeButtonIndexDidChange:self.searchBar.selectedScopeButtonIndex];
     // Do any additional setup after loading the view.
 }
 
@@ -44,6 +50,7 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
 }
 
 - (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    self.idicator = placesFromSearchBar;
     [searchBar setShowsCancelButton:YES animated:YES];
 }
 
@@ -103,12 +110,14 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     switch (selectedScope) {
         case 0:
         {
+            self.idicator = placeFromHistory;
             self.arrayOfHistoryPlaces = [userDefaults objectForKey:@"PlaceByHistory"];
             self.arrayForPlacesMarks = [[NSMutableArray alloc] initWithArray:self.arrayOfHistoryPlaces];
             break;
         }
         case 1:
         {
+            self.idicator = placeFromFavourite;
             self.arrayOfFavouritePlaces = [userDefaults objectForKey:@"PlaceByFavourite"];
             self.arrayForPlacesMarks = [[NSMutableArray alloc] initWithArray:self.arrayOfFavouritePlaces];
             break;
@@ -152,7 +161,7 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
     
     if (self.isAtSearchBar) {
         NSMutableArray *tempArray = [NSMutableArray arrayWithArray:self.arrayOfHistoryPlaces];
-        [tempArray addObject:self.arrayForPlacesMarks[indexPath.row]];//gyghg
+        [tempArray addObject:self.arrayForPlacesMarks[indexPath.row]];
 
     if ([tempArray count] >= 20) {
         for (NSInteger i = 0; i < ([self.arrayOfHistoryPlaces count] - 20); i ++) {
@@ -172,6 +181,35 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
                                                         object:nil
                                                       userInfo:dictionary];
 }
+
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    if (editingStyle == UITableViewCellEditingStyleDelete) {
+        [self.arrayForPlacesMarks removeObjectAtIndex:indexPath.row];
+        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+        NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+        switch (self.idicator) {
+            case placeFromFavourite:
+            {
+                [userDefaults removeObjectForKey:@"PlaceByFavourite"];
+                [userDefaults setObject:self.arrayForPlacesMarks forKey:@"PlaceByFavourite"];
+                break;
+            }
+            case placeFromHistory:
+            {
+                [userDefaults removeObjectForKey:@"PlaceByHistory"];
+                [userDefaults setObject:self.arrayForPlacesMarks forKey:@"PlaceByHistory"];
+                break;
+            }
+            case placesFromSearchBar:
+            {
+                break;
+            }
+    }
+    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
+        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
+    }
+}
+
 
 #pragma mark - for creating elememt of arrayOfFavourite and arrayOfHistory
 
