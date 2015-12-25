@@ -10,7 +10,7 @@
 #import "HMCountriesViewController.h"
 #import "AFNetworkActivityIndicatorManager.h"
 #import "Reachability.h"
-#import "Branch/Branch.h"
+#import "Branch.h"
 
 @interface HMAppDelegate ()
 

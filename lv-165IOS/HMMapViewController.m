@@ -247,19 +247,20 @@ static bool isMainRoute;
   
     branchUniversalObject.title = place.descript.descriptionString;
     branchUniversalObject.contentDescription = [NSString stringWithFormat:@"Lat: %@, Lon: %@", place.lat, place.lon];
-    UIGraphicsBeginImageContext(self.mapView.frame.size);
-    [self.mapView.layer renderInContext:UIGraphicsGetCurrentContext()];
+    
+    UIGraphicsBeginImageContext(self.mapView.bounds.size);
+    [self.mapView drawViewHierarchyInRect:self.mapView.bounds afterScreenUpdates:YES];
     UIImage *locationImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     NSData *data = UIImagePNGRepresentation(locationImage);
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *documentsDirectory = [paths firstObject];
 //    NSString *imageName = [NSString stringWithFormat:@"locationImage"];
-    NSString *stringPath = [documentsDirectory stringByAppendingPathComponent:@"locationImage.png"];
-    [data writeToFile:stringPath atomically:YES];
+    NSURL *imageUrlPath = [NSURL fileURLWithPath:[documentsDirectory stringByAppendingPathComponent:@"locationImage.png"]];
+    [data writeToURL:imageUrlPath atomically:YES];
 //    NSURL *dataURL = [[NSBundle mainBundle] URLForResource: @"locationImage" withExtension:@"png"];
     
-    branchUniversalObject.imageUrl = stringPath;
+    branchUniversalObject.imageUrl = [imageUrlPath absoluteString];
     
     BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
     
