@@ -31,6 +31,7 @@
 		302A11D61C0371C3002F8FF0 /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11C31C0371C3002F8FF0 /* UIProgressView+AFNetworking.m */; };
 		302A11D71C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11C51C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m */; };
 		302A11D81C0371C3002F8FF0 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11C71C0371C3002F8FF0 /* UIWebView+AFNetworking.m */; };
+		304B13F21C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m in Sources */ = {isa = PBXBuildFile; fileRef = 304B13F11C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m */; };
 		308A5CDA1C1735F4009DD439 /* SVGeocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 308A5CD71C1735F4009DD439 /* SVGeocoder.m */; };
 		308A5CDB1C1735F4009DD439 /* SVPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 308A5CD91C1735F4009DD439 /* SVPlacemark.m */; };
 		308A5CDE1C173620009DD439 /* UICellForInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 308A5CDD1C173620009DD439 /* UICellForInfo.m */; };
@@ -151,6 +152,8 @@
 		302A11C51C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIRefreshControl+AFNetworking.m"; sourceTree = "<group>"; };
 		302A11C61C0371C3002F8FF0 /* UIWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		302A11C71C0371C3002F8FF0 /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
+		304B13F01C2C78330081AB13 /* UILabel+HMdynamicSizeMe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+HMdynamicSizeMe.h"; sourceTree = "<group>"; };
+		304B13F11C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+HMdynamicSizeMe.m"; sourceTree = "<group>"; };
 		308A5CD61C1735F4009DD439 /* SVGeocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGeocoder.h; sourceTree = "<group>"; };
 		308A5CD71C1735F4009DD439 /* SVGeocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGeocoder.m; sourceTree = "<group>"; };
 		308A5CD81C1735F4009DD439 /* SVPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPlacemark.h; sourceTree = "<group>"; };
@@ -576,6 +579,8 @@
 			isa = PBXGroup;
 			children = (
 				C01442E21C0333A5000F8F6F /* main.m */,
+				304B13F01C2C78330081AB13 /* UILabel+HMdynamicSizeMe.h */,
+				304B13F11C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -793,6 +798,7 @@
 				843905871C18E3DC00450FA8 /* HMCommentsTableViewController.m in Sources */,
 				7FAD6ED41C283010007E4B92 /* Country+CoreDataProperties.m in Sources */,
 				7FAD6ECD1C283010007E4B92 /* User.m in Sources */,
+				304B13F21C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m in Sources */,
 				7FAD6EDB1C283010007E4B92 /* Waiting.m in Sources */,
 				7FAD6ECE1C283010007E4B92 /* Comments+CoreDataProperties.m in Sources */,
 				7FAD6ECB1C283010007E4B92 /* Countries.m in Sources */,

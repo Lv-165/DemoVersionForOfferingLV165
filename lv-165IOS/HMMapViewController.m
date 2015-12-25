@@ -26,6 +26,7 @@
 #import "Branch/BranchUniversalObject.h"
 #import "Branch/BranchLinkProperties.h"
 #import "FBAnnotationClustering/FBAnnotationClustering.h"
+#import "UILabel+HMdynamicSizeMe.h"
 
 
 @interface HMMapViewController ()
@@ -185,7 +186,6 @@ static bool isMainRoute;
           clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
                               withZoomScale:scale];
       self.clusteringManager.scale = [[NSNumber alloc] initWithDouble:1.6];
-      ;
       [self.clusteringManager displayAnnotations:annotations
                                        onMapView:_mapView];
     }];
@@ -200,6 +200,9 @@ static bool isMainRoute;
                                        onMapView:_mapView];
     }];
   }
+}
+- (void)viewDidAppear:(BOOL)animated {
+    [self actionShowAll];
 }
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
@@ -824,18 +827,24 @@ static bool isMainRoute;
 
     static double delta = 1000000;
 
-    MKMapRect rect =
-        MKMapRectMake(center.x - delta, center.y - delta, delta * 2, delta * 2);
-    zoomRect = MKMapRectUnion(zoomRect, rect);
-    zoomRect = [self.mapView mapRectThatFits:zoomRect];
+//    MKMapRect rect =
+//        MKMapRectMake(center.x - delta, center.y - delta, delta * 2, delta * 2);
+//    zoomRect = MKMapRectUnion(zoomRect, rect);
+//    zoomRect = [self.mapView mapRectThatFits:zoomRect];
 
 //    [self.mapView setVisibleMapRect:zoomRect
 //                        edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
 //                           animated:YES];
 
     self.downToolBar.hidden = YES;
-    self.constraitToShowUpToolBar.constant = 210.f;
-    [self.viewToAnimate setNeedsUpdateConstraints];
+      
+//    [self. resizeHeightToFitForLabel:self.descriptionTextView];
+//    self.descriptionTextView.adjustsFontSizeToFitWidth = NO;
+    
+    self.constraitToShowUpToolBar.constant =  self.waitingTimeLable.frame.size.height +
+    self.descriptionTextView.frame.size.height + 54.f;
+      
+      [self.viewToAnimate setNeedsUpdateConstraints];
 
     [UIView animateWithDuration:1.f
                      animations:^{
@@ -969,6 +978,26 @@ static bool isMainRoute;
   [alert addAction:defaultAction];
   [self presentViewController:alert animated:YES completion:nil];
 }
+
+- (void) actionShowAll {
+    
+    MKMapRect zoomRect = MKMapRectNull;
+    
+    for (id <MKAnnotation> annotation in self.mapView.annotations) {
+        CLLocationCoordinate2D location = annotation.coordinate;
+        MKMapPoint center = MKMapPointForCoordinate(location);
+        static double delta = 20000;
+        MKMapRect rect = MKMapRectMake(center.x - delta, center.y - delta, delta * 2, delta * 2);
+        zoomRect = MKMapRectUnion(zoomRect, rect);
+    }
+    zoomRect = [self.mapView mapRectThatFits:zoomRect];
+    
+    [self.mapView setVisibleMapRect:zoomRect
+                        edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
+                           animated:YES];
+    
+}
+
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {
 
