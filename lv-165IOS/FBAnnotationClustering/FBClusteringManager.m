@@ -60,8 +60,13 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
   self = [super init];
   if (self) {
     _lock = [NSRecursiveLock new];
+      
     self.scale = [[NSNumber alloc] initWithDouble:1];
-    _clusteringFactor = 22;
+      
+    _clusteringFactor = 10;
+    _labelFontSize = _clusteringFactor * 1.3;
+    _clusterAnnotationViewRadius = _clusteringFactor * 5;
+
     _noneRatingColour =
         [UIColor colorWithRed:0.620 green:0.625 blue:0.612 alpha:1.000];
 
@@ -78,7 +83,7 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
         [UIColor colorWithRed:0.000 green:1.000 blue:0.050 alpha:1.000];
 
     _strokeColour = [UIColor colorWithRed:1 green:1 blue:1 alpha:1.000];
-    _clusterAnnotationViewRadius = 60;
+
     [self addAnnotations:annotations];
   }
   return self;

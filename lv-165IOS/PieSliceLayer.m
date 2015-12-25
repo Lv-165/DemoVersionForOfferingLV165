@@ -16,15 +16,13 @@
   if ([event isEqualToString:@"startAngle"] ||
       [event isEqualToString:@"endAngle"]) {
 
-          CABasicAnimation *animation = [CABasicAnimation
-                                         animationWithKeyPath:event];
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:event];
 
-          animation.duration = [CATransaction animationDuration];
-          animation.timingFunction = [CATransaction
-                                      animationTimingFunction];
-          return animation;
+    animation.duration = [CATransaction animationDuration];
+    animation.timingFunction = [CATransaction animationTimingFunction];
+    return animation;
 
-      //   return [self makeAnimationForKey:event];
+    //   return [self makeAnimationForKey:event];
   }
 
   return [super actionForKey:event];
@@ -81,6 +79,7 @@
   CGContextSetLineWidth(ctx, self.strokeWidth);
 
   CGContextDrawPath(ctx, kCGPathFillStroke);
+    
 }
 
 @end

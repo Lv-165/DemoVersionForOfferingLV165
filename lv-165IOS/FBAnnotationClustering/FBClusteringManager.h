@@ -46,6 +46,7 @@
 @property(assign, nonatomic) CGFloat currentPointOnArcY;
 @property(assign, nonatomic) CGFloat clusterAnnotationViewRadius;
 @property(assign, nonatomic) CGFloat clusteringFactor;
+@property(assign, nonatomic) CGFloat labelFontSize;
 @property(strong, nonatomic) UIColor *strokeColour;
 
 /**
