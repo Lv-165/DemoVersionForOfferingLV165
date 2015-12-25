@@ -212,15 +212,7 @@ static bool isMainRoute;
 
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-  [[NSOperationQueue new] addOperationWithBlock:^{
-    double scale =
-        self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
-    NSArray *annotations = [self.clusteringManager
-        clusteredAnnotationsWithinMapRect:mapView.visibleMapRect
-                            withZoomScale:scale];
-
-    [self.clusteringManager displayAnnotations:annotations onMapView:mapView];
-  }];
+  [self reloadClustering];
 }
 
 - (void)handleSwipe:(UISwipeGestureRecognizer *)swipe {
@@ -921,17 +913,8 @@ static bool isMainRoute;
       NSArray *array = [selectedAnnotationView.annotation.annotations copy];
       [self.mapView showAnnotations:array animated:YES];
 
-      [[NSOperationQueue new] addOperationWithBlock:^{
-        double scale = self.mapView.bounds.size.width /
-                       self.mapView.visibleMapRect.size.width;
+       [self reloadClustering];
 
-        NSArray *annotations = [self.clusteringManager
-            clusteredAnnotationsWithinMapRect:self.mapView.visibleMapRect
-                                withZoomScale:scale];
-
-        [self.clusteringManager displayAnnotations:annotations
-                                         onMapView:self.mapView];
-      }];
     }
   }
 }
