@@ -40,4 +40,20 @@
 - (id)initWithAnnotation:(id<MKAnnotation>)annotation
        clusteringManager:(FBClusteringManager *)clusteringManager;
 
+
+@property(nonatomic, strong) NSArray *sliceValues;
+- (id)initWithSliceValues:(NSArray *)sliceValues;
+
+ -(void)updateSlices;
+
 @end
+
+
+
+
+
+
+
+
+
+
