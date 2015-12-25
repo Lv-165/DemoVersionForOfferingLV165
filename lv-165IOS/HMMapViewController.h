@@ -15,7 +15,7 @@ extern NSString* const addToMyFavourite;
 extern NSString* const addToMyFavouriteInfoKey;
 
 @interface HMMapViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate>
-@property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
+
 @property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraitToShowUpToolBar;
 
 @property (weak, nonatomic) IBOutlet UIView *viewToAnimate;
@@ -29,7 +29,7 @@ extern NSString* const addToMyFavouriteInfoKey;
 @property (weak, nonatomic) IBOutlet UIView *viewForPinOfInfo;
 @property (weak, nonatomic) IBOutlet UILabel *waitingTimeLable;
 @property (weak, nonatomic) IBOutlet UILabel *autorDescriptionLable;
-
+@property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 
 @end
 
