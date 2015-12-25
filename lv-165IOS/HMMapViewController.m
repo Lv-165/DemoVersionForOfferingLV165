@@ -27,6 +27,7 @@
 #import "Branch/BranchLinkProperties.h"
 #import "FBAnnotationClustering/FBAnnotationClustering.h"
 #import "HMWeatherManager.h"
+#import "HMWeatherTableViewController.h"
 
 
 @interface HMMapViewController ()
@@ -101,7 +102,8 @@ static bool isMainRoute;
     [self createColorButton:@"compass"
                    selector:@selector(showYourCurrentLocation:)],
     flexibleItem,
-    [self createColorButton:@"Lupa" selector:@selector(buttonSearch:)],
+    [self createColorButton:@"Lupa"
+                   selector:@selector(buttonSearch:)],
     flexibleItem,
     [self createColorButton:@"filter"
                    selector:@selector(moveToFilterController:)],
@@ -117,7 +119,8 @@ static bool isMainRoute;
     [self createColorButton:@"favptite30_30"
                    selector:@selector(addToFavourite:)],
     flexibleItem,
-    [self createColorButton:@"info30_30" selector:@selector(infoMethod:)],
+    [self createColorButton:@"info30_30"
+                   selector:@selector(weatherShow:)],
     flexibleItem,
     [self createColorButton:@"road30_30"
                    selector:@selector(showRoudFromThisPlaceToMyLocation:)]
@@ -294,6 +297,9 @@ static bool isMainRoute;
 - (void)moveToFilterController:(UIBarButtonItem *)sender {
   [self performSegueWithIdentifier:@"showFilterViewController" sender:sender];
 }
+- (void)weatherShow:(UIBarButtonItem *)sender {
+    [self performSegueWithIdentifier:@"weather" sender:sender];
+}
 
 - (void)buttonSearch:(UIBarButtonItem *)sender {
 
@@ -399,8 +405,6 @@ static bool isMainRoute;
     
 }
 
-- (void)infoMethod:(UIBarButtonItem *)sender {
-}
 
 - (void)showRoudFromThisPlaceToMyLocation:(UIBarButtonItem *)sender {
 }
@@ -423,7 +427,14 @@ static bool isMainRoute;
     HMCommentsTableViewController *createViewController =
         segue.destinationViewController;
     createViewController.create = place;
+  
+  } else if ([[segue identifier] isEqualToString:@"weather"]) {
+      
+      NSDictionary *weather = self.weatherDict;
+       HMWeatherTableViewController *weatherViewController = segue.destinationViewController;
+      weatherViewController.weatherDict = weather;
   }
+
 }
 
 #pragma mark - Deallocation
@@ -853,11 +864,6 @@ static bool isMainRoute;
 
     Place *place = [self.placeArray firstObject];
     User *user = place.user;
-    
-    
-    
-#warning weather!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     
     self.weatherDict = [[NSDictionary alloc]init];
     [[HMWeatherManager sharedManager] getWeatherByCoordinate:place onSuccess:^(NSDictionary *weather) {

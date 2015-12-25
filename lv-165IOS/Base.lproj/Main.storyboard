@@ -254,6 +254,7 @@
                         <segue destination="7bs-0b-0Y2" kind="show" identifier="showSettingsViewController" id="FIo-P1-Pcd"/>
                         <segue destination="4Ib-ml-FoI" kind="show" identifier="Comments" id="Bf4-ER-3t1"/>
                         <segue destination="Hb2-hh-47C" kind="show" identifier="showFilterViewController" id="SQP-17-Yqa"/>
+                        <segue destination="Nir-a7-dnQ" kind="show" identifier="weather" id="EH0-1f-h8m"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -509,6 +510,34 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kpL-ud-adq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-15" y="-1183"/>
+        </scene>
+        <!--Weather Table View Controller-->
+        <scene sceneID="UWJ-Gc-rgC">
+            <objects>
+                <tableViewController id="Nir-a7-dnQ" customClass="HMWeatherTableViewController" sceneMemberID="viewController">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" id="kad-hS-bpO">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <prototypes>
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="Qli-0f-Oew">
+                                <rect key="frame" x="0.0" y="92" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Qli-0f-Oew" id="SZG-uf-GDx">
+                                    <rect key="frame" x="0.0" y="0.0" width="600" height="43"/>
+                                    <autoresizingMask key="autoresizingMask"/>
+                                </tableViewCellContentView>
+                            </tableViewCell>
+                        </prototypes>
+                        <connections>
+                            <outlet property="dataSource" destination="Nir-a7-dnQ" id="0WJ-JR-UyL"/>
+                            <outlet property="delegate" destination="Nir-a7-dnQ" id="EwG-eN-fl5"/>
+                        </connections>
+                    </tableView>
+                </tableViewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="gAz-co-jEf" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="943" y="-1242"/>
         </scene>
         <!--Filters View Controller-->
         <scene sceneID="1TR-UB-K97">
