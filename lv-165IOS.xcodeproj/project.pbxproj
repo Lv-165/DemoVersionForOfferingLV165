@@ -31,7 +31,6 @@
 		302A11D61C0371C3002F8FF0 /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11C31C0371C3002F8FF0 /* UIProgressView+AFNetworking.m */; };
 		302A11D71C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11C51C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m */; };
 		302A11D81C0371C3002F8FF0 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11C71C0371C3002F8FF0 /* UIWebView+AFNetworking.m */; };
-		304B13F21C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m in Sources */ = {isa = PBXBuildFile; fileRef = 304B13F11C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m */; };
 		308A5CDA1C1735F4009DD439 /* SVGeocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 308A5CD71C1735F4009DD439 /* SVGeocoder.m */; };
 		308A5CDB1C1735F4009DD439 /* SVPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 308A5CD91C1735F4009DD439 /* SVPlacemark.m */; };
 		308A5CDE1C173620009DD439 /* UICellForInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 308A5CDD1C173620009DD439 /* UICellForInfo.m */; };
@@ -61,6 +60,7 @@
 		A10299291C0F1A7800BA5896 /* UIView+MKAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = A10299281C0F1A7800BA5896 /* UIView+MKAnnotationView.m */; };
 		A10B9E541C2AF26700A6B8D4 /* HMGoogleDirectionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A10B9E531C2AF26700A6B8D4 /* HMGoogleDirectionsViewController.m */; };
 		A14DBDF51C2087BB004446EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A14DBDF71C2087BB004446EA /* Localizable.strings */; };
+		A14DD0C51C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.m in Sources */ = {isa = PBXBuildFile; fileRef = A14DD0C41C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.m */; };
 		A1C5EDE41C0CA7C900F94400 /* HMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C5EDE21C0CA7C900F94400 /* HMSettingsViewController.m */; };
 		A1C5EDEB1C0CC4D500F94400 /* HMSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C5EDEA1C0CC4D500F94400 /* HMSearchViewController.m */; };
 		C01442E31C0333A5000F8F6F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C01442E21C0333A5000F8F6F /* main.m */; };
@@ -218,6 +218,8 @@
 		A14DBDF41C2087AC004446EA /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		A14DBDF61C2087BB004446EA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A14DBDF81C2087BD004446EA /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A14DD0C31C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+HMdynamicSizeMe.h"; sourceTree = "<group>"; };
+		A14DD0C41C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+HMdynamicSizeMe.m"; sourceTree = "<group>"; };
 		A1C5EDE11C0CA7C900F94400 /* HMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMSettingsViewController.h; sourceTree = "<group>"; };
 		A1C5EDE21C0CA7C900F94400 /* HMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMSettingsViewController.m; sourceTree = "<group>"; };
 		A1C5EDE91C0CC4D500F94400 /* HMSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMSearchViewController.h; sourceTree = "<group>"; };
@@ -575,6 +577,8 @@
 		C01442E01C0333A5000F8F6F /* lv-165IOS */ = {
 			isa = PBXGroup;
 			children = (
+				A14DD0C31C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.h */,
+				A14DD0C41C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.m */,
 				308D19031C19FC2D007CC26E /* HMAppDelegate */,
 				308D190E1C19FE17007CC26E /* Controllers */,
 				308D190D1C19FDF9007CC26E /* Managers */,
@@ -829,6 +833,7 @@
 				7FAD6ED61C283010007E4B92 /* DescriptionInfo+CoreDataProperties.m in Sources */,
 				302A11D71C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m in Sources */,
 				0C8537551C2C1BE30052ADC6 /* FBAnnotationClusterView.m in Sources */,
+				A14DD0C51C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.m in Sources */,
 				7FAD6ED51C283010007E4B92 /* Country.m in Sources */,
 				A1C5EDEB1C0CC4D500F94400 /* HMSearchViewController.m in Sources */,
 				7FAD6ED11C283010007E4B92 /* Continent.m in Sources */,

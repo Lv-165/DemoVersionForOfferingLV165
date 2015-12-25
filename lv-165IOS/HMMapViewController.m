@@ -28,6 +28,11 @@
 #import "AFHTTPRequestOperation.h"
 #import "AFNetworking/AFHTTPSessionManager.h"
 #import "HMGoogleDirectionsViewController.h"
+#import "FBClusteringManager.h"
+#import "FBAnnotationCluster.h"
+#import "FBAnnotationClustering.h"
+#import "HMWeatherManager.h"
+#import "UILabel+HMdynamicSizeMe.h"
 
 @interface HMMapViewController ()
 
@@ -115,7 +120,7 @@ static bool isMainRoute;
                                      flexibleItem,
                                      [self createColorButton:@"favptite30_30" selector:@selector(addToFavourite:)],
                                      flexibleItem,
-                                     [self createColorButton:@"info30_3-0" selector:@selector(infoMethod:)],
+                                     [self createColorButton:@"info30_30" selector:@selector(infoMethod:)],
                                      flexibleItem,
                                      [self createColorButton:@"road30_30" selector:@selector(showRoudFromThisPlaceToMyLocation:)],
                                      flexibleItem,
