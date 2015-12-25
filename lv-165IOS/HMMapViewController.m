@@ -27,6 +27,7 @@
 #import "Branch/BranchLinkProperties.h"
 #import "FBAnnotationClustering/FBAnnotationClustering.h"
 #import "UILabel+HMdynamicSizeMe.h"
+#import "HMWeatherManager.h"
 
 
 @interface HMMapViewController ()
@@ -885,6 +886,7 @@ static bool isMainRoute;
     Waiting *waiting = place.waiting;
     self.waitingTimeLable.text = [NSString
         stringWithFormat:@"Average waiting time: %@", waiting.avg_textual];
+      [self.viewToAnimate setNeedsUpdateConstraints];
 
 }
 }
@@ -951,7 +953,7 @@ static bool isMainRoute;
 }
 
 - (void)mapView:(MKMapView *)mapView
-    didDeselectAnnotationView:(MKAnnotationView *)view NS_AVAILABLE(10_9, 4_0) {
+    didDeselectAnnotationView:(MKAnnotationView *)view  {
 
   if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
     self.downToolBar.hidden = NO;

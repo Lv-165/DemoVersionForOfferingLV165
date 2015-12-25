@@ -181,7 +181,7 @@
                         for (NSDictionary* dict in places) {
                             [self.arrayOfPlaces addObject:[dict objectForKey:@"id"]];
                         }
-                        [self downloadPlaces:countries];
+                        [self downloadPlaces:countries sender:sender];
                         
                     } onFailure:^(NSError *error, NSInteger statusCode) {
                         
