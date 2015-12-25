@@ -184,8 +184,8 @@
                                         </constraints>
                                         <items/>
                                     </toolbar>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QOQ-YD-1zy">
-                                        <rect key="frame" x="8" y="32" width="584" height="101"/>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="20" baselineAdjustment="alignBaselines" minimumFontSize="10" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QOQ-YD-1zy">
+                                        <rect key="frame" x="8" y="32" width="584" height="138"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
@@ -203,7 +203,7 @@
                                     <constraint firstAttribute="trailing" secondItem="fTh-tc-eeU" secondAttribute="trailing" constant="8" id="NGG-78-ADY"/>
                                     <constraint firstItem="QOQ-YD-1zy" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="UWU-yb-KeZ"/>
                                     <constraint firstAttribute="trailing" secondItem="fTh-tc-eeU" secondAttribute="trailing" constant="8" id="VbF-TD-h7H"/>
-                                    <constraint firstItem="7SA-v6-wd0" firstAttribute="top" secondItem="QOQ-YD-1zy" secondAttribute="bottom" constant="47" id="Vh2-sM-YnU"/>
+                                    <constraint firstItem="7SA-v6-wd0" firstAttribute="top" secondItem="QOQ-YD-1zy" secondAttribute="bottom" constant="10" id="Vh2-sM-YnU"/>
                                     <constraint firstAttribute="height" constant="224" id="Wd8-K5-dzD"/>
                                     <constraint firstAttribute="bottom" secondItem="7SA-v6-wd0" secondAttribute="bottom" id="a1Y-Le-6wV"/>
                                     <constraint firstItem="7SA-v6-wd0" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" id="btR-4B-e3f"/>
