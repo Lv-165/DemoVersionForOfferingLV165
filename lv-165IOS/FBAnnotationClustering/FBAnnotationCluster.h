@@ -9,22 +9,21 @@
 #import <Foundation/Foundation.h>
 #import <MapKit/MapKit.h>
 
-
 /**
  Class that is used to display annotation clusters.
  */
 @interface FBAnnotationCluster : NSObject <MKAnnotation>
 
 /// Coordinate of the annotation. It will always be set.
-@property (nonatomic, assign) CLLocationCoordinate2D coordinate;
+@property(nonatomic, assign) CLLocationCoordinate2D coordinate;
 
 /// Title of the annotation. Default is @c nil, but can be set.
-@property (nonatomic, copy) NSString *title;
+@property(nonatomic, copy) NSString *title;
 
 /// Subtitle of the annotation. Default is @c nil, but can be set.
-@property (nonatomic, copy) NSString *subtitle;
+@property(nonatomic, copy) NSString *subtitle;
 
 /// Array of the annotations that are representer with this cluster.
-@property (nonatomic, strong) NSArray *annotations;
+@property(nonatomic, strong) NSArray *annotations;
 
 @end

@@ -15,8 +15,7 @@
 @interface FBQuadTree : NSObject
 
 /// Root node.
-@property (nonatomic, strong) FBQuadTreeNode *rootNode;
-
+@property(nonatomic, strong) FBQuadTreeNode *rootNode;
 
 /**
  Insert new annotation in tree.
@@ -31,8 +30,8 @@
 /**
  Enumerate annotations in @c box.
  */
-- (void)enumerateAnnotationsInBox:(FBBoundingBox)box usingBlock:(void (^)(id<MKAnnotation> obj))block;
-
+- (void)enumerateAnnotationsInBox:(FBBoundingBox)box
+                       usingBlock:(void (^)(id<MKAnnotation> obj))block;
 
 /**
  Enumerate all annotations.

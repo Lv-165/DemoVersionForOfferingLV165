@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0C8537551C2C1BE30052ADC6 /* FBAnnotationClusterView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C8537541C2C1BE30052ADC6 /* FBAnnotationClusterView.m */; };
 		0C93B27F1C11DECB0032A3AE /* FBAnnotationCluster.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C93B2771C11DECB0032A3AE /* FBAnnotationCluster.m */; };
 		0C93B2801C11DECB0032A3AE /* FBClusteringManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C93B27A1C11DECB0032A3AE /* FBClusteringManager.m */; };
 		0C93B2811C11DECB0032A3AE /* FBQuadTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C93B27C1C11DECB0032A3AE /* FBQuadTree.m */; };
@@ -30,6 +31,7 @@
 		302A11D61C0371C3002F8FF0 /* UIProgressView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11C31C0371C3002F8FF0 /* UIProgressView+AFNetworking.m */; };
 		302A11D71C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11C51C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m */; };
 		302A11D81C0371C3002F8FF0 /* UIWebView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11C71C0371C3002F8FF0 /* UIWebView+AFNetworking.m */; };
+		304B13F21C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m in Sources */ = {isa = PBXBuildFile; fileRef = 304B13F11C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m */; };
 		308A5CDA1C1735F4009DD439 /* SVGeocoder.m in Sources */ = {isa = PBXBuildFile; fileRef = 308A5CD71C1735F4009DD439 /* SVGeocoder.m */; };
 		308A5CDB1C1735F4009DD439 /* SVPlacemark.m in Sources */ = {isa = PBXBuildFile; fileRef = 308A5CD91C1735F4009DD439 /* SVPlacemark.m */; };
 		308A5CDE1C173620009DD439 /* UICellForInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 308A5CDD1C173620009DD439 /* UICellForInfo.m */; };
@@ -70,6 +72,7 @@
 		C01442F41C0333A5000F8F6F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C01442F21C0333A5000F8F6F /* LaunchScreen.storyboard */; };
 		C01442FF1C0333A6000F8F6F /* lv_165IOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C01442FE1C0333A6000F8F6F /* lv_165IOSTests.m */; };
 		C014430A1C0333A6000F8F6F /* lv_165IOSUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = C01443091C0333A6000F8F6F /* lv_165IOSUITests.m */; };
+		C06A37B01C2C17FC00429F60 /* HMWeatherManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C06A37AF1C2C17FC00429F60 /* HMWeatherManager.m */; };
 		C0729E401C09FBF700ADF283 /* HMCountriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0729E3F1C09FBF700ADF283 /* HMCountriesViewController.m */; };
 		C0729E881C09FD9200ADF283 /* HMCoreDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0729E871C09FD9200ADF283 /* HMCoreDataViewController.m */; };
 		C09A7CF61C0A1ED300F6DEBC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C09A7CF51C0A1ED300F6DEBC /* CoreData.framework */; };
@@ -100,6 +103,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0C8537531C2C1BE30052ADC6 /* FBAnnotationClusterView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBAnnotationClusterView.h; path = FBAnnotationClustering/FBAnnotationClusterView.h; sourceTree = "<group>"; };
+		0C8537541C2C1BE30052ADC6 /* FBAnnotationClusterView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBAnnotationClusterView.m; path = FBAnnotationClustering/FBAnnotationClusterView.m; sourceTree = "<group>"; };
 		0C93B2761C11DECB0032A3AE /* FBAnnotationCluster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBAnnotationCluster.h; path = FBAnnotationClustering/FBAnnotationCluster.h; sourceTree = "<group>"; };
 		0C93B2771C11DECB0032A3AE /* FBAnnotationCluster.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FBAnnotationCluster.m; path = FBAnnotationClustering/FBAnnotationCluster.m; sourceTree = "<group>"; };
 		0C93B2781C11DECB0032A3AE /* FBAnnotationClustering.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FBAnnotationClustering.h; path = FBAnnotationClustering/FBAnnotationClustering.h; sourceTree = "<group>"; };
@@ -149,6 +154,8 @@
 		302A11C51C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIRefreshControl+AFNetworking.m"; sourceTree = "<group>"; };
 		302A11C61C0371C3002F8FF0 /* UIWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		302A11C71C0371C3002F8FF0 /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
+		304B13F01C2C78330081AB13 /* UILabel+HMdynamicSizeMe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+HMdynamicSizeMe.h"; sourceTree = "<group>"; };
+		304B13F11C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+HMdynamicSizeMe.m"; sourceTree = "<group>"; };
 		308A5CD61C1735F4009DD439 /* SVGeocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGeocoder.h; sourceTree = "<group>"; };
 		308A5CD71C1735F4009DD439 /* SVGeocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGeocoder.m; sourceTree = "<group>"; };
 		308A5CD81C1735F4009DD439 /* SVPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPlacemark.h; sourceTree = "<group>"; };
@@ -232,6 +239,8 @@
 		C01443051C0333A6000F8F6F /* lv-165IOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "lv-165IOSUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C01443091C0333A6000F8F6F /* lv_165IOSUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = lv_165IOSUITests.m; sourceTree = "<group>"; };
 		C014430B1C0333A6000F8F6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C06A37AE1C2C17FC00429F60 /* HMWeatherManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMWeatherManager.h; sourceTree = "<group>"; };
+		C06A37AF1C2C17FC00429F60 /* HMWeatherManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMWeatherManager.m; sourceTree = "<group>"; };
 		C0729E3E1C09FBF700ADF283 /* HMCountriesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMCountriesViewController.h; sourceTree = "<group>"; };
 		C0729E3F1C09FBF700ADF283 /* HMCountriesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMCountriesViewController.m; sourceTree = "<group>"; };
 		C0729E861C09FD9200ADF283 /* HMCoreDataViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMCoreDataViewController.h; sourceTree = "<group>"; };
@@ -284,6 +293,8 @@
 		0C93B26C1C11DB840032A3AE /* FBAnnotationClustering */ = {
 			isa = PBXGroup;
 			children = (
+				0C8537531C2C1BE30052ADC6 /* FBAnnotationClusterView.h */,
+				0C8537541C2C1BE30052ADC6 /* FBAnnotationClusterView.m */,
 				0C93B2761C11DECB0032A3AE /* FBAnnotationCluster.h */,
 				0C93B2771C11DECB0032A3AE /* FBAnnotationCluster.m */,
 				0C93B2781C11DECB0032A3AE /* FBAnnotationClustering.h */,
@@ -422,6 +433,8 @@
 			children = (
 				3018962E1C0895DC00178A04 /* HMServerManager.h */,
 				3018962F1C0895DC00178A04 /* HMServerManager.m */,
+				C06A37AE1C2C17FC00429F60 /* HMWeatherManager.h */,
+				C06A37AF1C2C17FC00429F60 /* HMWeatherManager.m */,
 			);
 			name = ServerManager;
 			sourceTree = "<group>";
@@ -584,6 +597,8 @@
 			isa = PBXGroup;
 			children = (
 				C01442E21C0333A5000F8F6F /* main.m */,
+				304B13F01C2C78330081AB13 /* UILabel+HMdynamicSizeMe.h */,
+				304B13F11C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -805,6 +820,7 @@
 				7FAD6EDB1C283010007E4B92 /* Waiting.m in Sources */,
 				7FAD6ECE1C283010007E4B92 /* Comments+CoreDataProperties.m in Sources */,
 				7FAD6ECB1C283010007E4B92 /* Countries.m in Sources */,
+				C06A37B01C2C17FC00429F60 /* HMWeatherManager.m in Sources */,
 				C0729E881C09FD9200ADF283 /* HMCoreDataViewController.m in Sources */,
 				0C93B2801C11DECB0032A3AE /* FBClusteringManager.m in Sources */,
 				CE4CC48A1C14EB6F002C4358 /* Reachability.m in Sources */,
@@ -812,6 +828,7 @@
 				0C93B27F1C11DECB0032A3AE /* FBAnnotationCluster.m in Sources */,
 				7FAD6ED61C283010007E4B92 /* DescriptionInfo+CoreDataProperties.m in Sources */,
 				302A11D71C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m in Sources */,
+				0C8537551C2C1BE30052ADC6 /* FBAnnotationClusterView.m in Sources */,
 				7FAD6ED51C283010007E4B92 /* Country.m in Sources */,
 				A1C5EDEB1C0CC4D500F94400 /* HMSearchViewController.m in Sources */,
 				7FAD6ED11C283010007E4B92 /* Continent.m in Sources */,

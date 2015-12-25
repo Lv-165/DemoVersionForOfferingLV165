@@ -63,7 +63,7 @@
     
     //NSLog(@"savePlaceToCoreDataWithNSArray");
     
-    Place* place = [NSEntityDescription insertNewObjectForEntityForName:@"Place"                                                              inManagedObjectContext:[self managedObjectContext]];
+    Place* place = [NSEntityDescription insertNewObjectForEntityForName:@"Place"  inManagedObjectContext:[self managedObjectContext]];
         
     NSInteger tempInteger = [[placeNSDictionary valueForKey:@"id"] integerValue];
      place.id = [NSNumber numberWithInteger:tempInteger];
@@ -109,7 +109,7 @@
     NSDictionary *descriptionDict = [descriptionDictionary objectForKey:[NSString stringWithFormat:@"%@",descriptionObj.language]];
     
     if (![[descriptionDictionary allKeys]containsObject:String4]) {
-        descriptionObj.descriptionString = @"No Description";
+        descriptionObj.descriptionString = @"";
         descriptionObj.language = @"en_UK";
         descriptionObj.datetime = nil;
         descriptionObj.versions = @1;
