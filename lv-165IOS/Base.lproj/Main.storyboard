@@ -180,6 +180,7 @@
                                     </label>
                                     <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" scrollEnabled="NO" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="3ou-Ue-ffo">
                                         <rect key="frame" x="8" y="36" width="584" height="133"/>
+                                        <animations/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
@@ -207,6 +208,7 @@
                                     <constraint firstItem="rXC-0X-jfn" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="hcb-Lz-vig"/>
                                     <constraint firstItem="fTh-tc-eeU" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="8" id="hmD-qi-VWH"/>
                                     <constraint firstAttribute="bottom" secondItem="7SA-v6-wd0" secondAttribute="bottom" id="hu6-fx-Bgq"/>
+                                    <constraint firstItem="7SA-v6-wd0" firstAttribute="top" secondItem="3ou-Ue-ffo" secondAttribute="bottom" constant="11" id="ieO-Nt-ksG"/>
                                     <constraint firstAttribute="trailing" secondItem="3ou-Ue-ffo" secondAttribute="trailing" constant="8" id="quc-XC-Abx"/>
                                     <constraint firstItem="7SA-v6-wd0" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" id="u8i-6r-dMV"/>
                                     <constraint firstItem="3ou-Ue-ffo" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="uzk-th-bpR"/>
@@ -243,6 +245,7 @@
                         <segue destination="7bs-0b-0Y2" kind="show" identifier="showSettingsViewController" id="FIo-P1-Pcd"/>
                         <segue destination="4Ib-ml-FoI" kind="show" identifier="Comments" id="Bf4-ER-3t1"/>
                         <segue destination="Hb2-hh-47C" kind="show" identifier="showFilterViewController" id="SQP-17-Yqa"/>
+                        <segue destination="CdG-xf-SgX" kind="show" identifier="showGoogleDirectionsViewController" id="EZe-cK-2Y2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -440,6 +443,45 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mAC-a1-2dR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="746" y="327"/>
+        </scene>
+        <!--Google Directions View Controller-->
+        <scene sceneID="WOv-qf-3WE">
+            <objects>
+                <viewController id="CdG-xf-SgX" customClass="HMGoogleDirectionsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="RMv-FV-Fdt"/>
+                        <viewControllerLayoutGuide type="bottom" id="tlK-6G-W8M"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jKo-3O-Eyf">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="l4Y-9a-8kH">
+                                <rect key="frame" x="20" y="0.0" width="560" height="600"/>
+                                <animations/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" calendarEvent="YES"/>
+                            </textView>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="l4Y-9a-8kH" firstAttribute="leading" secondItem="jKo-3O-Eyf" secondAttribute="leadingMargin" id="1oi-JN-2KR"/>
+                            <constraint firstItem="tlK-6G-W8M" firstAttribute="top" secondItem="l4Y-9a-8kH" secondAttribute="bottom" id="F1S-Hb-eLK"/>
+                            <constraint firstItem="l4Y-9a-8kH" firstAttribute="trailing" secondItem="jKo-3O-Eyf" secondAttribute="trailingMargin" id="cjW-GB-96x"/>
+                            <constraint firstItem="l4Y-9a-8kH" firstAttribute="top" secondItem="jKo-3O-Eyf" secondAttribute="topMargin" id="u0g-UY-30W"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="IdD-gQ-R9w"/>
+                    <connections>
+                        <outlet property="textViewForGoogleDirections" destination="l4Y-9a-8kH" id="Ezc-9q-VHv"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="glm-Ns-So4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1480" y="327"/>
         </scene>
         <!--Comments Table View Controller-->
         <scene sceneID="tn2-zX-1YO">
