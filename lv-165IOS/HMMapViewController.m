@@ -837,9 +837,8 @@ static bool isMainRoute;
 //                           animated:YES];
 
     self.downToolBar.hidden = YES;
-      
-    [self.:self.descriptionTextView];
-    self.descriptionTextView.adjustsFontSizeToFitWidth = NO;
+    [self.descriptionTextView resizeHeightToFitForLabel:self.descriptionTextView];
+    self.descriptionTextView.
     
     self.constraitToShowUpToolBar.constant =  self.waitingTimeLable.frame.size.height +
     self.descriptionTextView.frame.size.height + 54.f;

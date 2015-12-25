@@ -184,32 +184,33 @@
                                         </constraints>
                                         <items/>
                                     </toolbar>
-                                    <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="hza-Y8-q0W">
-                                        <rect key="frame" x="8" y="32" width="584" height="141"/>
-                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
-                                        <fontDescription key="fontDescription" type="system" pointSize="16"/>
-                                        <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
-                                    </textView>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QOQ-YD-1zy">
+                                        <rect key="frame" x="8" y="32" width="584" height="101"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
                                 </subviews>
                                 <animations/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstItem="7SA-v6-wd0" firstAttribute="top" secondItem="hza-Y8-q0W" secondAttribute="bottom" constant="7" id="FR5-jJ-0Gh"/>
+                                    <constraint firstItem="QOQ-YD-1zy" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="32" id="BOx-4A-Q1T"/>
+                                    <constraint firstItem="fTh-tc-eeU" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="8" id="EAw-D9-VK5"/>
                                     <constraint firstAttribute="trailing" secondItem="7SA-v6-wd0" secondAttribute="trailing" id="IMH-zh-eXW"/>
+                                    <constraint firstAttribute="trailing" secondItem="QOQ-YD-1zy" secondAttribute="trailing" constant="8" id="L5P-f8-rzH"/>
                                     <constraint firstItem="rXC-0X-jfn" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="8" id="LLv-pv-0K1"/>
+                                    <constraint firstItem="QOQ-YD-1zy" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="32" id="Mt9-d5-B4n"/>
                                     <constraint firstAttribute="trailing" secondItem="fTh-tc-eeU" secondAttribute="trailing" constant="8" id="NGG-78-ADY"/>
-                                    <constraint firstItem="hza-Y8-q0W" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="32" id="Utq-pc-Vfr"/>
+                                    <constraint firstItem="QOQ-YD-1zy" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="UWU-yb-KeZ"/>
                                     <constraint firstAttribute="trailing" secondItem="fTh-tc-eeU" secondAttribute="trailing" constant="8" id="VbF-TD-h7H"/>
+                                    <constraint firstItem="7SA-v6-wd0" firstAttribute="top" secondItem="QOQ-YD-1zy" secondAttribute="bottom" constant="47" id="Vh2-sM-YnU"/>
                                     <constraint firstAttribute="height" constant="224" id="Wd8-K5-dzD"/>
                                     <constraint firstAttribute="bottom" secondItem="7SA-v6-wd0" secondAttribute="bottom" id="a1Y-Le-6wV"/>
                                     <constraint firstItem="7SA-v6-wd0" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" id="btR-4B-e3f"/>
-                                    <constraint firstItem="hza-Y8-q0W" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="c18-1z-2uD"/>
                                     <constraint firstItem="rXC-0X-jfn" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="hcb-Lz-vig"/>
                                     <constraint firstItem="fTh-tc-eeU" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="8" id="hmD-qi-VWH"/>
                                     <constraint firstItem="7SA-v6-wd0" firstAttribute="centerX" secondItem="FYm-s8-iZT" secondAttribute="centerX" id="kzz-dk-p9R"/>
                                     <constraint firstItem="rXC-0X-jfn" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="l0v-sa-pp8"/>
-                                    <constraint firstAttribute="trailing" secondItem="hza-Y8-q0W" secondAttribute="trailing" constant="8" id="nmX-d1-PQT"/>
                                     <constraint firstItem="fTh-tc-eeU" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="8" id="yKB-Ny-Jh3"/>
                                 </constraints>
                             </view>
@@ -249,7 +250,7 @@
                     <connections>
                         <outlet property="autorDescriptionLable" destination="fTh-tc-eeU" id="RjX-FV-i5P"/>
                         <outlet property="constraitToShowUpToolBar" destination="Wd8-K5-dzD" id="QxH-OI-HIk"/>
-                        <outlet property="descriptionTextView" destination="hza-Y8-q0W" id="n1x-68-sUZ"/>
+                        <outlet property="descriptionTextView" destination="QOQ-YD-1zy" id="tWJ-GN-Rze"/>
                         <outlet property="downToolBar" destination="cpQ-J0-Ekk" id="A7d-TE-jMF"/>
                         <outlet property="mapView" destination="eIw-hm-dci" id="YBP-2t-6ao"/>
                         <outlet property="upToolBar" destination="7SA-v6-wd0" id="AQi-IA-jjA"/>
