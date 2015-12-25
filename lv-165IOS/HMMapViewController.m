@@ -839,18 +839,6 @@ static bool isMainRoute;
 //                           animated:YES];
 
     self.downToolBar.hidden = YES;
-    [self.descriptionTextView resizeHeightToFitForLabel:self.descriptionTextView];
-    
-    self.constraitToShowUpToolBar.constant =  self.waitingTimeLable.frame.size.height +
-    self.descriptionTextView.frame.size.height + 54.f;
-      
-      [self.viewToAnimate setNeedsUpdateConstraints];
-
-    [UIView animateWithDuration:1.f
-                     animations:^{
-                       [self.viewToAnimate layoutIfNeeded];
-                     }];
-
     NSString *stringId = [NSString
         stringWithFormat:@"%ld",
                          (long)((HMMapAnnotation *)view.annotation).idPlace];
@@ -881,12 +869,20 @@ static bool isMainRoute;
     Description *desc = place.descript;
 
     self.descriptionTextView.text = desc.descriptionString;
-    //[self.descriptionLable sizeToFit];
-
     Waiting *waiting = place.waiting;
-    self.waitingTimeLable.text = [NSString
+     self.waitingTimeLable.text = [NSString
         stringWithFormat:@"Average waiting time: %@", waiting.avg_textual];
+      [self.descriptionTextView resizeHeightToFitForLabel:self.descriptionTextView];
+      
+      self.constraitToShowUpToolBar.constant = self.waitingTimeLable.frame.size.height +
+      self.descriptionTextView.frame.size.height + 60.f;
+      
       [self.viewToAnimate setNeedsUpdateConstraints];
+      
+      [UIView animateWithDuration:1.f
+                       animations:^{
+                           [self.viewToAnimate layoutIfNeeded];
+                       }];
 
 }
 }
