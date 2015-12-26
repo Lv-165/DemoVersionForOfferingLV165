@@ -47,6 +47,8 @@ typedef struct {
 @property(strong, nonatomic) NSMutableArray *segmentSizesArray;
 @property(strong, nonatomic) NSMutableArray *segmentsArray;
 
+@property(readonly, nonatomic) NSUInteger numberOfAnnotationTypes;
+
 @property(nonatomic) CGFloat partOfAnnotationsWithoutRating;
 @property(nonatomic) CGFloat partOfAnnotationsWithBadRating;
 @property(nonatomic) CGFloat partOfAnnotationsWithNormalRating;
@@ -80,13 +82,21 @@ typedef struct {
 // static CGFloat radianConversionFactor = M_PI / 180;
 
 - (id)initWithAnnotation:(FBAnnotationCluster *)annotation
-       clusteringManager:(FBClusteringManager *)clusteringManager {
+       clusteringManager:(FBClusteringManager *)clusteringManager{
 
   _clusteringManager = clusteringManager;
 
+//    - (id)initWithAnnotation:(FBAnnotationCluster *)annotation
+//clusteringManager:(FBClusteringManager *)clusteringManager
+//numberOfAnnotationTypes:(NSUInteger)numberOfTypes {
+//
+//  _numberOfAnnotationTypes = numberOfTypes;
+
   //- (id)initWithAnnotation:(id<MKAnnotation>)annotation
   //         reuseIdentifier:(NSString *)reuseIdentifier {
+
   self = [super initWithAnnotation:annotation reuseIdentifier:nil];
+
   if (self != nil) {
 
     // FBAnnotationCluster *clusterAnnotation = (FBAnnotationCluster
@@ -98,6 +108,7 @@ typedef struct {
 
     self.backgroundColor = [UIColor clearColor];
     [self updateSlices];
+
     // self.opaque = YES;
     //[self setNeedsDisplay];
     // ClusterViewPieChart *pieChartView = [ClusterViewPieChart alloc];
@@ -191,14 +202,13 @@ typedef struct {
 - (void)updateSlices {
 
   _containerLayer.frame = self.bounds;
-    
+
   int radius =
       MIN(_containerLayer.frame.size.height, _containerLayer.frame.size.width) /
       2;
-//    int radius =
-//    MIN(self.bounds.size.height, self.bounds.size.width) /
-//    2;
-    
+  //    int radius =
+  //    MIN(self.bounds.size.height, self.bounds.size.width) /
+  //    2;
 
   // WAS
   //  if (_normalizedValues.count > _containerLayer.sublayers.count) {
@@ -228,9 +238,10 @@ typedef struct {
                                        _clusteringManager.veryGoodRatingColour,
                                        _clusteringManager.strokeColour, nil];
 
-    //  CGRect circleRect = CGRectInset(self.bounds, 1, 1);
-  
-   //  __block   CGPoint center = CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+  //  CGRect circleRect = CGRectInset(self.bounds, 1, 1);
+
+  //  __block   CGPoint center = CGPointMake(CGRectGetMidX(self.bounds),
+  //  CGRectGetMidY(self.bounds));
 
   [self calculatePieChartSegmentSizes];
 
@@ -243,16 +254,15 @@ typedef struct {
 
   [_segmentsArray
       enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
-          
-      CGPoint center =
-      CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
-          
-       
+
+        CGPoint center =
+            CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
+
         NSMutableDictionary *segment = [obj mutableCopy];
         // _segmentsArray[idx];
 
         NSNumber *segmentType = segment[@"type"];
-       // NSUInteger segmentTypeInteger = segmentType.integerValue;
+        // NSUInteger segmentTypeInteger = segmentType.integerValue;
 
         UIColor *color = coloursArray[segmentType.unsignedIntegerValue];
 
@@ -260,7 +270,7 @@ typedef struct {
         double segmentSizeDouble = segmentSize.doubleValue;
 
         NSNumber *numberOfAnnotations = segment[@"annotationsCount"];
-        double numberOfAnnotationsDouble = numberOfAnnotations.doubleValue;
+        NSUInteger numberOfAnnotationsDouble = numberOfAnnotations.unsignedIntegerValue;
 
         CGFloat startAngle = 0.0;
         CGFloat endAngle;
@@ -317,7 +327,8 @@ typedef struct {
 
         // Set the angles on the slices
         // int index = 0;
-        CGFloat count = _segmentSizesArray.count;
+
+      //  CGFloat count = _segmentSizesArray.count;
 
         // for (NSNumber *num in _normalizedValues) {
 
@@ -332,26 +343,24 @@ typedef struct {
         slice.strokeWidth = 1;
         slice.startAngle = startAngle;
         slice.endAngle = endAngle;
-          
+
         //= startAngle + angle;
 
         // startAngle += angle;
         // index++;
         // hue += num.floatValue;
         // }
-          
-       
-          
-                 UIBezierPath *aPath = [UIBezierPath bezierPath];
-                 [aPath moveToPoint:CGPointMake(center.x, center.y)];
-        
-                 [aPath addArcWithCenter:CGPointMake(center.x, center.y)
-                                  radius:radius
-                              startAngle:startAngle
-                                endAngle:endAngle
-                               clockwise:YES];
-        
-                 CGPoint currentPoint = [aPath currentPoint];
+
+        UIBezierPath *aPath = [UIBezierPath bezierPath];
+        [aPath moveToPoint:CGPointMake(center.x, center.y)];
+
+        [aPath addArcWithCenter:CGPointMake(center.x, center.y)
+                         radius:radius
+                     startAngle:startAngle
+                       endAngle:endAngle
+                      clockwise:YES];
+
+        CGPoint currentPoint = [aPath currentPoint];
         //
         //         [aPath setLineWidth:3];
         //         // WAS previousSegmentAngle = endAngle;
@@ -367,175 +376,487 @@ typedef struct {
         //         [aPath fill];
         //
         //
-                 CGPoint midPoint;
-        
-                 NSString *string = [[NSString alloc]
-                                     initWithFormat:@"%ld",
-                                     (long)numberOfAnnotationsDouble];
-        
-                 if (segmentSizeDouble > 0.6) {
-        
-                     CGFloat minOperandX = MIN(currentPointOnArcX,
-                     currentPoint.x);
-                     CGFloat maxOperandX = MAX(currentPointOnArcX,
-                     currentPoint.x);
-                     CGFloat arcMidPointX = minOperandX + (maxOperandX -
-                     minOperandX) / 4;
-        
-                     CGFloat minOperandY = MIN(currentPointOnArcY,
-                     currentPoint.y);
-                     CGFloat maxOperandY = MAX(currentPointOnArcY,
-                     currentPoint.y);
-                     CGFloat arcMidPointY = minOperandY + (maxOperandY -
-                     minOperandY) / 4;
-                     CGPoint arcMidPoint = {arcMidPointX, arcMidPointY};
-        
-                     minOperandX = MIN(arcMidPoint.x, center.x);
-                     maxOperandX = MAX(arcMidPoint.x, center.x);
-                     CGFloat midPointX = minOperandX + (maxOperandX -
-                     minOperandX) / 4;
-        
-                     minOperandY = MIN(arcMidPoint.y, center.y);
-                     maxOperandY = MAX(arcMidPoint.y, center.y);
-                     CGFloat midPointY = minOperandY + (maxOperandY -
-                     minOperandY) / 4;
-        
-                     midPoint = CGPointMake(midPointX, midPointY);
-        
-                    CATextLayer *textLayer = [CATextLayer layer];
-//                     [textLayer setFont:@"Helvetica-Bold"];
-                    [textLayer setFontSize:_clusteringManager.labelFontSize];
-//                     [textLayer setFrame:validFrame];
-//                     [textLayer setString:string];
-//                     [textLayer setAlignmentMode:kCAAlignmentCenter];
-                     
-                    [textLayer setForegroundColor:[[UIColor blackColor] CGColor]];
-                    // CGRectInset(self.bounds, 5, 5)
-                     
-                     [textLayer setBounds:slice.frame];
-                     //midPoint
-                     [textLayer setPosition:midPoint];
-                     [textLayer setString:string];
-                     
-                     [slice addSublayer:textLayer];
-                     
-                     // CGContextRef context = UIGraphicsGetCurrentContext();
-                             //
-                             // CGMutablePathRef arc = CGPathCreateMutable();
-                             // CGPathMoveToPoint(arc, NULL, center.x, center.y);
-                             //
-                             //// RatingForPin rating = (RatingForPin)segment[@"type"];
-                             //
-                             // CGContextSetFillColorWithColor(context, color.CGColor);
-                             //
-                             // CGContextSetStrokeColorWithColor(
-                             // context, _clusteringManager.strokeColour.CGColor);
+        CGPoint midPoint;
 
-//                     CGContextSetFillColorWithColor(context, [[UIColor darkTextColor] CGColor]);
-//                    CGContextadd
-                     /*[string drawInRect:layer.bounds
-                      withFont:[UIFont systemFontOfSize:32]
-                      lineBreakMode:UILineBreakModeWordWrap
-                      alignment:UITextAlignmentCenter];*/
-                     
-                    // [self drawString:string atPoint:midPoint];
+        NSString *string = [[NSString alloc]
+            initWithFormat:@"%ld", (long)numberOfAnnotationsDouble];
 
-                     
-                    // UIGraphicsPopContext();
-                     
-                     
-                 } else if (segmentSizeDouble > 0.4 && segmentSizeDouble <
-                 0.6) {
-        
-                     CGFloat minOperandX = MIN(currentPointOnArcX,
-                     currentPoint.x);
-                     CGFloat maxOperandX = MAX(currentPointOnArcX,
-                     currentPoint.x);
-                     CGFloat arcMidPointX = minOperandX + (maxOperandX -
-                     minOperandX) / 3;
-        
-                     CGFloat minOperandY = MIN(currentPointOnArcY,
-                     currentPoint.y);
-                     CGFloat maxOperandY = MAX(currentPointOnArcY,
-                     currentPoint.y);
-                     CGFloat arcMidPointY = minOperandY + (maxOperandY -
-                     minOperandY) / 3;
-                     CGPoint arcMidPoint = {arcMidPointX, arcMidPointY};
-        
-                     minOperandX = MIN(arcMidPoint.x, center.x);
-                     maxOperandX = MAX(arcMidPoint.x, center.x);
-                     CGFloat midPointX = minOperandX + (maxOperandX -
-                     minOperandX) / 3;
-        
-                     minOperandY = MIN(arcMidPoint.y, center.y);
-                     maxOperandY = MAX(arcMidPoint.y, center.y);
-                     CGFloat midPointY = minOperandY + (maxOperandY -
-                     minOperandY) / 3;
-        
-                     midPoint = CGPointMake(midPointX, midPointY);
-        
-                     [self drawString:string atPoint:midPoint];
-        
-                 } else {
-                     // not putting text for very small area
-                 }
-        
-                 currentPointOnArcX = currentPoint.x;
-                 currentPointOnArcY = currentPoint.y;
-         [_containerLayer addSublayer:slice];
+        if (segmentSizeDouble > 0.6) {
+
+          CGFloat minOperandX = MIN(currentPointOnArcX, currentPoint.x);
+          CGFloat maxOperandX = MAX(currentPointOnArcX, currentPoint.x);
+          CGFloat arcMidPointX = minOperandX + (maxOperandX - minOperandX) / 4;
+
+          CGFloat minOperandY = MIN(currentPointOnArcY, currentPoint.y);
+          CGFloat maxOperandY = MAX(currentPointOnArcY, currentPoint.y);
+          CGFloat arcMidPointY = minOperandY + (maxOperandY - minOperandY) / 4;
+          CGPoint arcMidPoint = {arcMidPointX, arcMidPointY};
+
+          minOperandX = MIN(arcMidPoint.x, center.x);
+          maxOperandX = MAX(arcMidPoint.x, center.x);
+          CGFloat midPointX = minOperandX + (maxOperandX - minOperandX) / 4;
+
+          minOperandY = MIN(arcMidPoint.y, center.y);
+          maxOperandY = MAX(arcMidPoint.y, center.y);
+          CGFloat midPointY = minOperandY + (maxOperandY - minOperandY) / 4;
+
+          midPoint = CGPointMake(midPointX, midPointY);
+
+          CATextLayer *textLayer = [CATextLayer layer];
+          //                     [textLayer setFont:@"Helvetica-Bold"];
+          [textLayer setFontSize:_clusteringManager.labelFontSize];
+          //                     [textLayer setFrame:validFrame];
+          //                     [textLayer setString:string];
+          //                     [textLayer
+          //                     setAlignmentMode:kCAAlignmentCenter];
+
+          [textLayer setForegroundColor:[[UIColor blackColor] CGColor]];
+          // CGRectInset(self.bounds, 5, 5)
+
+          [textLayer setBounds:slice.frame];
+          // midPoint
+          [textLayer setPosition:midPoint];
+          [textLayer setString:string];
+
+          [slice addSublayer:textLayer];
+
+          // CGContextRef context = UIGraphicsGetCurrentContext();
+          //
+          // CGMutablePathRef arc = CGPathCreateMutable();
+          // CGPathMoveToPoint(arc, NULL, center.x, center.y);
+          //
+          //// RatingForPin rating = (RatingForPin)segment[@"type"];
+          //
+          // CGContextSetFillColorWithColor(context, color.CGColor);
+          //
+          // CGContextSetStrokeColorWithColor(
+          // context, _clusteringManager.strokeColour.CGColor);
+
+          //                     CGContextSetFillColorWithColor(context,
+          //                     [[UIColor darkTextColor] CGColor]);
+          //                    CGContextadd
+          /*[string drawInRect:layer.bounds
+           withFont:[UIFont systemFontOfSize:32]
+           lineBreakMode:UILineBreakModeWordWrap
+           alignment:UITextAlignmentCenter];*/
+
+          // [self drawString:string atPoint:midPoint];
+
+          // UIGraphicsPopContext();
+
+        } else if (segmentSizeDouble > 0.4 && segmentSizeDouble < 0.6) {
+
+          CGFloat minOperandX = MIN(currentPointOnArcX, currentPoint.x);
+          CGFloat maxOperandX = MAX(currentPointOnArcX, currentPoint.x);
+          CGFloat arcMidPointX = minOperandX + (maxOperandX - minOperandX) / 3;
+
+          CGFloat minOperandY = MIN(currentPointOnArcY, currentPoint.y);
+          CGFloat maxOperandY = MAX(currentPointOnArcY, currentPoint.y);
+          CGFloat arcMidPointY = minOperandY + (maxOperandY - minOperandY) / 3;
+          CGPoint arcMidPoint = {arcMidPointX, arcMidPointY};
+
+          minOperandX = MIN(arcMidPoint.x, center.x);
+          maxOperandX = MAX(arcMidPoint.x, center.x);
+          CGFloat midPointX = minOperandX + (maxOperandX - minOperandX) / 3;
+
+          minOperandY = MIN(arcMidPoint.y, center.y);
+          maxOperandY = MAX(arcMidPoint.y, center.y);
+          CGFloat midPointY = minOperandY + (maxOperandY - minOperandY) / 3;
+
+          midPoint = CGPointMake(midPointX, midPointY);
+
+          [self drawString:string atPoint:midPoint];
+
+        } else {
+          // not putting text for very small area
+        }
+
+        currentPointOnArcX = currentPoint.x;
+        currentPointOnArcY = currentPoint.y;
+        [_containerLayer addSublayer:slice];
       }];
-    
 }
 
+- (void)calculatePieChartSegmentSizes {
 
+  // AnnotationsPresentByRating annotationsPresentByRating;
+  _segmentsArray = [NSMutableArray new];
+ // _segmentSizesArray = [NSMutableArray new];
 
--(void)addTextLayerWithString:(NSString *)string{
-CAShapeLayer* circle = [[CAShapeLayer alloc] init];
-CGMutablePathRef path = CGPathCreateMutable();
-CGRect textRect = CGRectMake(self.bounds.size.width/4, (self.bounds.size.height-self.bounds.size.width/2)/2, self.bounds.size.width/2, self.bounds.size.width/2);
-float midX = CGRectGetMidX(textRect);
-float midY = CGRectGetMidY(textRect);
-CGAffineTransform t = CGAffineTransformConcat(
-                                              CGAffineTransformConcat(
-                                                                      CGAffineTransformMakeTranslation(-midX, -midY),
-                                                                      CGAffineTransformMakeRotation(-1.57079633/0.99)),
-                                              CGAffineTransformMakeTranslation(midX, midY));
-CGPathAddEllipseInRect(path, &t, textRect);
-circle.path = path;
-circle.frame = self.bounds;
-circle.fillColor = [UIColor clearColor].CGColor;
-circle.strokeColor = [UIColor blackColor].CGColor;
-circle.lineWidth = 60.0f;
-[self.layer addSublayer:circle];
+//  NumberOfAnnotationsByRating numberOfAnnotationsByRating;
+//  PieChartSegments pieChartSegments;
 
-CABasicAnimation* animation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-animation.duration = 15.0f;
-animation.fromValue = [NSNumber numberWithFloat:0.0f];
-animation.toValue = [NSNumber numberWithFloat:1.0f];
-animation.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-[circle addAnimation:animation forKey:@"strokeEnd"];
+  NSUInteger numOfAnnotationsWithoutRating = 0;
+  NSUInteger numOfAnnotationsWithBadRating= 0;
+  NSUInteger numOfAnnotationsWithNormalRating= 0;
+  NSUInteger numOfAnnotationsWithGoodRating= 0;
+  NSUInteger numOfAnnotationsWithVeryGoodRating= 0;
 
-//[circle release];
+  //    _annotationsWithoutRating = [NSMutableArray new];
+  //    _annotationsWithBadRating = [NSMutableArray new];
+  //    _annotationsWithGoodRating = [NSMutableArray new];
 
-UILabel* label = [[UILabel alloc] init];
-label.text = string;
-label.font = [UIFont systemFontOfSize:20.0f];
-label.center = CGPathGetCurrentPoint(path);
-label.transform = CGAffineTransformMakeRotation(1.57079633);
-[label sizeToFit];
-[self.layer addSublayer:label.layer];
+ // NSMutableArray *annotationsByRating;
 
-CAKeyframeAnimation* textAnimation = [CAKeyframeAnimation animationWithKeyPath:@"position"];
-textAnimation.duration = 15.0f;
-textAnimation.path = path;
-textAnimation.rotationMode = kCAAnimationRotateAuto;
-textAnimation.calculationMode = kCAAnimationCubicPaced;
-textAnimation.removedOnCompletion = NO;
-[label.layer addAnimation:textAnimation forKey:@"position"];
+  for (HMMapAnnotation *annotation in self.annotation.annotations) {
+
+    switch (annotation.ratingForColor) {
+
+    case noRating:
+      numOfAnnotationsWithoutRating++;
+      break;
+
+    case badRating:
+      numOfAnnotationsWithBadRating++;
+      break;
+
+    case normalRating:
+      numOfAnnotationsWithNormalRating++;
+      break;
+
+    case goodRating:
+      numOfAnnotationsWithGoodRating++;
+      break;
+
+    case veryGoodRating:
+      numOfAnnotationsWithVeryGoodRating++;
+      break;
+    }
+  }
+
+  NSUInteger total =
+      numOfAnnotationsWithoutRating + numOfAnnotationsWithBadRating +
+      numOfAnnotationsWithNormalRating + numOfAnnotationsWithGoodRating +
+      numOfAnnotationsWithVeryGoodRating;
+
+  NSNumber *nsNumberOfAnnotationsWithoutRating =
+      [NSNumber numberWithUnsignedInteger:numOfAnnotationsWithoutRating];
+
+  NSNumber *nsNumberOfAnnotationsWithBadRating =
+      [NSNumber numberWithUnsignedInteger:numOfAnnotationsWithBadRating];
+
+  NSNumber *nsNumberOfAnnotationsWithNormalRating =
+      [NSNumber numberWithUnsignedInteger:numOfAnnotationsWithNormalRating];
+
+  NSNumber *nsNumberOfAnnotationsWithGoodRating =
+      [NSNumber numberWithUnsignedInteger:numOfAnnotationsWithGoodRating];
+
+  NSNumber *nsNumberOfAnnotationsWithVeryGoodRating =
+      [NSNumber numberWithUnsignedInteger:numOfAnnotationsWithVeryGoodRating];
+
+  NSArray *numOfAnnotationsByRating = [[NSArray alloc]
+      initWithObjects:nsNumberOfAnnotationsWithoutRating,
+                      nsNumberOfAnnotationsWithBadRating,
+                      nsNumberOfAnnotationsWithNormalRating,
+                      nsNumberOfAnnotationsWithGoodRating,
+                      nsNumberOfAnnotationsWithVeryGoodRating, nil];
+
+  [numOfAnnotationsByRating
+      enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
+
+        NSNumber *numberOfAnnotationsInSegment = (NSNumber *)obj;
+
+        NSNumber *rating = [NSNumber numberWithUnsignedInteger:idx];
+
+        double segmentSizeDouble = (double)
+            numberOfAnnotationsInSegment.integerValue / total;
+
+        NSNumber *segmentSize = [NSNumber numberWithFloat:segmentSizeDouble];
+
+        NSDictionary *segmentProperties = [[NSDictionary alloc]
+            initWithObjectsAndKeys:rating, @"type", segmentSize, @"size",
+                                   numberOfAnnotationsInSegment,
+                                   @"annotationsCount", @0, @"startAngle", @0,
+                                   @"endAngle", nil];
+
+        [_segmentsArray addObject:segmentProperties];
+      }];
+
 }
 
+//- (void)calculatePieChartSegmentSizes {
+//
+//    // AnnotationsPresentByRating annotationsPresentByRating;
+//    _segmentsArray = [NSMutableArray new];
+//    _segmentSizesArray = [NSMutableArray new];
+//
+//    NumberOfAnnotationsByRating numberOfAnnotationsByRating;
+//    PieChartSegments pieChartSegments;
+//
+//    //    NSArray * numberOfAnnotationsByRating = [[NSArray
+//    alloc]initWithObjects:<#(nonnull id), ...#>, nil]];
+//
+//
+//    numberOfAnnotationsByRating.numOfAnnotationsWithoutRating = 0;
+//    numberOfAnnotationsByRating.numOfAnnotationsWithBadRating = 0;
+//    numberOfAnnotationsByRating.numOfAnnotationsWithNormalRating = 0;
+//    numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating = 0;
+//    numberOfAnnotationsByRating.numOfAnnotationsWithVeryGoodRating = 0;
+//
+//    pieChartSegments.partOfAnnotationsWithoutRating = 0;
+//    pieChartSegments.partOfAnnotationsWithBadRating = 0;
+//    pieChartSegments.partOfAnnotationsWithNormalRating = 0;
+//    pieChartSegments.partOfAnnotationsWithGoodRating = 0;
+//    pieChartSegments.partOfAnnotationsWithVeryGoodRating = 0;
+//
+//    //    _annotationsWithoutRating = [NSMutableArray new];
+//    //    _annotationsWithBadRating = [NSMutableArray new];
+//    //    _annotationsWithGoodRating = [NSMutableArray new];
+//
+//    for (HMMapAnnotation *annotation in self.annotation.annotations) {
+//        switch (annotation.ratingForColor) {
+//
+//            case noRating:
+//
+//                //  [_annotationsWithoutRating addObject:annotation];
+//                numberOfAnnotationsByRating.numOfAnnotationsWithoutRating++;
+//                break;
+//            case badRating:
+//
+//                // [_annotationsWithBadRating addObject:annotation];
+//                numberOfAnnotationsByRating.numOfAnnotationsWithBadRating++;
+//                break;
+//            case normalRating:
+//                // [_annotationsWithBadRating addObject:annotation];
+//                numberOfAnnotationsByRating.numOfAnnotationsWithNormalRating++;
+//                break;
+//            case goodRating:
+//                // [_annotationsWithBadRating addObject:annotation];
+//                numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating++;
+//                break;
+//            case veryGoodRating:
+//
+//                // [_annotationsWithGoodRating addObject:annotation];
+//                numberOfAnnotationsByRating.numOfAnnotationsWithVeryGoodRating++;
+//                break;
+//        }
+//    }
+//
+//    //  _numberofAnnotationsByRating = [[NSMutableArray
+//    //
+//    alloc]initWithObjects:numberOfAnnotationsByRating.numOfAnnotationsWithBadRating,
+//    //    numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating,
+//    // numberOfAnnotationsByRating.numOfAnnotationsWithoutRating,
+//    //                           nil];
+//
+//    NSUInteger total =
+//    numberOfAnnotationsByRating.numOfAnnotationsWithoutRating +
+//    numberOfAnnotationsByRating.numOfAnnotationsWithBadRating +
+//    numberOfAnnotationsByRating.numOfAnnotationsWithNormalRating +
+//    numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating +
+//    numberOfAnnotationsByRating.numOfAnnotationsWithVeryGoodRating;
+//
+//    pieChartSegments.partOfAnnotationsWithoutRating =
+//    (double)numberOfAnnotationsByRating.numOfAnnotationsWithoutRating / total;
+//
+//    pieChartSegments.partOfAnnotationsWithBadRating =
+//    (double)numberOfAnnotationsByRating.numOfAnnotationsWithBadRating / total;
+//
+//    pieChartSegments.partOfAnnotationsWithNormalRating =
+//    (double)numberOfAnnotationsByRating.numOfAnnotationsWithNormalRating /
+//    total;
+//
+//    pieChartSegments.partOfAnnotationsWithGoodRating =
+//    (double)numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating /
+//    total;
+//
+//    pieChartSegments.partOfAnnotationsWithVeryGoodRating =
+//    (double)numberOfAnnotationsByRating.numOfAnnotationsWithVeryGoodRating /
+//    total;
+//
+//    //   NSUInteger total =   _annotationsWithoutRating.count +
+//    //                       _annotationsWithBadRating.count +
+//    //                       _annotationsWithGoodRating.count;
+//
+//    //  self.partOfAnnotationsWithoutRating = (CGFloat)
+//    //  _annotationsWithoutRating.count / total;
+//    //  self.partOfAnnotationsWithGoodRating = (CGFloat)
+//    //  _annotationsWithGoodRating.count / total;
+//    //  self.partOfAnnotationsWithBadRating =  (CGFloat)
+//    //  _annotationsWithBadRating.count / total;
+//
+//    if (pieChartSegments.partOfAnnotationsWithoutRating) {
+//        NSNumber *rating = [NSNumber numberWithUnsignedInteger:noRating];
+//
+//        NSNumber *segmentSize = [NSNumber
+//                                 numberWithFloat:pieChartSegments.partOfAnnotationsWithoutRating];
+//
+//        NSNumber *numOfAnnotationsWithoutRating =
+//        [NSNumber numberWithInt:numberOfAnnotationsByRating
+//         .numOfAnnotationsWithoutRating];
+//
+//        NSDictionary *segmentOfAnnotationsWithoutRating = [[NSDictionary
+//        alloc]
+//                                                           initWithObjectsAndKeys:rating,
+//                                                           @"type",
+//                                                           segmentSize,
+//                                                           @"size",
+//                                                           numOfAnnotationsWithoutRating,
+//                                                           @"annotationsCount",
+//                                                           @0, @"startAngle",
+//                                                           @0,
+//                                                           @"endAngle", nil];
+//
+//        [_segmentsArray addObject:segmentOfAnnotationsWithoutRating];
+//    }
+//
+//    if (pieChartSegments.partOfAnnotationsWithBadRating) {
+//        NSNumber *rating = [NSNumber numberWithUnsignedInteger:badRating];
+//
+//        NSNumber *segmentSize = [NSNumber
+//                                 numberWithFloat:pieChartSegments.partOfAnnotationsWithBadRating];
+//
+//        NSNumber *numOfAnnotationsWithBadRating =
+//        [NSNumber numberWithInt:numberOfAnnotationsByRating
+//         .numOfAnnotationsWithBadRating];
+//
+//        NSDictionary *segmentOfAnnotationsWithBadRating = [[NSDictionary
+//        alloc]
+//                                                           initWithObjectsAndKeys:rating,
+//                                                           @"type",
+//                                                           segmentSize,
+//                                                           @"size",
+//                                                           numOfAnnotationsWithBadRating,
+//                                                           @"annotationsCount",
+//                                                           @0, @"startAngle",
+//                                                           @0,
+//                                                           @"endAngle", nil];
+//
+//        [_segmentsArray addObject:segmentOfAnnotationsWithBadRating];
+//    }
+//
+//    if (pieChartSegments.partOfAnnotationsWithNormalRating) {
+//        NSNumber *rating = [NSNumber numberWithUnsignedInteger:normalRating];
+//
+//        NSNumber *segmentSize = [NSNumber
+//                                 numberWithFloat:pieChartSegments.partOfAnnotationsWithNormalRating];
+//
+//        NSNumber *numOfAnnotationsWithNormalRating =
+//        [NSNumber numberWithInt:numberOfAnnotationsByRating
+//         .numOfAnnotationsWithNormalRating];
+//
+//        NSDictionary *segmentOfAnnotationsWithNormalRating = [[NSDictionary
+//        alloc]
+//                                                              initWithObjectsAndKeys:rating,
+//                                                              @"type",
+//                                                              segmentSize,
+//                                                              @"size",
+//                                                              numOfAnnotationsWithNormalRating,
+//                                                              @"annotationsCount",
+//                                                              @0,
+//                                                              @"startAngle",
+//                                                              @0,
+//                                                              @"endAngle",
+//                                                              nil];
+//
+//        [_segmentsArray addObject:segmentOfAnnotationsWithNormalRating];
+//    }
+//
+//    if (pieChartSegments.partOfAnnotationsWithGoodRating) {
+//        NSNumber *rating = [NSNumber numberWithUnsignedInteger:goodRating];
+//
+//        NSNumber *segmentSize = [NSNumber
+//                                 numberWithFloat:pieChartSegments.partOfAnnotationsWithGoodRating];
+//
+//        NSNumber *numOfAnnotationsWithGoodRating =
+//        [NSNumber numberWithInt:numberOfAnnotationsByRating
+//         .numOfAnnotationsWithGoodRating];
+//
+//        NSDictionary *segmentOfAnnotationsWithGoodRating = [[NSDictionary
+//        alloc]
+//                                                            initWithObjectsAndKeys:rating,
+//                                                            @"type",
+//                                                            segmentSize,
+//                                                            @"size",
+//                                                            numOfAnnotationsWithGoodRating,
+//                                                            @"annotationsCount",
+//                                                            @0, @"startAngle",
+//                                                            @0,
+//                                                            @"endAngle", nil];
+//
+//        [_segmentsArray addObject:segmentOfAnnotationsWithGoodRating];
+//    }
+//
+//    if (pieChartSegments.partOfAnnotationsWithVeryGoodRating) {
+//
+//        NSNumber *numOfAnnotationsWithVeryGoodRating =
+//        [NSNumber numberWithInt:numberOfAnnotationsByRating
+//         .numOfAnnotationsWithVeryGoodRating];
+//        NSNumber *rating = [NSNumber
+//        numberWithUnsignedInteger:veryGoodRating];
+//
+//        NSNumber *segmentSize = [NSNumber
+//                                 numberWithFloat:pieChartSegments.partOfAnnotationsWithVeryGoodRating];
+//
+//        NSDictionary *segmentOfAnnotationsWithVeryGoodRating = [[NSDictionary
+//        alloc]
+//                                                                initWithObjectsAndKeys:rating,
+//                                                                @"type",
+//                                                                segmentSize,
+//                                                                @"size",
+//                                                                numOfAnnotationsWithVeryGoodRating,
+//                                                                @"annotationsCount",
+//                                                                @0,
+//                                                                @"startAngle",
+//                                                                @0,
+//                                                                @"endAngle",
+//                                                                nil];
+//
+//        [_segmentsArray addObject:segmentOfAnnotationsWithVeryGoodRating];
+//    }
+//    // return [_segmentSizesArray copy];
+//}
 
+- (void)addTextLayerWithString:(NSString *)string {
+  CAShapeLayer *circle = [[CAShapeLayer alloc] init];
+  CGMutablePathRef path = CGPathCreateMutable();
+  CGRect textRect =
+      CGRectMake(self.bounds.size.width / 4,
+                 (self.bounds.size.height - self.bounds.size.width / 2) / 2,
+                 self.bounds.size.width / 2, self.bounds.size.width / 2);
+  float midX = CGRectGetMidX(textRect);
+  float midY = CGRectGetMidY(textRect);
+  CGAffineTransform t = CGAffineTransformConcat(
+      CGAffineTransformConcat(
+          CGAffineTransformMakeTranslation(-midX, -midY),
+          CGAffineTransformMakeRotation(-1.57079633 / 0.99)),
+      CGAffineTransformMakeTranslation(midX, midY));
+  CGPathAddEllipseInRect(path, &t, textRect);
+  circle.path = path;
+  circle.frame = self.bounds;
+  circle.fillColor = [UIColor clearColor].CGColor;
+  circle.strokeColor = [UIColor blackColor].CGColor;
+  circle.lineWidth = 60.0f;
+  [self.layer addSublayer:circle];
 
+  CABasicAnimation *animation =
+      [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
+  animation.duration = 15.0f;
+  animation.fromValue = [NSNumber numberWithFloat:0.0f];
+  animation.toValue = [NSNumber numberWithFloat:1.0f];
+  animation.timingFunction =
+      [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+  [circle addAnimation:animation forKey:@"strokeEnd"];
+
+  //[circle release];
+
+  UILabel *label = [[UILabel alloc] init];
+  label.text = string;
+  label.font = [UIFont systemFontOfSize:20.0f];
+  label.center = CGPathGetCurrentPoint(path);
+  label.transform = CGAffineTransformMakeRotation(1.57079633);
+  [label sizeToFit];
+  [self.layer addSublayer:label.layer];
+
+  CAKeyframeAnimation *textAnimation =
+      [CAKeyframeAnimation animationWithKeyPath:@"position"];
+  textAnimation.duration = 15.0f;
+  textAnimation.path = path;
+  textAnimation.rotationMode = kCAAnimationRotateAuto;
+  textAnimation.calculationMode = kCAAnimationCubicPaced;
+  textAnimation.removedOnCompletion = NO;
+  [label.layer addAnimation:textAnimation forKey:@"position"];
+}
 
 //- (void)drawRect:(CGRect)rect {
 //
@@ -1063,199 +1384,6 @@ textAnimation.removedOnCompletion = NO;
 //      }];
 //}
 
-- (void)calculatePieChartSegmentSizes {
-
-  // AnnotationsPresentByRating annotationsPresentByRating;
-  _segmentsArray = [NSMutableArray new];
-  _segmentSizesArray = [NSMutableArray new];
-
-  NumberOfAnnotationsByRating numberOfAnnotationsByRating;
-  PieChartSegments pieChartSegments;
-
-  numberOfAnnotationsByRating.numOfAnnotationsWithoutRating = 0;
-  numberOfAnnotationsByRating.numOfAnnotationsWithBadRating = 0;
-  numberOfAnnotationsByRating.numOfAnnotationsWithNormalRating = 0;
-  numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating = 0;
-  numberOfAnnotationsByRating.numOfAnnotationsWithVeryGoodRating = 0;
-
-  pieChartSegments.partOfAnnotationsWithoutRating = 0;
-  pieChartSegments.partOfAnnotationsWithBadRating = 0;
-  pieChartSegments.partOfAnnotationsWithNormalRating = 0;
-  pieChartSegments.partOfAnnotationsWithGoodRating = 0;
-  pieChartSegments.partOfAnnotationsWithVeryGoodRating = 0;
-
-  //    _annotationsWithoutRating = [NSMutableArray new];
-  //    _annotationsWithBadRating = [NSMutableArray new];
-  //    _annotationsWithGoodRating = [NSMutableArray new];
-
-  for (HMMapAnnotation *annotation in self.annotation.annotations) {
-    switch (annotation.ratingForColor) {
-
-    case noRating:
-
-      //  [_annotationsWithoutRating addObject:annotation];
-      numberOfAnnotationsByRating.numOfAnnotationsWithoutRating++;
-      break;
-    case badRating:
-
-      // [_annotationsWithBadRating addObject:annotation];
-      numberOfAnnotationsByRating.numOfAnnotationsWithBadRating++;
-      break;
-    case normalRating:
-      // [_annotationsWithBadRating addObject:annotation];
-      numberOfAnnotationsByRating.numOfAnnotationsWithNormalRating++;
-      break;
-    case goodRating:
-      // [_annotationsWithBadRating addObject:annotation];
-      numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating++;
-      break;
-    case veryGoodRating:
-
-      // [_annotationsWithGoodRating addObject:annotation];
-      numberOfAnnotationsByRating.numOfAnnotationsWithVeryGoodRating++;
-      break;
-    }
-  }
-
-  //  _numberofAnnotationsByRating = [[NSMutableArray
-  //  alloc]initWithObjects:numberOfAnnotationsByRating.numOfAnnotationsWithBadRating,
-  //    numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating,
-  //                           numberOfAnnotationsByRating.numOfAnnotationsWithoutRating,
-  //                           nil];
-
-  NSUInteger total =
-      numberOfAnnotationsByRating.numOfAnnotationsWithoutRating +
-      numberOfAnnotationsByRating.numOfAnnotationsWithBadRating +
-      numberOfAnnotationsByRating.numOfAnnotationsWithNormalRating +
-      numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating +
-      numberOfAnnotationsByRating.numOfAnnotationsWithVeryGoodRating;
-
-  pieChartSegments.partOfAnnotationsWithoutRating =
-      (double)numberOfAnnotationsByRating.numOfAnnotationsWithoutRating / total;
-
-  pieChartSegments.partOfAnnotationsWithBadRating =
-      (double)numberOfAnnotationsByRating.numOfAnnotationsWithBadRating / total;
-
-  pieChartSegments.partOfAnnotationsWithNormalRating =
-      (double)numberOfAnnotationsByRating.numOfAnnotationsWithNormalRating /
-      total;
-
-  pieChartSegments.partOfAnnotationsWithGoodRating =
-      (double)numberOfAnnotationsByRating.numOfAnnotationsWithGoodRating /
-      total;
-
-  pieChartSegments.partOfAnnotationsWithVeryGoodRating =
-      (double)numberOfAnnotationsByRating.numOfAnnotationsWithVeryGoodRating /
-      total;
-
-  //   NSUInteger total =   _annotationsWithoutRating.count +
-  //                       _annotationsWithBadRating.count +
-  //                       _annotationsWithGoodRating.count;
-
-  //  self.partOfAnnotationsWithoutRating = (CGFloat)
-  //  _annotationsWithoutRating.count / total;
-  //  self.partOfAnnotationsWithGoodRating = (CGFloat)
-  //  _annotationsWithGoodRating.count / total;
-  //  self.partOfAnnotationsWithBadRating =  (CGFloat)
-  //  _annotationsWithBadRating.count / total;
-
-  if (pieChartSegments.partOfAnnotationsWithoutRating) {
-    NSNumber *rating = [NSNumber numberWithUnsignedInteger:noRating];
-
-    NSNumber *segmentSize = [NSNumber
-        numberWithFloat:pieChartSegments.partOfAnnotationsWithoutRating];
-
-    NSNumber *numOfAnnotationsWithoutRating =
-        [NSNumber numberWithInt:numberOfAnnotationsByRating
-                                    .numOfAnnotationsWithoutRating];
-
-    NSDictionary *segmentOfAnnotationsWithoutRating = [[NSDictionary alloc]
-        initWithObjectsAndKeys:rating, @"type", segmentSize, @"size",
-                               numOfAnnotationsWithoutRating,
-                               @"annotationsCount", @0, @"startAngle", @0,
-                               @"endAngle", nil];
-
-    [_segmentsArray addObject:segmentOfAnnotationsWithoutRating];
-  }
-
-  if (pieChartSegments.partOfAnnotationsWithBadRating) {
-    NSNumber *rating = [NSNumber numberWithUnsignedInteger:badRating];
-
-    NSNumber *segmentSize = [NSNumber
-        numberWithFloat:pieChartSegments.partOfAnnotationsWithBadRating];
-
-    NSNumber *numOfAnnotationsWithBadRating =
-        [NSNumber numberWithInt:numberOfAnnotationsByRating
-                                    .numOfAnnotationsWithBadRating];
-
-    NSDictionary *segmentOfAnnotationsWithBadRating = [[NSDictionary alloc]
-        initWithObjectsAndKeys:rating, @"type", segmentSize, @"size",
-                               numOfAnnotationsWithBadRating,
-                               @"annotationsCount", @0, @"startAngle", @0,
-                               @"endAngle", nil];
-
-    [_segmentsArray addObject:segmentOfAnnotationsWithBadRating];
-  }
-
-  if (pieChartSegments.partOfAnnotationsWithNormalRating) {
-    NSNumber *rating = [NSNumber numberWithUnsignedInteger:normalRating];
-
-    NSNumber *segmentSize = [NSNumber
-        numberWithFloat:pieChartSegments.partOfAnnotationsWithNormalRating];
-
-    NSNumber *numOfAnnotationsWithNormalRating =
-        [NSNumber numberWithInt:numberOfAnnotationsByRating
-                                    .numOfAnnotationsWithNormalRating];
-
-    NSDictionary *segmentOfAnnotationsWithNormalRating = [[NSDictionary alloc]
-        initWithObjectsAndKeys:rating, @"type", segmentSize, @"size",
-                               numOfAnnotationsWithNormalRating,
-                               @"annotationsCount", @0, @"startAngle", @0,
-                               @"endAngle", nil];
-
-    [_segmentsArray addObject:segmentOfAnnotationsWithNormalRating];
-  }
-
-  if (pieChartSegments.partOfAnnotationsWithGoodRating) {
-    NSNumber *rating = [NSNumber numberWithUnsignedInteger:goodRating];
-
-    NSNumber *segmentSize = [NSNumber
-        numberWithFloat:pieChartSegments.partOfAnnotationsWithGoodRating];
-
-    NSNumber *numOfAnnotationsWithGoodRating =
-        [NSNumber numberWithInt:numberOfAnnotationsByRating
-                                    .numOfAnnotationsWithGoodRating];
-
-    NSDictionary *segmentOfAnnotationsWithGoodRating = [[NSDictionary alloc]
-        initWithObjectsAndKeys:rating, @"type", segmentSize, @"size",
-                               numOfAnnotationsWithGoodRating,
-                               @"annotationsCount", @0, @"startAngle", @0,
-                               @"endAngle", nil];
-
-    [_segmentsArray addObject:segmentOfAnnotationsWithGoodRating];
-  }
-
-  if (pieChartSegments.partOfAnnotationsWithVeryGoodRating) {
-
-    NSNumber *numOfAnnotationsWithVeryGoodRating =
-        [NSNumber numberWithInt:numberOfAnnotationsByRating
-                                    .numOfAnnotationsWithVeryGoodRating];
-    NSNumber *rating = [NSNumber numberWithUnsignedInteger:veryGoodRating];
-
-    NSNumber *segmentSize = [NSNumber
-        numberWithFloat:pieChartSegments.partOfAnnotationsWithVeryGoodRating];
-
-    NSDictionary *segmentOfAnnotationsWithVeryGoodRating = [[NSDictionary alloc]
-        initWithObjectsAndKeys:rating, @"type", segmentSize, @"size",
-                               numOfAnnotationsWithVeryGoodRating,
-                               @"annotationsCount", @0, @"startAngle", @0,
-                               @"endAngle", nil];
-
-    [_segmentsArray addObject:segmentOfAnnotationsWithVeryGoodRating];
-  }
-  // return [_segmentSizesArray copy];
-}
-
 //-(CGFloat)scaleToAspectFit:(CGSize)source into:(CGSize)into
 // padding:(float)padding
 //{
@@ -1324,9 +1452,10 @@ textAnimation.removedOnCompletion = NO;
       fontWithDescriptor:font.fontDescriptor
                     size:12.]; // use standard size to prevent error accrual
   CGSize sampleSize = [string
-      sizeWithAttributes:
-          [NSDictionary dictionaryWithObjectsAndKeys:sampleFont,
-                                                     NSFontAttributeName, nil]];
+      sizeWithAttributes:[NSDictionary
+                             dictionaryWithObjectsAndKeys:sampleFont,
+                                                          NSFontAttributeName,
+                                                          nil]];
   CGFloat scale = MIN((sampleSize.width - 10) / sampleSize.width,
                       (sampleSize.height - 10) / sampleSize.height);
 

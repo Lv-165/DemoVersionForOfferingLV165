@@ -32,8 +32,8 @@
 //
 //@property(nonatomic) NSUInteger numberOfPieChartSegments;
 
-- (void)countAnnotationsByRating;
-- (void)groupAnnotationsByRating;
+// - (void)countAnnotationsByRating;
+// - (void)groupAnnotationsByRating;
 
 //@property(nonatomic) UILabel *annotationLabel;
 
