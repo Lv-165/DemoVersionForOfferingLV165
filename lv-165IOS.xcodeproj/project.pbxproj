@@ -83,6 +83,10 @@
 		C0EF51AF1C29635F0098B4F8 /* Place+CoreDataProperties.m in Sources */ = {isa = PBXBuildFile; fileRef = C0EF51AC1C29635F0098B4F8 /* Place+CoreDataProperties.m */; };
 		C0EF51B01C29635F0098B4F8 /* Place.m in Sources */ = {isa = PBXBuildFile; fileRef = C0EF51AE1C29635F0098B4F8 /* Place.m */; };
 		CE4CC48A1C14EB6F002C4358 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4CC4891C14EB6F002C4358 /* Reachability.m */; };
+		CE9694811C2EFA5D00807DC1 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = CE96947E1C2EFA5D00807DC1 /* UIImage+ImageEffects.m */; settings = {ASSET_TAGS = (); }; };
+		CE9694821C2EFA5D00807DC1 /* UIImageView+LBBlurredImage.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9694801C2EFA5D00807DC1 /* UIImageView+LBBlurredImage.m */; settings = {ASSET_TAGS = (); }; };
+		CE9694851C2F131300807DC1 /* HMWeatherModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9694841C2F131300807DC1 /* HMWeatherModel.m */; settings = {ASSET_TAGS = (); }; };
+		CEAE30391C2EF3E60056EA07 /* HMWeatherViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE30381C2EF3E60056EA07 /* HMWeatherViewController.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -262,6 +266,14 @@
 		C0EF51AE1C29635F0098B4F8 /* Place.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Place.m; sourceTree = "<group>"; };
 		CE4CC4881C14EB6F002C4358 /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		CE4CC4891C14EB6F002C4358 /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
+		CE96947D1C2EFA5D00807DC1 /* UIImage+ImageEffects.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImage+ImageEffects.h"; sourceTree = "<group>"; };
+		CE96947E1C2EFA5D00807DC1 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
+		CE96947F1C2EFA5D00807DC1 /* UIImageView+LBBlurredImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+LBBlurredImage.h"; sourceTree = "<group>"; };
+		CE9694801C2EFA5D00807DC1 /* UIImageView+LBBlurredImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+LBBlurredImage.m"; sourceTree = "<group>"; };
+		CE9694831C2F131300807DC1 /* HMWeatherModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMWeatherModel.h; sourceTree = "<group>"; };
+		CE9694841C2F131300807DC1 /* HMWeatherModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMWeatherModel.m; sourceTree = "<group>"; };
+		CEAE30371C2EF3E60056EA07 /* HMWeatherViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMWeatherViewController.h; sourceTree = "<group>"; };
+		CEAE30381C2EF3E60056EA07 /* HMWeatherViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMWeatherViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -313,6 +325,7 @@
 		302A119C1C037143002F8FF0 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
+				CE96947C1C2EFA3800807DC1 /* LBBlurredImage */,
 				137B416D1C299EDB00AEF28A /* Branch.framework */,
 				308D19051C19FCC7007CC26E /* Reachability */,
 				308A5CD51C1735F4009DD439 /* SVGeocoder */,
@@ -506,6 +519,7 @@
 				308D190A1C19FD83007CC26E /* FiltersController */,
 				308D19091C19FD6E007CC26E /* SettingsController */,
 				308D19041C19FC50007CC26E /* HMMapViewController */,
+				CEAE30361C2EF3B00056EA07 /* WeatherController */,
 			);
 			name = Controllers;
 			sourceTree = "<group>";
@@ -672,6 +686,28 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
+		CE96947C1C2EFA3800807DC1 /* LBBlurredImage */ = {
+			isa = PBXGroup;
+			children = (
+				CE96947D1C2EFA5D00807DC1 /* UIImage+ImageEffects.h */,
+				CE96947E1C2EFA5D00807DC1 /* UIImage+ImageEffects.m */,
+				CE96947F1C2EFA5D00807DC1 /* UIImageView+LBBlurredImage.h */,
+				CE9694801C2EFA5D00807DC1 /* UIImageView+LBBlurredImage.m */,
+			);
+			name = LBBlurredImage;
+			sourceTree = "<group>";
+		};
+		CEAE30361C2EF3B00056EA07 /* WeatherController */ = {
+			isa = PBXGroup;
+			children = (
+				CEAE30371C2EF3E60056EA07 /* HMWeatherViewController.h */,
+				CEAE30381C2EF3E60056EA07 /* HMWeatherViewController.m */,
+				CE9694831C2F131300807DC1 /* HMWeatherModel.h */,
+				CE9694841C2F131300807DC1 /* HMWeatherModel.m */,
+			);
+			name = WeatherController;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -819,6 +855,7 @@
 				302A11D61C0371C3002F8FF0 /* UIProgressView+AFNetworking.m in Sources */,
 				843905871C18E3DC00450FA8 /* HMCommentsTableViewController.m in Sources */,
 				7FAD6ED41C283010007E4B92 /* Country+CoreDataProperties.m in Sources */,
+				CE9694851C2F131300807DC1 /* HMWeatherModel.m in Sources */,
 				7FAD6ECD1C283010007E4B92 /* User.m in Sources */,
 				A10B9E541C2AF26700A6B8D4 /* HMGoogleDirectionsViewController.m in Sources */,
 				7FAD6EDB1C283010007E4B92 /* Waiting.m in Sources */,
@@ -848,6 +885,7 @@
 				C01442E91C0333A5000F8F6F /* HMMapViewController.m in Sources */,
 				302A11CC1C0371C3002F8FF0 /* AFSecurityPolicy.m in Sources */,
 				C01442E61C0333A5000F8F6F /* HMAppDelegate.m in Sources */,
+				CE9694811C2EFA5D00807DC1 /* UIImage+ImageEffects.m in Sources */,
 				302A11C91C0371C3002F8FF0 /* AFHTTPRequestOperationManager.m in Sources */,
 				C0EF51AA1C2957AA0098B4F8 /* Description.m in Sources */,
 				302A11CD1C0371C3002F8FF0 /* AFURLConnectionOperation.m in Sources */,
@@ -866,6 +904,7 @@
 				302A11CB1C0371C3002F8FF0 /* AFNetworkReachabilityManager.m in Sources */,
 				C0EF51A91C2957AA0098B4F8 /* Description+CoreDataProperties.m in Sources */,
 				7FAD6ED71C283010007E4B92 /* DescriptionInfo.m in Sources */,
+				CEAE30391C2EF3E60056EA07 /* HMWeatherViewController.m in Sources */,
 				C0EF51AF1C29635F0098B4F8 /* Place+CoreDataProperties.m in Sources */,
 				302A11CF1C0371C3002F8FF0 /* AFURLResponseSerialization.m in Sources */,
 				843905861C18E3DC00450FA8 /* HMDynamicTableViewCell.m in Sources */,
@@ -875,6 +914,7 @@
 				302A11D01C0371C3002F8FF0 /* AFURLSessionManager.m in Sources */,
 				7FAD6ED81C283010007E4B92 /* Location+CoreDataProperties.m in Sources */,
 				302A11D11C0371C3002F8FF0 /* AFNetworkActivityIndicatorManager.m in Sources */,
+				CE9694821C2EFA5D00807DC1 /* UIImageView+LBBlurredImage.m in Sources */,
 				C01442E31C0333A5000F8F6F /* main.m in Sources */,
 				308A5CDB1C1735F4009DD439 /* SVPlacemark.m in Sources */,
 			);

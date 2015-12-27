@@ -32,6 +32,7 @@
 #import "FBAnnotationCluster.h"
 #import "FBAnnotationClustering.h"
 #import "HMWeatherManager.h"
+#import "HMWeatherViewController.h"
 #import "UILabel+HMdynamicSizeMe.h"
 
 @interface HMMapViewController ()
@@ -124,7 +125,8 @@ static bool isMainRoute;
                                      flexibleItem,
                                      [self createColorButton:@"road30_30" selector:@selector(showRoudFromThisPlaceToMyLocation:)],
                                      flexibleItem,
-                                     [self createColorButton:@"direction_compass" selector:@selector(showDirectionToThisAnnotation:)]
+                                     [self createColorButton:@"direction_compass" selector:@selector(showDirectionToThisAnnotation:)],
+                                      [self createColorButton:@"weather" selector:@selector(weatherShow:)]
                                      ];
     
     [self.downToolBar setItems:buttonsForDownToolBar animated:YES];
@@ -293,6 +295,9 @@ static bool isMainRoute;
 
 - (void)moveToFilterController:(UIBarButtonItem *)sender {
   [self performSegueWithIdentifier:@"showFilterViewController" sender:sender];
+}
+- (void)weatherShow:(UIBarButtonItem *)sender {
+    [self performSegueWithIdentifier:@"weather" sender:sender];
 }
 
 - (void)buttonSearch:(UIBarButtonItem *)sender {
@@ -499,6 +504,11 @@ static bool isMainRoute;
         
         destViewController.textForLabel = self.stringForGoogleDirectionsInstructions;
         
+    } else if ([[segue identifier] isEqualToString:@"weather"]) {
+        
+        NSDictionary *weather = self.weatherDict;
+        HMWeatherViewController *weatherViewController = segue.destinationViewController;
+        weatherViewController.weatherDict = weather;
     }
 }
 
@@ -921,17 +931,12 @@ static bool isMainRoute;
 
     Place *place = [self.placeArray firstObject];
     User *user = place.user;
-    
-    
-    
-#warning weather!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-    
+  
     self.weatherDict = [[NSDictionary alloc]init];
     [[HMWeatherManager sharedManager] getWeatherByCoordinate:place onSuccess:^(NSDictionary *weather) {
        
     self.weatherDict = weather;
-        NSLog(@"%@",self.weatherDict);
+        NSLog(@"weatherDict %@",self.weatherDict);
     } onFailure:^(NSError *error, NSInteger statusCode) {
     
     NSLog(@"%@%ld",error,(long)statusCode);

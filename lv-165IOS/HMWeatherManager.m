@@ -17,7 +17,7 @@
 #import "AFNetworking.h"
 
 static NSString const *appCode = @"&appid=7ac6f2fd306b7f23df52b396c5d83ba5";
-static NSString const *baseURLString = @"http://api.openweathermap.org/data/2.5/forecast?";
+static NSString const *baseURLString = @"http://api.openweathermap.org/data/2.5/weather?";
 
 
 @interface HMWeatherManager ()
@@ -63,7 +63,7 @@ static NSString const *baseURLString = @"http://api.openweathermap.org/data/2.5/
             
         };
         
-        NSURL* url = [NSURL URLWithString:@"http://api.openweathermap.org/data/2.5/forecast?"];
+        NSURL* url = [NSURL URLWithString:@"http://api.openweathermap.org/data/2.5/weather?"];
         self.requestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:url];
     }
     return self;
