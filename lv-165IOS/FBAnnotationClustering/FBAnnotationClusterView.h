@@ -22,6 +22,8 @@
 
 @property(nonatomic, strong) FBClusteringManager *clusteringManager;
 
+
+
 //@property(nonatomic, strong) NSMutableArray *annotationsWithoutRating;
 //@property(nonatomic, strong) NSMutableArray *annotationsWithGoodRating;
 //@property(nonatomic, strong) NSMutableArray *annotationsWithBadRating;

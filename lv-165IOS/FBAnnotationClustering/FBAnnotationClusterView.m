@@ -17,27 +17,27 @@
 @import QuartzCore;
 @import CoreText;
 
-typedef NS_OPTIONS(NSInteger, AnnotationsPresentByRating) {
-  PresentWithoutRating = 1 << 0,
-  PresentWithBadRating = 1 << 1,
-  PresentWithGoodRating = 1 << 2
-};
+// typedef NS_OPTIONS(NSInteger, AnnotationsPresentByRating) {
+//  PresentWithoutRating = 1 << 0,
+//  PresentWithBadRating = 1 << 1,
+//  PresentWithGoodRating = 1 << 2
+//};
 
-typedef struct {
-  unsigned int numOfAnnotationsWithoutRating;
-  unsigned int numOfAnnotationsWithBadRating;
-  unsigned int numOfAnnotationsWithNormalRating;
-  unsigned int numOfAnnotationsWithGoodRating;
-  unsigned int numOfAnnotationsWithVeryGoodRating;
-} NumberOfAnnotationsByRating;
-
-typedef struct {
-  double partOfAnnotationsWithoutRating;
-  double partOfAnnotationsWithBadRating;
-  double partOfAnnotationsWithNormalRating;
-  double partOfAnnotationsWithGoodRating;
-  double partOfAnnotationsWithVeryGoodRating;
-} PieChartSegments;
+// typedef struct {
+//  unsigned int numOfAnnotationsWithoutRating;
+//  unsigned int numOfAnnotationsWithBadRating;
+//  unsigned int numOfAnnotationsWithNormalRating;
+//  unsigned int numOfAnnotationsWithGoodRating;
+//  unsigned int numOfAnnotationsWithVeryGoodRating;
+//} NumberOfAnnotationsByRating;
+//
+// typedef struct {
+//  double partOfAnnotationsWithoutRating;
+//  double partOfAnnotationsWithBadRating;
+//  double partOfAnnotationsWithNormalRating;
+//  double partOfAnnotationsWithGoodRating;
+//  double partOfAnnotationsWithVeryGoodRating;
+//} PieChartSegments;
 
 @interface FBAnnotationClusterView () {
   NSMutableArray *_normalizedValues;
@@ -47,15 +47,15 @@ typedef struct {
 @property(strong, nonatomic) NSMutableArray *segmentSizesArray;
 @property(strong, nonatomic) NSMutableArray *segmentsArray;
 
-@property(readonly, nonatomic) NSUInteger numberOfAnnotationTypes;
+//@property(readonly, nonatomic) NSUInteger numberOfAnnotationTypes;
 
-@property(nonatomic) CGFloat partOfAnnotationsWithoutRating;
-@property(nonatomic) CGFloat partOfAnnotationsWithBadRating;
-@property(nonatomic) CGFloat partOfAnnotationsWithNormalRating;
-@property(nonatomic) CGFloat partOfAnnotationsWithGoodRating;
-@property(nonatomic) CGFloat partOfAnnotationsWithVeryGoodRating;
+//@property(nonatomic) CGFloat partOfAnnotationsWithoutRating;
+//@property(nonatomic) CGFloat partOfAnnotationsWithBadRating;
+//@property(nonatomic) CGFloat partOfAnnotationsWithNormalRating;
+//@property(nonatomic) CGFloat partOfAnnotationsWithGoodRating;
+//@property(nonatomic) CGFloat partOfAnnotationsWithVeryGoodRating;
 
-@property(nonatomic) NSMutableArray *numberofAnnotationsByRating;
+//@property(nonatomic) NSMutableArray *numberofAnnotationsByRating;
 
 //@property(strong, nonatomic) ClusterViewPieChart *pieChartRight;
 //@property(strong, nonatomic) ClusterViewPieChart *pieChartLeft;
@@ -82,15 +82,15 @@ typedef struct {
 // static CGFloat radianConversionFactor = M_PI / 180;
 
 - (id)initWithAnnotation:(FBAnnotationCluster *)annotation
-       clusteringManager:(FBClusteringManager *)clusteringManager{
+       clusteringManager:(FBClusteringManager *)clusteringManager {
 
   _clusteringManager = clusteringManager;
 
-//    - (id)initWithAnnotation:(FBAnnotationCluster *)annotation
-//clusteringManager:(FBClusteringManager *)clusteringManager
-//numberOfAnnotationTypes:(NSUInteger)numberOfTypes {
-//
-//  _numberOfAnnotationTypes = numberOfTypes;
+  //    - (id)initWithAnnotation:(FBAnnotationCluster *)annotation
+  // clusteringManager:(FBClusteringManager *)clusteringManager
+  // numberOfAnnotationTypes:(NSUInteger)numberOfTypes {
+  //
+  //  _numberOfAnnotationTypes = numberOfTypes;
 
   //- (id)initWithAnnotation:(id<MKAnnotation>)annotation
   //         reuseIdentifier:(NSString *)reuseIdentifier {
@@ -140,63 +140,17 @@ typedef struct {
     //    self.draggable = NO;
     //    self.annotationLabel.userInteractionEnabled = YES;
     //    [self addSubview:self.annotationLabel];
-  }
 
+  if (_clusteringManager.numOfClusteredAnnotations >
+      _clusteringManager.numOfInitializedAnnotationViews)
+    _clusteringManager.numOfInitializedAnnotationViews++;
+  else {
+      [_clusteringManager firePieChartAnimation];
+      
+       // send notification
+  }
+  }
   return self;
-}
-
-// START CAANIMATION AND CALAYER
-
-- (void)doInitialSetup {
-  _containerLayer = [CALayer layer];
-  [self.layer addSublayer:_containerLayer];
-}
-
-- (id)initWithFrame:(CGRect)frame {
-  self = [super initWithFrame:frame];
-  if (self) {
-    [self doInitialSetup];
-  }
-
-  return self;
-}
-
-- (id)initWithCoder:(NSCoder *)aDecoder {
-  if (self = [super initWithCoder:aDecoder]) {
-    [self doInitialSetup];
-  }
-
-  return self;
-}
-
-- (id)initWithSliceValues:(NSArray *)sliceValues {
-  if (self) {
-    [self doInitialSetup];
-    self.sliceValues = sliceValues;
-  }
-
-  return self;
-}
-
-- (void)setSliceValues:(NSArray *)sliceValues {
-  _sliceValues = sliceValues;
-
-  _normalizedValues = [NSMutableArray array];
-  if (sliceValues) {
-    // total
-    CGFloat total = 0.0;
-    for (NSNumber *num in sliceValues) {
-      total += num.floatValue;
-    }
-
-    // normalize
-    for (NSNumber *num in sliceValues) {
-      [_normalizedValues
-          addObject:[NSNumber numberWithFloat:num.floatValue / total]];
-    }
-  }
-
-  [self updateSlices];
 }
 
 - (void)updateSlices {
@@ -270,7 +224,8 @@ typedef struct {
         double segmentSizeDouble = segmentSize.doubleValue;
 
         NSNumber *numberOfAnnotations = segment[@"annotationsCount"];
-        NSUInteger numberOfAnnotationsDouble = numberOfAnnotations.unsignedIntegerValue;
+        NSUInteger numberOfAnnotationsDouble =
+            numberOfAnnotations.unsignedIntegerValue;
 
         CGFloat startAngle = 0.0;
         CGFloat endAngle;
@@ -328,7 +283,7 @@ typedef struct {
         // Set the angles on the slices
         // int index = 0;
 
-      //  CGFloat count = _segmentSizesArray.count;
+        //  CGFloat count = _segmentSizesArray.count;
 
         // for (NSNumber *num in _normalizedValues) {
 
@@ -341,8 +296,9 @@ typedef struct {
         slice.fillColor = color;
         slice.strokeColor = [_clusteringManager strokeColour];
         slice.strokeWidth = 1;
-        slice.startAngle = startAngle;
-        slice.endAngle = endAngle;
+
+        slice.startAngleAnimated = startAngle;
+        slice.endAngleAnimated = endAngle;
 
         //= startAngle + angle;
 
@@ -473,30 +429,136 @@ typedef struct {
 
         currentPointOnArcX = currentPoint.x;
         currentPointOnArcY = currentPoint.y;
+
+//          [CATransaction begin];
+//          [CATransaction setAnimationDuration:0.5];
+//          [CATransaction setAnimationTimingFunction:
+//           [CAMediaTimingFunction
+//            functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+//          //  [CATransaction setCompletionBlock:^{
+//          //    NSLog(@"blabla");
+//          //  }];
+//
+//          // Create the CABasicAnimation using your existing code
+//          CABasicAnimation *myPropertyAnim =
+//          [CABasicAnimation animationWithKeyPath:@"startAngle"];
+//          myPropertyAnim.toValue = endAngle;
+//
+//          // The CATransaction does not observe arbitrary properties so this fails:
+//          // myLayer.myProperty = newValue;
+//          for (PieSliceLayer * sliceLayer in _containerLayer) {
+//
+//              [sliceLayer addAnimation:myPropertyAnim forKey:@"startAngle"];
+//          }
+//
+//          [CATransaction commit];
+
+
+          [_clusteringManager.slicesArray addObject:slice];
+
+//          CABasicAnimation *startAngleAnimation =
+//          [CABasicAnimation animationWithKeyPath:@"startAngle"];
+//          startAngleAnimation.fromValue= @(slice.startAngle);
+//          startAngleAnimation.toValue = @(slice.startAngleAnimated);
+//          startAngleAnimation.fillMode = kCAFillModeForwards;
+//          startAngleAnimation.removedOnCompletion = NO;
+//          startAngleAnimation.duration = 5;
+//
+//          CABasicAnimation *endAngleAnimation =
+//          [CABasicAnimation animationWithKeyPath:@"endAngle"];
+//          endAngleAnimation.fromValue = @(slice.endAngle);
+//          endAngleAnimation.toValue = @(slice.endAngleAnimated);
+//          endAngleAnimation.fillMode = kCAFillModeForwards;
+//          endAngleAnimation.removedOnCompletion = NO;
+//          endAngleAnimation.duration = 5;
+//
+//          CAAnimationGroup * animationGroup = [CAAnimationGroup new];
+//          animationGroup.animations = @[startAngleAnimation,endAngleAnimation];
+//
+//        [slice addAnimation:animationGroup forKey:@"startAngle"];
+
         [_containerLayer addSublayer:slice];
       }];
+
+//    _clusteringManager. = [_clusteringManager.animationsArray copy];
 }
+
+
+
+- (void)doInitialSetup {
+  _containerLayer = [CALayer layer];
+  [self.layer addSublayer:_containerLayer];
+}
+
+- (id)initWithFrame:(CGRect)frame {
+  self = [super initWithFrame:frame];
+  if (self) {
+    [self doInitialSetup];
+  }
+
+  return self;
+}
+
+// TODO:check why I need this
+- (id)initWithCoder:(NSCoder *)aDecoder {
+  if (self = [super initWithCoder:aDecoder]) {
+    [self doInitialSetup];
+  }
+
+  return self;
+}
+
+//- (id)initWithSliceValues:(NSArray *)sliceValues {
+//  if (self) {
+//    [self doInitialSetup];
+//    self.sliceValues = sliceValues;
+//
+//  }
+//
+//  return self;
+//}
+
+//- (void)setSliceValues:(NSArray *)sliceValues {
+//  _sliceValues = sliceValues;
+//
+//  _normalizedValues = [NSMutableArray array];
+//  if (sliceValues) {
+//    // total
+//    CGFloat total = 0.0;
+//    for (NSNumber *num in sliceValues) {
+//      total += num.floatValue;
+//    }
+//
+//    // normalize
+//    for (NSNumber *num in sliceValues) {
+//      [_normalizedValues
+//          addObject:[NSNumber numberWithFloat:num.floatValue / total]];
+//    }
+//  }
+//
+//  [self updateSlices];
+//}
 
 - (void)calculatePieChartSegmentSizes {
 
   // AnnotationsPresentByRating annotationsPresentByRating;
   _segmentsArray = [NSMutableArray new];
- // _segmentSizesArray = [NSMutableArray new];
+  // _segmentSizesArray = [NSMutableArray new];
 
-//  NumberOfAnnotationsByRating numberOfAnnotationsByRating;
-//  PieChartSegments pieChartSegments;
+  //  NumberOfAnnotationsByRating numberOfAnnotationsByRating;
+  //  PieChartSegments pieChartSegments;
 
   NSUInteger numOfAnnotationsWithoutRating = 0;
-  NSUInteger numOfAnnotationsWithBadRating= 0;
-  NSUInteger numOfAnnotationsWithNormalRating= 0;
-  NSUInteger numOfAnnotationsWithGoodRating= 0;
-  NSUInteger numOfAnnotationsWithVeryGoodRating= 0;
+  NSUInteger numOfAnnotationsWithBadRating = 0;
+  NSUInteger numOfAnnotationsWithNormalRating = 0;
+  NSUInteger numOfAnnotationsWithGoodRating = 0;
+  NSUInteger numOfAnnotationsWithVeryGoodRating = 0;
 
   //    _annotationsWithoutRating = [NSMutableArray new];
   //    _annotationsWithBadRating = [NSMutableArray new];
   //    _annotationsWithGoodRating = [NSMutableArray new];
 
- // NSMutableArray *annotationsByRating;
+  // NSMutableArray *annotationsByRating;
 
   for (HMMapAnnotation *annotation in self.annotation.annotations) {
 
@@ -558,8 +620,8 @@ typedef struct {
 
         NSNumber *rating = [NSNumber numberWithUnsignedInteger:idx];
 
-        double segmentSizeDouble = (double)
-            numberOfAnnotationsInSegment.integerValue / total;
+        double segmentSizeDouble =
+            (double)numberOfAnnotationsInSegment.integerValue / total;
 
         NSNumber *segmentSize = [NSNumber numberWithFloat:segmentSizeDouble];
 
@@ -571,7 +633,6 @@ typedef struct {
 
         [_segmentsArray addObject:segmentProperties];
       }];
-
 }
 
 //- (void)calculatePieChartSegmentSizes {

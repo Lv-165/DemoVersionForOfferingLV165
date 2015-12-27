@@ -7,6 +7,7 @@
 //
 
 #import "PieSliceLayer.h"
+#import "FBClusteringManager.h"
 
 @implementation PieSliceLayer
 
@@ -16,19 +17,49 @@
   if ([event isEqualToString:@"startAngle"] ||
       [event isEqualToString:@"endAngle"]) {
 
-    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:event];
 
-    animation.duration = [CATransaction animationDuration];
-    animation.timingFunction = [CATransaction animationTimingFunction];
-    return animation;
+//      CABasicAnimation *startAngleAnimation =
+//      [CABasicAnimation animationWithKeyPath:@"startAngle"];
+//      startAngleAnimation.fromValue= @(self.startAngle);
+//      startAngleAnimation.toValue = @(self.startAngleAnimated);
+//      startAngleAnimation.fillMode = kCAFillModeForwards;
+//      startAngleAnimation.removedOnCompletion = NO;
+//      startAngleAnimation.duration = 5.0;
 
-    //   return [self makeAnimationForKey:event];
+      CABasicAnimation *endAngleAnimation =
+      [CABasicAnimation animationWithKeyPath:@"endAngle"];
+      endAngleAnimation.fromValue = @(self.startAngleAnimated);
+      endAngleAnimation.toValue = @(self.endAngleAnimated);
+      endAngleAnimation.fillMode = kCAFillModeForwards;
+      endAngleAnimation.removedOnCompletion = NO;
+      endAngleAnimation.duration = 1.0;
+
+//      CAAnimationGroup * animationGroup = [CAAnimationGroup new];
+//      animationGroup.animations = @[startAngleAnimation,endAngleAnimation];
+
+      return endAngleAnimation;
+        
+         //[self addAnimation:animationGroup forKey:@"startAngle"];
+
+
+//    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:event];
+//
+//    animation.duration = [CATransaction animationDuration];
+//    animation.timingFunction = [CATransaction animationTimingFunction];
+//    return animation;
+
+     // return [self makeAnimationForKey:event];
   }
 
   return [super actionForKey:event];
 }
 
 - (id)initWithLayer:(id)layer {
+
+//clusteringManager:(FBClusteringManager *)clusteringManager {
+//
+//    _clusteringManager = clusteringManager;
+
   if (self = [super initWithLayer:layer]) {
     if ([layer isKindOfClass:[PieSliceLayer class]]) {
       PieSliceLayer *other = (PieSliceLayer *)layer;
@@ -55,31 +86,60 @@
 
 - (void)drawInContext:(CGContextRef)ctx {
 
-  // Create the path
+
   CGPoint center =
       CGPointMake(self.bounds.size.width / 2, self.bounds.size.height / 2);
   CGFloat radius = MIN(center.x, center.y);
 
-  CGContextBeginPath(ctx);
-  CGContextMoveToPoint(ctx, center.x, center.y);
 
-  CGPoint p1 = CGPointMake(center.x + radius * cosf(self.startAngle),
-                           center.y + radius * sinf(self.startAngle));
-  CGContextAddLineToPoint(ctx, p1.x, p1.y);
+//  CGContextBeginPath(ctx);
+//  CGContextMoveToPoint(ctx, center.x, center.y);
+//
+//  CGPoint p1 = CGPointMake(center.x + radius * cosf(self.startAngle),
+//                           center.y + radius * sinf(self.startAngle));
+//  CGContextAddLineToPoint(ctx, p1.x, p1.y);
+//
+//  int clockwise = self.startAngle > self.endAngle;
+//  CGContextAddArc(ctx, center.x, center.y, radius, self.startAngle,
+//                  self.endAngle, clockwise);
+//
+//  CGContextClosePath(ctx);
+//
+//  // Color it
+//  CGContextSetFillColorWithColor(ctx, self.fillColor.CGColor);
+//  CGContextSetStrokeColorWithColor(ctx, self.strokeColor.CGColor);
+//  CGContextSetLineWidth(ctx, self.strokeWidth);
+//
+//  CGContextDrawPath(ctx, kCGPathFillStroke);
 
-  int clockwise = self.startAngle > self.endAngle;
-  CGContextAddArc(ctx, center.x, center.y, radius, self.startAngle,
-                  self.endAngle, clockwise);
 
-  CGContextClosePath(ctx);
+    UIGraphicsPushContext(ctx);
 
-  // Color it
-  CGContextSetFillColorWithColor(ctx, self.fillColor.CGColor);
-  CGContextSetStrokeColorWithColor(ctx, self.strokeColor.CGColor);
-  CGContextSetLineWidth(ctx, self.strokeWidth);
+//    CGPoint center = CGPointMake(self.bounds.origin.x + self.bounds.size.width/2, self.bounds.origin.y + self.bounds.size.height/2);
+  //  CGFloat radius =  MIN(self.bounds.size.height, self.bounds.size.width) / 2;
 
-  CGContextDrawPath(ctx, kCGPathFillStroke);
+    UIBezierPath *aPath = [UIBezierPath bezierPath];
+    [aPath moveToPoint:center];
+
+    [aPath addArcWithCenter:center
+                     radius:radius
+                 startAngle:self.startAngle
+                   endAngle:self.endAngle
+                  clockwise:YES];
+
+             [aPath setLineWidth:3];
+             [aPath closePath];
+    [self.fillColor setFill];
+    [self.strokeColor setStroke];
     
+             //[color setFill];
+
+             //[[_clusteringManager strokeColour] setStroke];
+
+             [aPath stroke];
+             [aPath fill];
+
+    UIGraphicsPopContext();
 }
 
 @end

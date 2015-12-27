@@ -12,6 +12,10 @@
 
 @property(nonatomic) CGFloat startAngle;
 @property(nonatomic) CGFloat endAngle;
+
+@property(nonatomic) CGFloat startAngleAnimated;
+@property(nonatomic) CGFloat endAngleAnimated;
+
 @property(nonatomic, strong) UIColor *fillColor;
 @property(nonatomic) CGFloat strokeWidth;
 @property(nonatomic, strong) UIColor *strokeColor;
