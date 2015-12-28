@@ -9,9 +9,14 @@
 #import "FBClusteringManager.h"
 #import "FBQuadTree.h"
 #import "PieSliceLayer.h"
+#import "HMFiltersViewController.h"
+#import "HMAppDelegate.h"
 
 static NSString *const kFBClusteringManagerLockName =
     @"co.infinum.clusteringLock";
+static NSString* kSettingsComments = @"comments";
+static NSString* kSettingsRating   = @"rating";
+static NSString* kSettingsClastering = @"clastering";
 
 #pragma mark - Utility functions
 
@@ -96,7 +101,7 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
 
 - (void)setAnnotations:(NSArray *)annotations {
   self.tree = nil;
-  [self addAnnotations:annotations];
+      [self addAnnotations:annotations];
 }
 
 - (void)addAnnotations:(NSArray *)annotations {
@@ -125,6 +130,27 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
 
 - (NSArray *)clusteredAnnotationsWithinMapRect:(MKMapRect)rect
                                  withZoomScale:(double)zoomScale {
+    
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    switch ([userDefaults integerForKey:kSettingsClastering]) {
+        case 0:{
+            _clusteringFactor = 5;
+        }
+            break;
+        case 1:{
+            _clusteringFactor = 10;
+        }
+            break;
+        case 2:{
+            _clusteringFactor = 25;
+        }
+            break;
+            
+        default:
+            _clusteringFactor = 15;
+            break;
+    }
+
   return [self clusteredAnnotationsWithinMapRect:rect
                                    withZoomScale:zoomScale
                                       withFilter:nil];
