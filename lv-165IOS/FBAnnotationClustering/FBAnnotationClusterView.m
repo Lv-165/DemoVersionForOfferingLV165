@@ -317,8 +317,6 @@
 
   UIGraphicsBeginImageContext(rect.size);
 
-  CGContextRef ctx = UIGraphicsGetCurrentContext();
-
   NSArray *coloursArray =
       [[NSArray alloc] initWithObjects:_clusteringManager.noneRatingColour,
                                        _clusteringManager.badRatingColour,
@@ -345,15 +343,11 @@
         NSMutableDictionary *segment = [obj mutableCopy];
 
         NSNumber *segmentType = segment[@"type"];
-        NSUInteger segmentTypeInteger = segmentType.integerValue;
 
         UIColor *color = coloursArray[segmentType.unsignedIntegerValue];
 
         NSNumber *segmentSize = segment[@"size"];
         double segmentSizeDouble = segmentSize.doubleValue;
-
-        NSNumber *numberOfAnnotations = segment[@"annotationsCount"];
-        double numberOfAnnotationsDouble = numberOfAnnotations.doubleValue;
 
         CGFloat startAngle;
         CGFloat endAngle;
@@ -384,19 +378,12 @@
                        endAngle:endAngle
                       clockwise:YES];
 
-        CGPoint currentPoint = [aPath currentPoint];
-
         [aPath setLineWidth:3];
         [aPath closePath];
         [color setFill];
         [[_clusteringManager strokeColour] setStroke];
         [aPath stroke];
         [aPath fill];
-
-        CGPoint midPoint;
-
-        NSString *string = [[NSString alloc]
-            initWithFormat:@"%ld", (long)numberOfAnnotationsDouble];
       }];
 
   UIImage *image = UIGraphicsGetImageFromCurrentImageContext();

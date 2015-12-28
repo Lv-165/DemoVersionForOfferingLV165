@@ -960,14 +960,7 @@ static bool isRoad;
 
   if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
 
-    MKMapRect zoomRect = MKMapRectNull;
-
     self.annotationView = view;
-
-    CLLocationCoordinate2D location = view.annotation.coordinate;
-    MKMapPoint center = MKMapPointForCoordinate(location);
-
-    static double delta = 1000000;
 
     self.downToolBar.hidden = YES;
     NSString *stringId = [NSString

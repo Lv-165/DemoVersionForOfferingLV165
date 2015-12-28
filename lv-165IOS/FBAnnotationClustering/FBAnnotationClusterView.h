@@ -24,9 +24,6 @@
 - (id)initWithAnnotation:(id<MKAnnotation>)annotation
        clusteringManager:(FBClusteringManager *)clusteringManager;
 
-- (id)initWithAnnotationAnimated:(FBAnnotationCluster *)annotation
-               clusteringManager:(FBClusteringManager *)clusteringManager;
-
 @property(nonatomic, strong) NSString *key;
 @property(nonatomic, strong) CATextLayer *textLayer;
 
