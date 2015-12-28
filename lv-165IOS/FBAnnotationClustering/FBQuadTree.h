@@ -6,8 +6,8 @@
 //  Copyright (c) 2014 Infinum Ltd. All rights reserved.
 //
 
-#import <Foundation/Foundation.h>
 #import "FBQuadTreeNode.h"
+#import <Foundation/Foundation.h>
 
 /**
  Quad Tree. You should never use this class.

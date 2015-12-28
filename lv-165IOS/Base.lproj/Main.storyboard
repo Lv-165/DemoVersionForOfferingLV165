@@ -11,7 +11,7 @@
         <scene sceneID="VcP-AB-2Q7">
             <objects>
                 <tableViewController id="uMb-gy-xUI" customClass="HMCountriesViewController" sceneMemberID="viewController">
-                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="50" sectionHeaderHeight="28" sectionFooterHeight="28" id="BJD-79-KdI">
+                    <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" allowsSelection="NO" rowHeight="50" sectionHeaderHeight="28" sectionFooterHeight="28" id="BJD-79-KdI">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <animations/>
@@ -263,6 +263,7 @@
                         <segue destination="4Ib-ml-FoI" kind="show" identifier="Comments" id="Bf4-ER-3t1"/>
                         <segue destination="Hb2-hh-47C" kind="show" identifier="showFilterViewController" id="SQP-17-Yqa"/>
                         <segue destination="CdG-xf-SgX" kind="show" identifier="showGoogleDirectionsViewController" id="EZe-cK-2Y2"/>
+                        <segue destination="cZe-UE-SUR" kind="show" identifier="weather" id="9eE-kG-3be"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -557,6 +558,24 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="kpL-ud-adq" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-15" y="-1183"/>
+        </scene>
+        <!--Weather View Controller-->
+        <scene sceneID="yGI-Mt-jNi">
+            <objects>
+                <viewController id="cZe-UE-SUR" customClass="HMWeatherViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="r2W-Ez-yXo"/>
+                        <viewControllerLayoutGuide type="bottom" id="IQK-QF-jF0"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="r9T-0B-V3t">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LGQ-xb-TgI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="640" y="-1200"/>
         </scene>
         <!--Filters View Controller-->
         <scene sceneID="1TR-UB-K97">

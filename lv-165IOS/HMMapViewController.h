@@ -31,6 +31,7 @@ extern NSString* const addToMyFavouriteInfoKey;
 @property (weak, nonatomic) IBOutlet UILabel *waitingTimeLable;
 @property (weak, nonatomic) IBOutlet UILabel *autorDescriptionLable;
 
+-(void)reloadClustering;
 
 @end
 
