@@ -31,7 +31,7 @@ static NSString* kSettingsClastering = @"clastering";
     
     [[self navigationController] setNavigationBarHidden:NO animated:YES];
     
-    self.dataSource = [NSArray arrayWithObjects:@"High",@"Middle",@"Low", nil];
+    self.dataSource = [NSArray arrayWithObjects:NSLocalizedString(@"High", nil), NSLocalizedString(@"Middle", nil), NSLocalizedString(@"Low", nil), nil];
     self.pickerView.delegate = self;
     self.pickerView.dataSource = self;
     [self.pickerView selectRow:[[NSUserDefaults standardUserDefaults] integerForKey:kSettingsClastering]inComponent:0 animated:NO];

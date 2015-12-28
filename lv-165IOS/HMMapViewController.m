@@ -204,7 +204,7 @@ static bool isRoad;
     self.autorDescriptionLable.text = user.name;
     Waiting *waiting = place.waiting;
     self.waitingTimeLable.text = [NSString
-                                  stringWithFormat:@"Average waiting time: %@", waiting.avg_textual];
+                                  stringWithFormat:NSLocalizedString(@"Average waiting time: %@", nil), waiting.avg_textual];
     [self.descriptionTextView resizeHeightToFitForLabel:self.descriptionTextView];
     
     self.constraitToShowUpToolBar.constant = self.waitingTimeLable.frame.size.height +
@@ -1071,7 +1071,7 @@ static bool isRoad;
     self.descriptionTextView.text = desc.descriptionString;
     Waiting *waiting = place.waiting;
     self.waitingTimeLable.text = [NSString
-        stringWithFormat:@"Average waiting time: %@", waiting.avg_textual];
+        stringWithFormat:NSLocalizedString(@"Average waiting time: %@", nil), waiting.avg_textual];
     [self.descriptionTextView
         resizeHeightToFitForLabel:self.descriptionTextView];
 

@@ -6,3 +6,7 @@
   Copyright © 2015 SS. All rights reserved.
 */
 "Countries" = "Країни";
+"High" = "Високий";
+"Middle" = "Середній";
+"Low" = "Низький";
+"Average waiting time: %@" = "Середній час очікування: %@";

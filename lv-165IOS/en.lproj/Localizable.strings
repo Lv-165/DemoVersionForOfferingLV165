@@ -6,3 +6,7 @@
   Copyright © 2015 SS. All rights reserved.
 */
 "Countries" = "Countries";
+"High" = "High";
+"Middle" = "Middle";
+"Low" = "Low";
+"Average waiting time: %@" = "Average waiting time: %@";
