@@ -34,8 +34,9 @@
 #import "FBClusteringManager.h"
 #import "FBAnnotationCluster.h"
 #import "FBAnnotationClustering.h"
-#import "HMWeatherManager.h"
 #import "UILabel+HMdynamicSizeMe.h"
+#import "HMImgurManager.h"
+#import "HMWeatherViewController.h"
 //#import "CLL"/
 
 @interface HMMapViewController ()
@@ -116,7 +117,7 @@ static bool isRoad;
                          ];
     
     NSArray *buttonsForUpToolBar = @[
-                                     [self createColorButton:@"filter" selector:@selector(sharingForSocialNetworking:)],
+                                     [self createColorButton:@"sharing30_30" selector:@selector(sharingForSocialNetworking:)],
                                      flexibleItem,
                                      [self createColorButton:@"favptite30_30" selector:@selector(addToFavourite:)],
                                      flexibleItem,
@@ -124,7 +125,9 @@ static bool isRoad;
                                      flexibleItem,
                                      [self createColorButton:@"road30_30" selector:@selector(showRoudFromThisPlaceToMyLocation:)],
                                      flexibleItem,
-                                     [self createColorButton:@"direction_compass" selector:@selector(showDirectionToThisAnnotation:)]
+                                     [self createColorButton:@"direction_compass" selector:@selector(showDirectionToThisAnnotation:)],
+                                     flexibleItem,
+                                     [self createColorButton:@"weather" selector:@selector(weatherShow:)]
                                      ];
     
     [self.downToolBar setItems:buttonsForDownToolBar animated:YES];
@@ -330,59 +333,77 @@ static bool isRoad;
 
   [self performSegueWithIdentifier:@"showSearchViewController" sender:sender];
 }
+- (void)weatherShow:(UIBarButtonItem *)sender {
+    [self performSegueWithIdentifier:@"weather" sender:sender];
+}
 
 #pragma mark - Tool Bar for Pin
 
 - (void)sharingForSocialNetworking:(UIBarButtonItem *)sender {
 
-  BranchUniversalObject *branchUniversalObject =
-      [[BranchUniversalObject alloc] initWithCanonicalIdentifier:@"1000"];
-  [branchUniversalObject registerView];
-
-  Place *place = [self.placeArray firstObject];
-
-  branchUniversalObject.title = place.descript.descriptionString;
-  branchUniversalObject.contentDescription =
-      [NSString stringWithFormat:@"Lat: %@, Lon: %@", place.lat, place.lon];
-  UIGraphicsBeginImageContext(self.mapView.frame.size);
-  [self.mapView.layer renderInContext:UIGraphicsGetCurrentContext()];
-  UIImage *locationImage = UIGraphicsGetImageFromCurrentImageContext();
-  UIGraphicsEndImageContext();
-  NSData *data = UIImagePNGRepresentation(locationImage);
-  NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory,
-                                                       NSUserDomainMask, YES);
-  NSString *documentsDirectory = [paths objectAtIndex:0];
-  //    NSString *imageName = [NSString stringWithFormat:@"locationImage"];
-  NSString *stringPath =
-      [documentsDirectory stringByAppendingPathComponent:@"locationImage.png"];
-  [data writeToFile:stringPath atomically:YES];
-  //    NSURL *dataURL = [[NSBundle mainBundle] URLForResource: @"locationImage"
-  //    withExtension:@"png"];
-
-  branchUniversalObject.imageUrl = stringPath;
-
-  BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
-
-  linkProperties.feature = @"sharing";
-  linkProperties.channel = @"default";
-  [linkProperties addControlParam:@"$desktop_url"
-                        withValue:@"http://hitchwiki.org/"];
-  [linkProperties addControlParam:@"$ios_url"
-                        withValue:@"hitchwiki.iosmobile://"];
-
-  [branchUniversalObject
-      getShortUrlWithLinkProperties:linkProperties
-                        andCallback:^(NSString *url, NSError *error) {
-                          if (!error) {
-                            NSLog(@"Success getting url: %@", url);
-                          }
-                        }];
-  [branchUniversalObject showShareSheetWithLinkProperties:linkProperties
-                                             andShareText:nil
-                                       fromViewController:self
-                                              andCallback:^{
-                                                NSLog(@"Finished presenting");
-                                              }];
+    BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc]
+                                                    initWithCanonicalIdentifier:@"10000"];
+    [branchUniversalObject registerView];
+    
+    Place *place = [self.placeArray firstObject];
+    User *user = place.user;
+    
+    self.autorDescriptionLable.text = user.name;
+    
+    branchUniversalObject.title = [NSString stringWithFormat:@"Author: %@", place.user.name];
+    branchUniversalObject.contentDescription = [NSString stringWithFormat:@"Lat: %@, Lon: %@\r\n Description: %@", place.lat, place.lon, place.descript.descriptionString];
+    [branchUniversalObject addMetadataKey:@"place_id" value:[NSString stringWithFormat:@"%@", place.id]];
+    
+    UIGraphicsBeginImageContext(self.mapView.bounds.size);
+    [self.mapView drawViewHierarchyInRect:self.mapView.bounds afterScreenUpdates:YES];
+    UIImage *locationImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    NSData *data = UIImagePNGRepresentation(locationImage);
+    
+    NSString *clientId = @"ba6022d743eb49c";
+    
+    NSString *title = @"Screen for sharing";
+    NSString *description = [NSString stringWithFormat:@"Lat: %@, Lon: %@", place.lat, place.lon];
+    
+    [HMImgurManager uploadPhoto:data title:title description:description imgurClientId:clientId completionBlock:^(NSString *result) {
+        branchUniversalObject.imageUrl = result;
+        
+        BranchLinkProperties *linkProperties = [BranchLinkProperties new];
+        
+        linkProperties.feature = @"sharing";
+        linkProperties.channel = @"default";
+        [linkProperties addControlParam:@"$desktop_url"
+                              withValue:[NSString stringWithFormat:@"http://hitchwiki.org/maps/?zoom=15&lat=%@&lon=%@",
+                                         place.lat, place.lon]];
+        [linkProperties addControlParam:@"$ios_url"
+                              withValue:@"hitchwiki.iosmobile://"];
+        
+        [branchUniversalObject getShortUrlWithLinkProperties:linkProperties
+                                                 andCallback:^(NSString *url, NSError *error) {
+                                                     if (!error) {
+                                                         NSLog(@"Success getting url: %@", url);
+                                                     }
+                                                 }];
+        
+        [branchUniversalObject showShareSheetWithLinkProperties:linkProperties
+                                                   andShareText:nil
+                                             fromViewController:self
+                                                    andCallback:^{
+                                                        NSLog(@"Finished presenting");
+                                                    }];
+    } failureBlock:^(NSURLResponse *response, NSError *error, NSInteger status) {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Upload Failed"
+                                                                       message:[NSString stringWithFormat:@"%@ (Status code %ld)",
+                                                                                [error localizedDescription], (long)status]
+                                                                preferredStyle:UIAlertControllerStyleAlert];
+        
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
+        
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
+        
+    }];
 }
 
 - (void)addToFavourite:(UIBarButtonItem *)sender {
@@ -569,7 +590,20 @@ static bool isRoad;
         
         destViewController.textForLabel = self.stringForGoogleDirectionsInstructions;
         
-    }
+    } else if ([[segue identifier] isEqualToString:@"weather"]) {
+        
+        if (!self.weatherDict) {
+            
+            [self showAlertWithTitle:@"Oops! No Internet"
+                          andMessage:@"Check your connection"
+                      andActionTitle:@"OK"];
+            
+        } else {
+            NSDictionary *weather = self.weatherDict;
+            HMWeatherViewController *weatherViewController = segue.destinationViewController;
+            weatherViewController.weatherDict = weather;
+        }}
+
 }
 
 #pragma mark - Deallocation
@@ -926,20 +960,16 @@ static bool isRoad;
 
     Place *place = [self.placeArray firstObject];
     User *user = place.user;
-
-#warning weather!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      
 
     self.weatherDict = [[NSDictionary alloc] init];
-    [[HMWeatherManager sharedManager] getWeatherByCoordinate:place
-        onSuccess:^(NSDictionary *weather) {
-
+      [[HMWeatherManager sharedManager] getWeatherByCoordinate:place onSuccess:^(NSDictionary *weather) {
+          
           self.weatherDict = weather;
-          NSLog(@"%@", self.weatherDict);
-        }
-        onFailure:^(NSError *error, NSInteger statusCode) {
-
-          NSLog(@"%@%ld", error, (long)statusCode);
-        }];
+      } onFailure:^(NSError *error, NSInteger statusCode) {
+          
+          NSLog(@"%@%ld",error,(long)statusCode);
+      }];
 
     self.autorDescriptionLable.text = user.name;
 
