@@ -63,7 +63,8 @@
     
     //NSLog(@"savePlaceToCoreDataWithNSArray");
     
-    Place* place = [NSEntityDescription insertNewObjectForEntityForName:@"Place"  inManagedObjectContext:[self managedObjectContext]];
+    Place* place = [NSEntityDescription insertNewObjectForEntityForName:@"Place"
+                                                 inManagedObjectContext:[self managedObjectContext]];
         
     NSInteger tempInteger = [[placeNSDictionary valueForKey:@"id"] integerValue];
      place.id = [NSNumber numberWithInteger:tempInteger];
@@ -175,6 +176,13 @@
     [countries addPlaceObject:place];
 
     [self saveContext];
+}
+
+- (void)saveDirectionToCoreDataWithPlace:(Place *)place directionString:(NSString *)direction {
+    
+    Waiting *waiting = [NSEntityDescription insertNewObjectForEntityForName:@"Waiting"
+                                                     inManagedObjectContext:[self managedObjectContext]];
+    
 }
 
 - (void) deleteAllObjects {
