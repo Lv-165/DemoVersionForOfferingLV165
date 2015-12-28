@@ -592,7 +592,7 @@ static bool isRoad;
         
     } else if ([[segue identifier] isEqualToString:@"weather"]) {
         
-        if (self.weatherDict) {
+        if (!self.weatherDict) {
             
             [self showAlertWithTitle:@"Oops! No Internet"
                           andMessage:@"Check your connection"
@@ -960,6 +960,7 @@ static bool isRoad;
 
     Place *place = [self.placeArray firstObject];
     User *user = place.user;
+      
 
     self.weatherDict = [[NSDictionary alloc] init];
       [[HMWeatherManager sharedManager] getWeatherByCoordinate:place onSuccess:^(NSDictionary *weather) {
