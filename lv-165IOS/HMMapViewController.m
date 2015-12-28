@@ -36,6 +36,7 @@
 #import "HMWeatherViewController.h"
 #import "DirectionBus.h"
 #import "FBAnnotationClustering.h"
+
 @interface HMMapViewController ()
 
 @property(strong, nonatomic) CLLocationManager *locationManager;
@@ -896,10 +897,10 @@ static bool isRoad;
         if (error) {
           NSLog(@"%@", error);
 
-          [self showAlertWithTitle:@"No direction"
-                        andMessage:@"There is no connection between your "
-                        @"position and this point"
-                    andActionTitle:@"OK"];
+//          [self showAlertWithTitle:@"No direction"
+//                        andMessage:@"There is no connection between your "
+//                        @"position and this point"
+//                    andActionTitle:@"OK"];
 
         } else if ([response.routes count] == 0) {
           NSLog(@"routes = 0");
@@ -1158,8 +1159,6 @@ static bool isRoad;
     }
 
     CLLocationCoordinate2D coordinate = self.coordinateToPin;
-
-    NSLog(@"");
 
     isMainRoute = YES;
     [self createRouteForAnotationCoordinate:newLocation.coordinate
