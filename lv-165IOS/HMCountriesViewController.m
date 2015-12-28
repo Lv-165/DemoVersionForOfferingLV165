@@ -137,7 +137,8 @@
     
     Countries *countries = [self.fetchedResultsController objectAtIndexPath:indexPath];
     
-    [self.arrayOfContries addObject:countries];
+    if (![self.arrayOfContries containsObject:countries])
+        [self.arrayOfContries addObject:countries];
     
     cell.continentLable.text = countries.name;
     cell.countLable.text = [NSString stringWithFormat:@"%@", countries.places];
