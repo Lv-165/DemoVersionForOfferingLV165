@@ -8,6 +8,7 @@
 
 #import "Branch/BranchLinkProperties.h"
 #import "Branch/BranchUniversalObject.h"
+#import "Branch/Branch.h"
 #import "Comments.h"
 #import "Description.h"
 #import "DescriptionInfo.h"
@@ -159,6 +160,52 @@ static bool isRoad;
     // Adding the swipe gesture on image view
     [self.viewForPinOfInfo addGestureRecognizer:swipeUp];
     [self.viewForPinOfInfo addGestureRecognizer:swipeDown];
+    
+    NSDictionary *params = [[Branch getInstance] getLatestReferringParams];
+    NSNumber *placeId = [params objectForKey:@"place_id"];
+    if (placeId) {
+        [self showPlaceAnnotation:placeId];
+    }
+}
+
+- (void)showPlaceAnnotation:(NSNumber *)placeId {
+    self.placeArray =
+    [[HMCoreDataManager sharedManager] getPlaceWithStringId:[NSString stringWithFormat:@"%@", placeId]];
+    
+    Place *place = [self.placeArray firstObject];
+    User *user = place.user;
+    
+    CLLocationCoordinate2D coord = CLLocationCoordinate2DMake(place.lat.doubleValue, place.lon.doubleValue);
+    
+    MKCoordinateSpan span = MKCoordinateSpanMake(0.1, 0.1);
+    MKCoordinateRegion region = {coord, span};
+    
+    MKPointAnnotation *annotation = [[MKPointAnnotation alloc] init];
+    [annotation setCoordinate:coord];
+    
+    [self.mapView setRegion:region];
+    [self.mapView addAnnotation:annotation];
+    
+    self.downToolBar.hidden = YES;
+    
+    Description *desc = place.descript;
+    
+    self.descriptionTextView.text = desc.descriptionString;
+    self.autorDescriptionLable.text = user.name;
+    Waiting *waiting = place.waiting;
+    self.waitingTimeLable.text = [NSString
+                                  stringWithFormat:@"Average waiting time: %@", waiting.avg_textual];
+    [self.descriptionTextView resizeHeightToFitForLabel:self.descriptionTextView];
+    
+    self.constraitToShowUpToolBar.constant = self.waitingTimeLable.frame.size.height +
+    self.descriptionTextView.frame.size.height + 60.f;
+    
+    [self.viewToAnimate setNeedsUpdateConstraints];
+    
+    [UIView animateWithDuration:1.f
+                     animations:^{
+                         [self.viewToAnimate layoutIfNeeded];
+                     }];    
 }
 
 - (void)viewWillAppear:(BOOL)animated {

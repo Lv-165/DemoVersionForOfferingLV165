@@ -25,13 +25,23 @@
     [branch initSessionWithLaunchOptions:launchOptions
               andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
                   if (!error) {
-                      NSLog(@"Finished init with params: %@", [params description]);
-                  } else {
-                      NSLog(@"Failed init: %@", error);
+                      NSNumber *placeId = [params objectForKey:@"place_id"];
+                      if (placeId) {
+                          NSString *storyboardName = @"Main";
+                          UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
+                          UIViewController *vc = [storyboard instantiateInitialViewController];
+                          
+                          self.window.rootViewController = vc;
+                          
+                      } else {
+                          NSLog(@"Failed init: %@", error);
+                      }
                   }
               }];
     
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+    
+    
   
     NSUserDefaults *userDef = [NSUserDefaults standardUserDefaults];
     if (![userDef boolForKey:@"firstStart"]) {
