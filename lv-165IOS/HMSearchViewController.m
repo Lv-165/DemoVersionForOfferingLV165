@@ -15,8 +15,6 @@
 NSString* const showPlaceNotificationCenter = @"showPlaceNotificationCenter";
 NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCenterInfoKey";
 
-
-
 @interface HMSearchViewController ()
 
 @property (strong, nonatomic) NSMutableArray *arrayForPlacesMarks;

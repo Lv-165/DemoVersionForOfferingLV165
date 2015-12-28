@@ -586,7 +586,21 @@ static bool isRoad;
         HMGoogleDirectionsViewController *destViewController = segue.destinationViewController;
         
         destViewController.textForLabel = self.stringForGoogleDirectionsInstructions;
-    }
+        
+    } else if ([[segue identifier] isEqualToString:@"weather"]) {
+        
+        if (self.weatherDict) {
+            
+            [self showAlertWithTitle:@"Oops! No Internet"
+                          andMessage:@"Check your connection"
+                      andActionTitle:@"OK"];
+            
+        } else {
+            NSDictionary *weather = self.weatherDict;
+            HMWeatherViewController *weatherViewController = segue.destinationViewController;
+            weatherViewController.weatherDict = weather;
+        }}
+
 }
 
 #pragma mark - Deallocation
@@ -1058,7 +1072,7 @@ static bool isRoad;
 
   if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
     self.downToolBar.hidden = NO;
-//    self.constraitToShowUpToolBar.constant = 0.f;
+    self.constraitToShowUpToolBar.constant = 0.f;
     [self.viewToAnimate setNeedsUpdateConstraints];
 
     [UIView animateWithDuration:1.f
