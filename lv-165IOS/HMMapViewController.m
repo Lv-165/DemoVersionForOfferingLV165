@@ -34,9 +34,9 @@
 #import "FBClusteringManager.h"
 #import "FBAnnotationCluster.h"
 #import "FBAnnotationClustering.h"
-#import "HMWeatherManager.h"
 #import "UILabel+HMdynamicSizeMe.h"
 #import "HMImgurManager.h"
+#import "HMWeatherViewController.h"
 //#import "CLL"/
 
 @interface HMMapViewController ()
@@ -125,7 +125,9 @@ static bool isRoad;
                                      flexibleItem,
                                      [self createColorButton:@"road30_30" selector:@selector(showRoudFromThisPlaceToMyLocation:)],
                                      flexibleItem,
-                                     [self createColorButton:@"direction_compass" selector:@selector(showDirectionToThisAnnotation:)]
+                                     [self createColorButton:@"direction_compass" selector:@selector(showDirectionToThisAnnotation:)],
+                                     flexibleItem,
+                                     [self createColorButton:@"weather" selector:@selector(weatherShow:)]
                                      ];
     
     [self.downToolBar setItems:buttonsForDownToolBar animated:YES];
@@ -330,6 +332,9 @@ static bool isRoad;
 - (void)buttonSearch:(UIBarButtonItem *)sender {
 
   [self performSegueWithIdentifier:@"showSearchViewController" sender:sender];
+}
+- (void)weatherShow:(UIBarButtonItem *)sender {
+    [self performSegueWithIdentifier:@"weather" sender:sender];
 }
 
 #pragma mark - Tool Bar for Pin
@@ -585,7 +590,20 @@ static bool isRoad;
         
         destViewController.textForLabel = self.stringForGoogleDirectionsInstructions;
         
-    }
+    } else if ([[segue identifier] isEqualToString:@"weather"]) {
+        
+        if (self.weatherDict) {
+            
+            [self showAlertWithTitle:@"Oops! No Internet"
+                          andMessage:@"Check your connection"
+                      andActionTitle:@"OK"];
+            
+        } else {
+            NSDictionary *weather = self.weatherDict;
+            HMWeatherViewController *weatherViewController = segue.destinationViewController;
+            weatherViewController.weatherDict = weather;
+        }}
+
 }
 
 #pragma mark - Deallocation
@@ -943,19 +961,14 @@ static bool isRoad;
     Place *place = [self.placeArray firstObject];
     User *user = place.user;
 
-#warning weather!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
     self.weatherDict = [[NSDictionary alloc] init];
-    [[HMWeatherManager sharedManager] getWeatherByCoordinate:place
-        onSuccess:^(NSDictionary *weather) {
-
+      [[HMWeatherManager sharedManager] getWeatherByCoordinate:place onSuccess:^(NSDictionary *weather) {
+          
           self.weatherDict = weather;
-          NSLog(@"%@", self.weatherDict);
-        }
-        onFailure:^(NSError *error, NSInteger statusCode) {
-
-          NSLog(@"%@%ld", error, (long)statusCode);
-        }];
+      } onFailure:^(NSError *error, NSInteger statusCode) {
+          
+          NSLog(@"%@%ld",error,(long)statusCode);
+      }];
 
     self.autorDescriptionLable.text = user.name;
 
