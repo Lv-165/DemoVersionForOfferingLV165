@@ -407,25 +407,19 @@ static bool isRoad;
 }
 
 - (void)addToFavourite:(UIBarButtonItem *)sender {
-  CLLocationCoordinate2D coordinate = self.annotationView.annotation.coordinate;
-  [SVGeocoder
-      reverseGeocode:coordinate
-          completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse,
-                       NSError *error) {
-            NSString *message = nil;
-            if (error) {
-              message = [error localizedDescription];
-            } else {
-              if ([placemarks count] > 0) {
-                SVPlacemark *placeMark = [placemarks firstObject];
-                NSString *stringOfPlace =
-                    [self creatingAObjectOfMassive:placeMark];
-
-                NSNumber *latitude = [[NSNumber alloc]
-                    initWithDouble:placeMark.location.coordinate.latitude];
-                NSNumber *longitude = [[NSNumber alloc]
-                    initWithDouble:placeMark.location.coordinate.longitude];
-
+    CLLocationCoordinate2D coordinate = self.annotationView.annotation.coordinate;
+    [SVGeocoder reverseGeocode:coordinate completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse, NSError *error) {
+        NSString* message = [[NSString alloc] init];
+        if (error) {
+            message = [error localizedDescription];
+        } else {
+            if ([placemarks count] > 0) {
+                SVPlacemark* placeMark = [placemarks firstObject];
+                NSString *stringOfPlace = [self creatingAObjectOfMassive:placeMark];
+                
+                NSNumber *latitude = [[NSNumber alloc] initWithDouble:placeMark.location.coordinate.latitude];
+                NSNumber *longitude = [[NSNumber alloc] initWithDouble:placeMark.location.coordinate.longitude];
+                
                 NSDictionary *coordinate = @{
                   @"latitude" : latitude,
                   @"longitude" : longitude
@@ -446,14 +440,17 @@ static bool isRoad;
                   }
                 }
                 if (i == 0) {
-                  NSMutableArray *tempArrayTwo =
-                      [[NSMutableArray alloc] initWithArray:tempArrayOne];
-                  [tempArrayTwo addObject:place];
-                  [userDefaults removeObjectForKey:@"PlaceByFavourite"];
-                  [userDefaults setObject:tempArrayTwo
-                                   forKey:@"PlaceByFavourite"];
-                }
-              } else {
+                NSMutableArray *tempArrayTwo = [[NSMutableArray alloc] initWithArray:tempArrayOne];
+                    if ([tempArrayTwo count] > 10) {
+                        for (NSInteger i = 0; i < ([tempArrayTwo count] - 10); i ++) {
+                            [tempArrayTwo removeObjectAtIndex:i];
+                        }
+                    }
+                [tempArrayTwo addObject:place];
+                [userDefaults removeObjectForKey:@"PlaceByFavourite"];
+                [userDefaults setObject:tempArrayTwo forKey:@"PlaceByFavourite"];
+            }
+            } else {
                 message = @"No Placemarks Found";
               }
             }
@@ -699,6 +696,7 @@ static bool isRoad;
     return pin;
   }
 }
+
 
 #pragma mark - MKMapViewDelegate -
 
@@ -1075,7 +1073,7 @@ static bool isRoad;
 
   if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
     self.downToolBar.hidden = NO;
-//    self.constraitToShowUpToolBar.constant = 0.f;
+    self.constraitToShowUpToolBar.constant = 0.f;
     [self.viewToAnimate setNeedsUpdateConstraints];
 
     [UIView animateWithDuration:1.f
