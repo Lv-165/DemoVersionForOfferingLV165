@@ -2,7 +2,7 @@
 //  Description.m
 //  lv-165IOS
 //
-//  Created by AG on 12/22/15.
+//  Created by Ihor Zabrotsky on 12/28/15.
 //  Copyright © 2015 SS. All rights reserved.
 //
 

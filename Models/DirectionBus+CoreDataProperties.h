@@ -1,5 +1,5 @@
 //
-//  Waiting+CoreDataProperties.m
+//  DirectionBus+CoreDataProperties.h
 //  lv-165IOS
 //
 //  Created by Ihor Zabrotsky on 12/28/15.
@@ -9,13 +9,15 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "Waiting+CoreDataProperties.h"
+#import "DirectionBus.h"
 
-@implementation Waiting (CoreDataProperties)
+NS_ASSUME_NONNULL_BEGIN
 
-@dynamic avg;
-@dynamic avg_textual;
-@dynamic count;
-@dynamic place;
+@interface DirectionBus (CoreDataProperties)
+
+@property (nullable, nonatomic, retain) NSString *directionString;
+@property (nullable, nonatomic, retain) Place *place;
 
 @end
+
+NS_ASSUME_NONNULL_END

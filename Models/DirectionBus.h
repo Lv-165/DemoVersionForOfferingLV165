@@ -1,5 +1,5 @@
 //
-//  Country.h
+//  DirectionBus.h
 //  lv-165IOS
 //
 //  Created by Ihor Zabrotsky on 12/28/15.
@@ -9,11 +9,11 @@
 #import <Foundation/Foundation.h>
 #import <CoreData/CoreData.h>
 
-@class Location;
+@class Place;
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Country : NSManagedObject
+@interface DirectionBus : NSManagedObject
 
 // Insert code here to declare functionality of your managed object subclass
 
@@ -21,4 +21,4 @@ NS_ASSUME_NONNULL_BEGIN
 
 NS_ASSUME_NONNULL_END
 
-#import "Country+CoreDataProperties.h"
+#import "DirectionBus+CoreDataProperties.h"
