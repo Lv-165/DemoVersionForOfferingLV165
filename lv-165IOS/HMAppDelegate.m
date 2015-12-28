@@ -21,28 +21,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
-    Branch *branch = [Branch getInstance];
-    [branch initSessionWithLaunchOptions:launchOptions
-              andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
-                  if (!error) {
-                      NSNumber *placeId = [params objectForKey:@"place_id"];
-                      if (placeId) {
-                          NSString *storyboardName = @"Main";
-                          UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
-                          UIViewController *vc = [storyboard instantiateInitialViewController];
-                          
-                          self.window.rootViewController = vc;
-                          
-                      } else {
-                          NSLog(@"Failed init: %@", error);
-                      }
-                  }
-              }];
-    
     [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
     
-    
-  
     NSUserDefaults *userDef = [NSUserDefaults standardUserDefaults];
     if (![userDef boolForKey:@"firstStart"]) {
         //        to do when first run
@@ -59,6 +39,23 @@
         
         self.window.rootViewController = vc;
     }
+    
+    Branch *branch = [Branch getInstance];
+    [branch initSessionWithLaunchOptions:launchOptions
+              andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
+                  if (!error) {
+                      NSString *storyboardName = @"Main";
+                      UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
+                      UIViewController *vc = [storyboard instantiateInitialViewController];
+                      
+                      self.window.rootViewController = vc;
+
+                      NSLog(@"Finished init");
+                  } else {
+                      NSLog(@"Failed init: %@", error);
+                  }
+              }];
+    
     return YES;
 }
 
@@ -66,7 +63,15 @@
     
     [[Branch getInstance] handleDeepLink:url];
     NSDictionary *params = [[Branch getInstance] getLatestReferringParams];
-    NSLog(@"Opened app from URL %@ and handled params: %@", [url description], params.description);
+    NSNumber *placeId = [params objectForKey:@"place_id"];
+    if (placeId) {
+        NSString *storyboardName = @"Main";
+        UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
+        UIViewController *vc = [storyboard instantiateInitialViewController];
+        
+        self.window.rootViewController = vc;
+    }
+    //NSLog(@"Opened app from URL %@ and handled params: %@", [url description], params.description);
     return YES;
 }
 
