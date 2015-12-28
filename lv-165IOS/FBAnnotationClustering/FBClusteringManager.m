@@ -6,8 +6,10 @@
 //  Copyright (c) 2014 Infinum Ltd. All rights reserved.
 //
 
-#import "FBQuadTree.h"
 #import "FBClusteringManager.h"
+#import "FBQuadTree.h"
+#import "PieSliceLayer.h"
+
 static NSString *const kFBClusteringManagerLockName =
     @"co.infinum.clusteringLock";
 
@@ -60,8 +62,17 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
   self = [super init];
   if (self) {
     _lock = [NSRecursiveLock new];
+
     self.scale = [[NSNumber alloc] initWithDouble:1];
 
+    _clusteringFactor = 15;
+    _labelFontSize = _clusteringFactor * 1.3;
+    _clusterAnnotationViewRadius = _clusteringFactor * 3;
+    _annotationViewsCache = [NSMutableDictionary new];
+
+    _numOfInitializedAnnotationViews = 0;
+    _slicesArray = [NSMutableArray new];
+    // _slicesSet = [NSMutableSet new];
     _noneRatingColour =
         [UIColor colorWithRed:0.620 green:0.625 blue:0.612 alpha:1.000];
 
@@ -165,11 +176,11 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
 
       NSInteger count = [annotations count];
 
-      if (count < 10) {
+      if (count < _clusteringFactor) {
         [clusteredAnnotations addObjectsFromArray:annotations];
       }
 
-      if (count > 9) {
+      if (count > _clusteringFactor - 1) {
 
         CLLocationCoordinate2D coordinate = CLLocationCoordinate2DMake(
             totalLatitude / count, totalLongitude / count);
@@ -181,6 +192,11 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
     }
   }
   [self.lock unlock];
+
+  _currentlyClusteredAnnotations =
+      [NSArray arrayWithArray:clusteredAnnotations];
+
+  _numOfClusteredAnnotations = _currentlyClusteredAnnotations.count;
 
   return [NSArray arrayWithArray:clusteredAnnotations];
 }
@@ -199,11 +215,16 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
 
 - (void)displayAnnotations:(NSArray *)annotations
                  onMapView:(MKMapView *)mapView {
+
+  // self.slicesArray = [NSMutableArray new];
   NSMutableSet *before = [NSMutableSet setWithArray:mapView.annotations];
   MKUserLocation *userLocation = [mapView userLocation];
   if (userLocation) {
     [before removeObject:userLocation];
   }
+
+  // _numOfClusteredAnnotations =
+
   NSSet *after = [NSSet setWithArray:annotations];
 
   NSMutableSet *toKeep = [NSMutableSet setWithSet:before];
@@ -218,7 +239,60 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
   [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     [mapView addAnnotations:[toAdd allObjects]];
     [mapView removeAnnotations:[toRemove allObjects]];
+
+    // get keys
+    //  [_annotationViewsCache addAnnotations:[toAdd allObjects]];
+    // [_annotationViewsCache removeAnnotations:[toRemove allObjects]];
+
+    // self.slicesArray = [NSMutableArray new];
+    //[self setNeedsDisplay];
   }];
+
+}
+
+//-(void)countClusterAnnotationViewsOnMapView:(MKMapView *)mapView {
+//    for (id<MKAnnotation> annotation in mapView.annotations) {
+//        if (<#condition#>) {
+//            <#statements#>
+//        }
+//    }
+//}
+
+- (void)firePieChartAnimation {
+
+  // [CATransaction begin];
+  for (PieSliceLayer *slice in self.slicesArray) {
+
+    //        [CATransaction setAnimationTimingFunction:
+    //         [CAMediaTimingFunction
+    //          functionWithName:kCAMediaTimingFunctionEaseInEaseOut]];
+    //        [CATransaction setAnimationDuration:1];
+
+    slice.startAngle = slice.startAngleAnimated;
+    slice.endAngle = slice.endAngleAnimated;
+    //  [slice setNeedsDisplay];
+    //            CABasicAnimation *startAngleAnimation =
+    //            [CABasicAnimation animationWithKeyPath:@"startAngle"];
+    //            startAngleAnimation.toValue = @(slice.startAngleAnimated);
+    //            startAngleAnimation.fillMode = kCAFillModeForwards;
+    //            startAngleAnimation.removedOnCompletion = NO;
+    //            startAngleAnimation.duration = 1;
+    //
+    //            CABasicAnimation *endAngleAnimation =
+    //            [CABasicAnimation animationWithKeyPath:@"endAngle"];
+    //            endAngleAnimation.toValue = @(slice.endAngleAnimated);
+    //            endAngleAnimation.fillMode = kCAFillModeForwards;
+    //            endAngleAnimation.removedOnCompletion = NO;
+    //            endAngleAnimation.duration = 1;
+    //
+    //            CAAnimationGroup * animationGroup = [CAAnimationGroup new];
+    //             animationGroup.animations =
+    //             @[startAngleAnimation,endAngleAnimation];
+    //           [slice addAnimation:animationGroup forKey:@"startAngle"];
+  }
+  //[CATransaction commit];
+
+  // self.slicesArray = [NSMutableArray new];
 }
 
 @end

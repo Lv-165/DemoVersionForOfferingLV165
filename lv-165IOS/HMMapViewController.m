@@ -6,22 +6,25 @@
 //  Copyright © 2015 AG. All rights reserved.
 //
 
-#import "HMMapViewController.h"
-#import "HMSettingsViewController.h"
-#import "HMFiltersViewController.h"
-#import "HMSearchViewController.h"
-#import <MapKit/MapKit.h>
-#import "HMMapAnnotation.h"
-#import "UIView+MKAnnotationView.h"
+#import "Branch/BranchLinkProperties.h"
+#import "Branch/BranchUniversalObject.h"
 #import "Comments.h"
-#import "Place.h"
-#import "HMMapAnnotation.h"
-#import "SVGeocoder.h"
-#import "HMCommentsTableViewController.h"
-#import "HMAnnotationView.h"
-#import "User.h"
-#import "DescriptionInfo.h"
 #import "Description.h"
+#import "DescriptionInfo.h"
+#import "FBAnnotationClustering/FBAnnotationClustering.h"
+#import "HMAnnotationView.h"
+#import "HMCommentsTableViewController.h"
+#import "HMFiltersViewController.h"
+#import "HMMapAnnotation.h"
+#import "HMMapAnnotation.h"
+#import "HMMapViewController.h"
+#import "HMSearchViewController.h"
+#import "HMSettingsViewController.h"
+#import "HMWeatherManager.h"
+#import "Place.h"
+#import "SVGeocoder.h"
+#import "UIView+MKAnnotationView.h"
+#import "User.h"
 #import "Waiting.h"
 #import "Branch/BranchUniversalObject.h"
 #import "Branch/BranchLinkProperties.h"
@@ -58,7 +61,7 @@
 @property(weak, nonatomic) MKAnnotationView *annotationView;
 @property(strong, nonatomic) FBClusteringManager *clusteringManager;
 @property(strong, nonatomic) NSMutableArray *clusteredAnnotations;
-@property (strong, nonatomic) NSDictionary *weatherDict;
+@property(strong, nonatomic) NSDictionary *weatherDict;
 
 @property (strong, nonatomic) NSString *stringForGoogleDirectionsInstructions;
 
@@ -182,37 +185,67 @@ static bool isRoad;
           _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
       self.clusteringManager = [[FBClusteringManager alloc]
           initWithAnnotations:_clusteredAnnotations];
+
+      self.clusteringManager.scale = [[NSNumber alloc] initWithDouble:1.6];
+
       NSArray *annotations = [self.clusteringManager
           clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
                               withZoomScale:scale];
-      self.clusteringManager.scale = [[NSNumber alloc] initWithDouble:1.6];
+
       [self.clusteringManager displayAnnotations:annotations
                                        onMapView:_mapView];
     }];
   } else {
-    [[NSOperationQueue new] addOperationWithBlock:^{
-      double scale =
-          _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
-      NSArray *annotations = [self.clusteringManager
-          clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
-                              withZoomScale:scale];
-      [self.clusteringManager displayAnnotations:annotations
-                                       onMapView:_mapView];
-    }];
+    //    _clusteringManager.clusteringFactor = 10;
+    //    _clusteringManager.clusterAnnotationViewRadius = 60;
+    [self reloadClustering];
   }
 }
 
-- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-  [[NSOperationQueue new] addOperationWithBlock:^{
+- (void)reloadClustering {
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
     double scale =
-        self.mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
+        _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
     NSArray *annotations = [self.clusteringManager
-        clusteredAnnotationsWithinMapRect:mapView.visibleMapRect
+        clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
                             withZoomScale:scale];
-
-    [self.clusteringManager displayAnnotations:annotations onMapView:mapView];
+    [self.clusteringManager displayAnnotations:annotations onMapView:_mapView];
+    // [self.clusteringManager  firePieChartAnimation];
   }];
 }
+
+- (void)reloadClusteringAnimated {
+  [[NSOperationQueue mainQueue] addOperationWithBlock:^{
+    double scale =
+        _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
+    NSArray *annotations = [self.clusteringManager
+        clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
+                            withZoomScale:scale];
+    for (HMMapAnnotation *annotation in annotations) {
+      if ([annotation isMemberOfClass:[FBAnnotationCluster class]]) {
+        FBAnnotationCluster *clusterAnnotation =
+            (FBAnnotationCluster *)annotation;
+        clusterAnnotation.animated = YES;
+      }
+    }
+    [self.clusteringManager displayAnnotations:annotations onMapView:_mapView];
+  }];
+}
+
+- (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
+  [self reloadClustering];
+  //[self.clusteringManager firePieChartAnimation];
+}
+
+-(void)mapView:(MKMapView *)mapView didAddAnnotationViews:(NSArray<MKAnnotationView *> *)views{
+[self.clusteringManager  firePieChartAnimation];
+}
+
+- (void)mapView:(MKMapView *)mapView regionWillChangeAnimated:(BOOL)animated{
+[self.clusteringManager  firePieChartAnimation];
+}
+
+
 
 - (void)handleSwipe:(UISwipeGestureRecognizer *)swipe {
 
@@ -353,46 +386,57 @@ static bool isRoad;
 }
 
 - (void)addToFavourite:(UIBarButtonItem *)sender {
-    CLLocationCoordinate2D coordinate = self.annotationView.annotation.coordinate;
-    [SVGeocoder reverseGeocode:coordinate completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse, NSError *error) {
-        NSString* message = nil;
-        if (error) {
-            message = [error localizedDescription];
-        } else {
-            if ([placemarks count] > 0) {
-                SVPlacemark* placeMark = [placemarks firstObject];
-                NSString *stringOfPlace = [self creatingAObjectOfMassive:placeMark];
-                
-                NSNumber *latitude = [[NSNumber alloc] initWithDouble:placeMark.location.coordinate.latitude];
-                NSNumber *longitude = [[NSNumber alloc] initWithDouble:placeMark.location.coordinate.longitude];
-                
+  CLLocationCoordinate2D coordinate = self.annotationView.annotation.coordinate;
+  [SVGeocoder
+      reverseGeocode:coordinate
+          completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse,
+                       NSError *error) {
+            NSString *message = nil;
+            if (error) {
+              message = [error localizedDescription];
+            } else {
+              if ([placemarks count] > 0) {
+                SVPlacemark *placeMark = [placemarks firstObject];
+                NSString *stringOfPlace =
+                    [self creatingAObjectOfMassive:placeMark];
+
+                NSNumber *latitude = [[NSNumber alloc]
+                    initWithDouble:placeMark.location.coordinate.latitude];
+                NSNumber *longitude = [[NSNumber alloc]
+                    initWithDouble:placeMark.location.coordinate.longitude];
+
                 NSDictionary *coordinate = @{
-                                             @"latitude":latitude,
-                                             @"longitude":longitude
-                                             };
+                  @"latitude" : latitude,
+                  @"longitude" : longitude
+                };
                 NSDictionary *place = @{
-                                        @"StringOfPlace":stringOfPlace,
-                                        @"Coordinate":coordinate,
-                                        };
-                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-                NSArray *tempArrayOne = [userDefaults objectForKey:@"PlaceByFavourite"];
+                  @"StringOfPlace" : stringOfPlace,
+                  @"Coordinate" : coordinate,
+                };
+                NSUserDefaults *userDefaults =
+                    [NSUserDefaults standardUserDefaults];
+                NSArray *tempArrayOne =
+                    [userDefaults objectForKey:@"PlaceByFavourite"];
                 NSInteger i = 0;
                 for (NSDictionary *placeInDict in tempArrayOne) {
-                    if ([[placeInDict objectForKey:@"StringOfPlace"] isEqualToString:stringOfPlace]) {
-                        i++;
-                    }
+                  if ([[placeInDict objectForKey:@"StringOfPlace"]
+                          isEqualToString:stringOfPlace]) {
+                    i++;
+                  }
                 }
                 if (i == 0) {
-                NSMutableArray *tempArrayTwo = [[NSMutableArray alloc] initWithArray:tempArrayOne];
-                [tempArrayTwo addObject:place];
-                [userDefaults removeObjectForKey:@"PlaceByFavourite"];
-                [userDefaults setObject:tempArrayTwo forKey:@"PlaceByFavourite"];
-            }
-            } else {
+                  NSMutableArray *tempArrayTwo =
+                      [[NSMutableArray alloc] initWithArray:tempArrayOne];
+                  [tempArrayTwo addObject:place];
+                  [userDefaults removeObjectForKey:@"PlaceByFavourite"];
+                  [userDefaults setObject:tempArrayTwo
+                                   forKey:@"PlaceByFavourite"];
+                }
+              } else {
                 message = @"No Placemarks Found";
+              }
             }
-        }
-    }];
+          }];
 }
 
 - (void)infoMethod:(UIBarButtonItem *)sender {
@@ -540,14 +584,14 @@ static bool isRoad;
             viewForAnnotation:(id<HMAnnotationView>)annotation {
 
   static NSString *identifier = @"Annotation";
-  MKPinAnnotationView *pin = (MKPinAnnotationView *)
-      [mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+  MKPinAnnotationView *pin = (MKPinAnnotationView *)[mapView
+      dequeueReusableAnnotationViewWithIdentifier:identifier];
   if ([annotation isKindOfClass:[MKUserLocation class]]) {
 
     NSString *identifier = @"UserAnnotation";
 
-    MKAnnotationView *pin = (MKAnnotationView *)
-        [mapView dequeueReusableAnnotationViewWithIdentifier:identifier];
+    MKAnnotationView *pin = (MKAnnotationView *)[mapView
+        dequeueReusableAnnotationViewWithIdentifier:identifier];
     if (!pin) {
 
       pin = [[MKAnnotationView alloc] initWithAnnotation:annotation
@@ -561,13 +605,23 @@ static bool isRoad;
 
     self.userLocationPin = pin;
     return pin;
-  } else if ([annotation isKindOfClass:[FBAnnotationCluster class]]) {
+  } else if ([annotation isMemberOfClass:[FBAnnotationCluster class]]) {
     FBAnnotationCluster *clusterAnnotation = annotation;
+    if (clusterAnnotation.animated) {
+      FBAnnotationClusterView *clusterAnnotationView =
+          [[FBAnnotationClusterView alloc]
+              initWithAnnotation:clusterAnnotation
+                       clusteringManager:_clusteringManager];
+        // clusterAnnotationView.image = nil;
+      return clusterAnnotationView;
+    } else {
 
-    FBAnnotationClusterView *clusterAnnotationView =
-        [[FBAnnotationClusterView alloc] initWithAnnotation:clusterAnnotation
-                                          clusteringManager:_clusteringManager];
-    return clusterAnnotationView;
+      FBAnnotationClusterView *clusterAnnotationView =
+          [[FBAnnotationClusterView alloc]
+              initWithAnnotation:clusterAnnotation
+               clusteringManager:_clusteringManager];
+      return clusterAnnotationView;
+    }
   } else {
     if (!pin) {
       pin = [[MKPinAnnotationView alloc] initWithAnnotation:annotation
@@ -694,29 +748,28 @@ static bool isRoad;
   request.requestsAlternateRoutes = isMainRoute;
   BOOL temp = isMainRoute;
   directions = [[MKDirections alloc] initWithRequest:request];
-  [directions
-      calculateDirectionsWithCompletionHandler:^(MKDirectionsResponse *response,
-                                                 NSError *error) {
-        if (error) {
-          NSLog(@"%@", error);
+  [directions calculateDirectionsWithCompletionHandler:^(
+                  MKDirectionsResponse *response, NSError *error) {
+    if (error) {
+      NSLog(@"%@", error);
 
-          [self showAlertWithTitle:@"No direction"
-                        andMessage:@"There is no connection between your "
-                                   @"position and this point"
-                    andActionTitle:@"OK"];
+      [self showAlertWithTitle:@"No direction"
+                    andMessage:@"There is no connection between your "
+                               @"position and this point"
+                andActionTitle:@"OK"];
 
-        } else if ([response.routes count] == 0) {
-          NSLog(@"routes = 0");
-        } else {
-          NSMutableArray *array = [NSMutableArray array];
-          for (MKRoute *route in response.routes) {
-            [array addObject:route.polyline];
-          }
-          isMainRoute = temp;
+    } else if ([response.routes count] == 0) {
+      NSLog(@"routes = 0");
+    } else {
+      NSMutableArray *array = [NSMutableArray array];
+      for (MKRoute *route in response.routes) {
+        [array addObject:route.polyline];
+      }
+      isMainRoute = temp;
 
-          [self.mapView addOverlays:array level:MKOverlayLevelAboveRoads];
-        }
-      }];
+      [self.mapView addOverlays:array level:MKOverlayLevelAboveRoads];
+    }
+  }];
 }
 
 - (void)printPointWithContinent {
@@ -859,9 +912,9 @@ static bool isRoad;
 //    zoomRect = MKMapRectUnion(zoomRect, rect);
 //    zoomRect = [self.mapView mapRectThatFits:zoomRect];
 
-//    [self.mapView setVisibleMapRect:zoomRect
-//                        edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
-//                           animated:YES];
+    //    [self.mapView setVisibleMapRect:zoomRect
+    //                        edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
+    //                           animated:YES];
 
     self.downToolBar.hidden = YES;
     NSString *stringId = [NSString
@@ -873,24 +926,23 @@ static bool isRoad;
 
     Place *place = [self.placeArray firstObject];
     User *user = place.user;
-    
-    
-    
+
 #warning weather!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    
-    self.weatherDict = [[NSDictionary alloc]init];
-    [[HMWeatherManager sharedManager] getWeatherByCoordinate:place onSuccess:^(NSDictionary *weather) {
-       
-    self.weatherDict = weather;
-        NSLog(@"%@",self.weatherDict);
-    } onFailure:^(NSError *error, NSInteger statusCode) {
-    
-    NSLog(@"%@%ld",error,(long)statusCode);
-    }];
+    self.weatherDict = [[NSDictionary alloc] init];
+    [[HMWeatherManager sharedManager] getWeatherByCoordinate:place
+        onSuccess:^(NSDictionary *weather) {
+
+          self.weatherDict = weather;
+          NSLog(@"%@", self.weatherDict);
+        }
+        onFailure:^(NSError *error, NSInteger statusCode) {
+
+          NSLog(@"%@%ld", error, (long)statusCode);
+        }];
 
     self.autorDescriptionLable.text = user.name;
-    
+
     Description *desc = place.descript;
 
     self.descriptionTextView.text = desc.descriptionString;
@@ -950,35 +1002,50 @@ static bool isRoad;
         //              [annotationsArray addObject:annotation];
         //            }
         selectedAnnotationView = (FBAnnotationClusterView *)touch.view;
+
+       // selectedAnnotationView.annotation.animated = YES;
         // break;
         // }
         //   }
       }
 
       NSArray *array = [selectedAnnotationView.annotation.annotations copy];
-      [self.mapView showAnnotations:array animated:YES];
+        selectedAnnotationView.textLayer.hidden = YES;
+        selectedAnnotationView.hidden = YES;
+  // [selectedAnnotationView removeFromSuperview];
+        
+        for (HMMapAnnotation *annotation in array) {
+            if ([annotation isMemberOfClass:[FBAnnotationCluster class]]) {
+                FBAnnotationCluster *clusterAnnotation =
+                (FBAnnotationCluster *)annotation;
+                clusterAnnotation.animated = YES;
+            }
+        }
 
-      [[NSOperationQueue new] addOperationWithBlock:^{
-        double scale = self.mapView.bounds.size.width /
-                       self.mapView.visibleMapRect.size.width;
 
-        NSArray *annotations = [self.clusteringManager
-            clusteredAnnotationsWithinMapRect:self.mapView.visibleMapRect
-                                withZoomScale:scale];
+       // MKMapRect mapRect = [
 
-        [self.clusteringManager displayAnnotations:annotations
-                                         onMapView:self.mapView];
-      }];
+        [self.mapView showAnnotations:array animated:YES];
+
+//[self.mapView setVisibleMapRect:<#(MKMapRect)#> animated:<#(BOOL)#>
+    // [self.mapView showAnnotations:array animated:YES];
+
+      [self reloadClusteringAnimated];
     }
   }
 }
+
+//- (void)mapViewDidFinishRenderingMap:(MKMapView *)mapView
+//                       fullyRendered:(BOOL)fullyRendered {
+//
+//}
 
 - (void)mapView:(MKMapView *)mapView
     didDeselectAnnotationView:(MKAnnotationView *)view  {
 
   if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
     self.downToolBar.hidden = NO;
-    self.constraitToShowUpToolBar.constant = 0.f;
+//    self.constraitToShowUpToolBar.constant = 0.f;
     [self.viewToAnimate setNeedsUpdateConstraints];
 
     [UIView animateWithDuration:1.f
@@ -1045,33 +1112,32 @@ static bool isRoad;
 }
 
 - (NSString *)creatingAObjectOfMassive:(SVPlacemark *)placeMark {
-    NSMutableArray *levelOfLocality = [NSMutableArray array];
-    if (placeMark.formattedAddress) {
-        [levelOfLocality addObject:placeMark.formattedAddress];
+  NSMutableArray *levelOfLocality = [NSMutableArray array];
+  if (placeMark.formattedAddress) {
+    [levelOfLocality addObject:placeMark.formattedAddress];
+  }
+  if (placeMark.administrativeArea) {
+    [levelOfLocality addObject:placeMark.administrativeArea];
+  }
+  if (placeMark.subAdministrativeArea) {
+    [levelOfLocality addObject:placeMark.subAdministrativeArea];
+  }
+  if (placeMark.thoroughfare) {
+    [levelOfLocality addObject:placeMark.thoroughfare];
+  }
+  NSInteger count = 0;
+  NSMutableString *str = [NSMutableString stringWithFormat:@""];
+  for (id dataOfLocality in levelOfLocality) {
+    if (count >= 3) {
+      break;
     }
-    if (placeMark.administrativeArea) {
-        [levelOfLocality addObject:placeMark.administrativeArea];
+    if (dataOfLocality) {
+      [str appendFormat:@", %@", dataOfLocality];
+      count++;
     }
-    if (placeMark.subAdministrativeArea) {
-        [levelOfLocality addObject:placeMark.subAdministrativeArea];
-    }
-    if (placeMark.thoroughfare) {
-        [levelOfLocality addObject:placeMark.thoroughfare];
-    }
-    NSInteger count = 0;
-    NSMutableString *str = [NSMutableString stringWithFormat:@""];
-    for (id dataOfLocality in levelOfLocality) {
-        if (count >= 3) {
-            break;
-        }
-        if (dataOfLocality) {
-            [str appendFormat:@", %@",dataOfLocality];
-            count ++;
-        }
-    }
-    [str deleteCharactersInRange:NSMakeRange(0, 1)];
-    return str;
+  }
+  [str deleteCharactersInRange:NSMakeRange(0, 1)];
+  return str;
 }
-
 
 @end
