@@ -62,7 +62,7 @@ static NSInteger sectionForHours;
     NSArray *weatherArr = [self.weatherArray subarrayWithRange:NSMakeRange(0, self.hours)];
 
     for (NSDictionary *dict in weatherArr) {
-        int temperature = [[[dict  objectForKey:@"main"]objectForKey:@"temp"] integerValue];
+        int temperature = (int)[[[dict  objectForKey:@"main"]objectForKey:@"temp"] integerValue];
         int diff = (int)(temperature - kelvinMinus);
         [tempArraMinMax addObject:[NSNumber numberWithInt:diff]];
         
@@ -72,7 +72,7 @@ static NSInteger sectionForHours;
     self.tempLow = [tempArraMinMax valueForKeyPath:@"@min.integerValue"];
     
     NSInteger temperature = [[[[self.weatherArray firstObject] objectForKey:@"main"]objectForKey:@"temp"] integerValue];
-    int diff = (temperature - kelvinMinus);
+    int diff = (int)(temperature - kelvinMinus);
     self.temperature = [NSNumber numberWithInt:diff];
 
     self.locationName = [NSString stringWithFormat:@"Humidity: %@%%",[[[self.weatherArray firstObject]objectForKey:@"main"]objectForKey:@"humidity"]];
