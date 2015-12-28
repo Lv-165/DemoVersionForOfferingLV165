@@ -241,25 +241,23 @@ static bool isMainRoute;
 - (void)sharingForSocialNetworking:(UIBarButtonItem *)sender {
 
     BranchUniversalObject *branchUniversalObject = [[BranchUniversalObject alloc]
-                                                    initWithCanonicalIdentifier:@"1000"];
+                                                    initWithCanonicalIdentifier:@"10000"];
     [branchUniversalObject registerView];
     
     Place *place = [self.placeArray firstObject];
+    User *user = place.user;
     
-    branchUniversalObject.title = place.descript.descriptionString;
-    branchUniversalObject.contentDescription = [NSString stringWithFormat:@"Lat: %@, Lon: %@", place.lat, place.lon];
+    self.autorDescriptionLable.text = user.name;
+    
+    branchUniversalObject.title = [NSString stringWithFormat:@"Author: %@", place.user.name];
+    branchUniversalObject.contentDescription = [NSString stringWithFormat:@"Lat: %@, Lon: %@\r\n Description: %@", place.lat, place.lon, place.descript.descriptionString];
+    [branchUniversalObject addMetadataKey:@"place_id" value:[NSString stringWithFormat:@"%@", place.id]];
     
     UIGraphicsBeginImageContext(self.mapView.bounds.size);
     [self.mapView drawViewHierarchyInRect:self.mapView.bounds afterScreenUpdates:YES];
     UIImage *locationImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     NSData *data = UIImagePNGRepresentation(locationImage);
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths firstObject];
-//    NSString *imageName = [NSString stringWithFormat:@"locationImage"];
-    NSURL *imageUrlPath = [NSURL fileURLWithPath:[documentsDirectory stringByAppendingPathComponent:@"locationImage.png"]];
-    [data writeToURL:imageUrlPath atomically:YES];
-//    NSURL *dataURL = [[NSBundle mainBundle] URLForResource: @"locationImage" withExtension:@"png"];
     
     NSString *clientId = @"ba6022d743eb49c";
     
@@ -267,51 +265,44 @@ static bool isMainRoute;
     NSString *description = [NSString stringWithFormat:@"Lat: %@, Lon: %@", place.lat, place.lon];
     
     [HMImgurManager uploadPhoto:data title:title description:description imgurClientId:clientId completionBlock:^(NSString *result) {
-        
         branchUniversalObject.imageUrl = result;
-        NSLog(@"%@", result);
         
+        BranchLinkProperties *linkProperties = [BranchLinkProperties new];
+        
+        linkProperties.feature = @"sharing";
+        linkProperties.channel = @"default";
+        [linkProperties addControlParam:@"$desktop_url"
+                              withValue:[NSString stringWithFormat:@"http://hitchwiki.org/maps/?zoom=15&lat=%@&lon=%@",
+                                         place.lat, place.lon]];
+        [linkProperties addControlParam:@"$ios_url"
+                              withValue:@"hitchwiki.iosmobile://"];
+        
+        [branchUniversalObject getShortUrlWithLinkProperties:linkProperties
+                                                 andCallback:^(NSString *url, NSError *error) {
+                                                     if (!error) {
+                                                         NSLog(@"Success getting url: %@", url);
+                                                     }
+                                                 }];
+        
+        [branchUniversalObject showShareSheetWithLinkProperties:linkProperties
+                                                   andShareText:nil
+                                             fromViewController:self
+                                                    andCallback:^{
+                                                        NSLog(@"Finished presenting");
+                                                    }];
     } failureBlock:^(NSURLResponse *response, NSError *error, NSInteger status) {
+        UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"Upload Failed"
+                                                                       message:[NSString stringWithFormat:@"%@ (Status code %ld)",
+                                                                                [error localizedDescription], (long)status]
+                                                                preferredStyle:UIAlertControllerStyleAlert];
         
-        [[[UIAlertView alloc] initWithTitle:@"Upload Failed"
-                                    message:[NSString stringWithFormat:@"%@ (Status code %ld)",
-                                             [error localizedDescription], (long)status]
-                                   delegate:nil
-                          cancelButtonTitle:nil
-                          otherButtonTitles:@"OK", nil] show];
+        UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault
+                                                              handler:^(UIAlertAction * action) {}];
         
-    }];
+        [alert addAction:defaultAction];
+        [self presentViewController:alert animated:YES completion:nil];
 
-    
-    //branchUniversalObject.imageUrl = [imageUrlPath absoluteString];
-    //branchUniversalObject.imageUrl = @"http://i.imgur.com/R9xMSXL.png";
-    [branchUniversalObject addMetadataKey:@"place_id" value:[NSString stringWithFormat:@"%@", place.id]];
-    
-    BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
-    
-    linkProperties.feature = @"sharing";
-    linkProperties.channel = @"facebook";
-    [linkProperties addControlParam:@"$desktop_url"
-                          withValue:[NSString stringWithFormat:@"http://hitchwiki.org/maps/?zoom=15&lat=%@&lon=%@",
-                                     place.lat, place.lon]];
-    [linkProperties addControlParam:@"$ios_url"
-                          withValue:@"hitchwiki.iosmobile://"];
-//    [linkProperties addControlParam:@"$ios_deeplink_path"
-//                          withValue:[NSString stringWithFormat:@"content/%@", place.id]];
-    
-    [branchUniversalObject getShortUrlWithLinkProperties:linkProperties
-                                             andCallback:^(NSString *url, NSError *error) {
-        if (!error) {
-            NSLog(@"Success getting url: %@", url);
-        }
     }];
-        
-    [branchUniversalObject showShareSheetWithLinkProperties:linkProperties
-                                               andShareText:nil
-                                         fromViewController:self
-                                                andCallback:^{
-                                                    NSLog(@"Finished presenting");
-                                                }];
 }
 
 - (void)addToFavourite:(UIBarButtonItem *)sender {}

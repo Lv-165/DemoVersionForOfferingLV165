@@ -21,11 +21,28 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     
+    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+    
     Branch *branch = [Branch getInstance];
     [branch initSessionWithLaunchOptions:launchOptions
               andRegisterDeepLinkHandler:^(NSDictionary *params, NSError *error) {
                   // start setting up the view controller hierarchy
-                  [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
+                  NSUserDefaults *userDef = [NSUserDefaults standardUserDefaults];
+                  if (![userDef boolForKey:@"firstStart"]) {
+                      //        to do when first run
+                      NSString * storyboardName = @"Main";
+                      UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
+                      UIViewController *vc = [storyboard instantiateViewControllerWithIdentifier:@"downloadCountries"];
+                      self.window.rootViewController = vc;
+                      [userDef setBool:YES forKey:@"firstStart"];
+                      [userDef synchronize];
+                  } else {
+                      NSString *storyboardName = @"Main";
+                      UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
+                      UIViewController *vc = [storyboard instantiateInitialViewController];
+                      
+                      self.window.rootViewController = vc;
+                  }
                   NSString *storyboardName = @"Main";
                   UIStoryboard *storyboard = [UIStoryboard storyboardWithName:storyboardName bundle: nil];
                   UIViewController *vc;
@@ -46,7 +63,6 @@
                   self.window.rootViewController = vc;
               }];
     
-//    [AFNetworkActivityIndicatorManager sharedManager].enabled = YES;
 //
 //    NSUserDefaults *userDef = [NSUserDefaults standardUserDefaults];
 //    if (![userDef boolForKey:@"firstStart"]) {
