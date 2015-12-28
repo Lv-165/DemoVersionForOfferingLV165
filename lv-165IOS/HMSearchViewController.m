@@ -163,8 +163,8 @@ NSString* const showPlaceNotificationCenterInfoKey = @"showPlaceNotificationCent
         NSMutableArray *tempArray = [NSMutableArray arrayWithArray:self.arrayOfHistoryPlaces];
         [tempArray addObject:self.arrayForPlacesMarks[indexPath.row]];
 
-    if ([tempArray count] >= 20) {
-        for (NSInteger i = 0; i < ([self.arrayOfHistoryPlaces count] - 20); i ++) {
+    if ([tempArray count] >= 10) {
+        for (NSInteger i = 0; i < ([self.arrayOfHistoryPlaces count] - 10); i ++) {
             [tempArray removeObjectAtIndex:i];
         }
     }

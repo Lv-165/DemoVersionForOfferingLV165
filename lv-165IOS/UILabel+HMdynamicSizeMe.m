@@ -10,8 +10,7 @@
 
 @implementation UILabel (HMdynamicSizeMe)
 
--(CGFloat)heightForLabel:(UILabel *)label withText:(NSString *)text
-{
+-(CGFloat)heightForLabel:(UILabel *)label withText:(NSString *)text {
     CGSize maximumLabelSize = CGSizeMake(290, FLT_MAX);
     
     CGSize expectedLabelSize = [text sizeWithFont:label.font
@@ -21,15 +20,13 @@
     return expectedLabelSize.height;
 }
 
--(void)resizeHeightToFitForLabel:(UILabel *)label
-{
+-(void)resizeHeightToFitForLabel:(UILabel *)label {
     CGRect newFrame = label.frame;
     newFrame.size.height = [self heightForLabel:label withText:label.text];
     label.frame = newFrame;
 }
 
--(void)resizeHeightToFitForLabel:(UILabel *)label withText:(NSString *)text
-{
+-(void)resizeHeightToFitForLabel:(UILabel *)label withText:(NSString *)text {
     label.text = text;
     [self resizeHeightToFitForLabel:label];
 }

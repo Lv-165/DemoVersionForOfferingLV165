@@ -116,7 +116,7 @@ static bool isMainRoute;
                          ];
     
     NSArray *buttonsForUpToolBar = @[
-                                     [self createColorButton:@"filter" selector:@selector(sharingForSocialNetworking:)],
+                                     [self createColorButton:@"sharing30_30" selector:@selector(sharingForSocialNetworking:)],
                                      flexibleItem,
                                      [self createColorButton:@"favptite30_30" selector:@selector(addToFavourite:)],
                                      flexibleItem,
@@ -357,7 +357,7 @@ static bool isMainRoute;
 - (void)addToFavourite:(UIBarButtonItem *)sender {
     CLLocationCoordinate2D coordinate = self.annotationView.annotation.coordinate;
     [SVGeocoder reverseGeocode:coordinate completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse, NSError *error) {
-        NSString* message = nil;
+        NSString* message = [[NSString alloc] init];
         if (error) {
             message = [error localizedDescription];
         } else {
@@ -386,6 +386,11 @@ static bool isMainRoute;
                 }
                 if (i == 0) {
                 NSMutableArray *tempArrayTwo = [[NSMutableArray alloc] initWithArray:tempArrayOne];
+                    if ([tempArrayTwo count] > 10) {
+                        for (NSInteger i = 0; i < ([tempArrayTwo count] - 10); i ++) {
+                            [tempArrayTwo removeObjectAtIndex:i];
+                        }
+                    }
                 [tempArrayTwo addObject:place];
                 [userDefaults removeObjectForKey:@"PlaceByFavourite"];
                 [userDefaults setObject:tempArrayTwo forKey:@"PlaceByFavourite"];
@@ -498,7 +503,6 @@ static bool isMainRoute;
         HMGoogleDirectionsViewController *destViewController = segue.destinationViewController;
         
         destViewController.textForLabel = self.stringForGoogleDirectionsInstructions;
-        
     }
 }
 
@@ -600,6 +604,7 @@ static bool isMainRoute;
     return pin;
   }
 }
+
 
 #pragma mark - MKMapViewDelegate -
 
