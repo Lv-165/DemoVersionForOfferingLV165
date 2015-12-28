@@ -189,13 +189,7 @@ static bool isMainRoute;
           initWithAnnotations:_clusteredAnnotations];
 
       self.clusteringManager.scale = [[NSNumber alloc] initWithDouble:1.6];
-      [self.clusteringManager displayAnnotations:annotations
-                                       onMapView:_mapView];
-    }];
-  } else {
-    [[NSOperationQueue new] addOperationWithBlock:^{
-      double scale =
-          _mapView.bounds.size.width / self.mapView.visibleMapRect.size.width;
+
       NSArray *annotations = [self.clusteringManager
           clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
                               withZoomScale:scale];
