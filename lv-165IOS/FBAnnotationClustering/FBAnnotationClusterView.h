@@ -22,8 +22,6 @@
 
 @property(nonatomic, strong) FBClusteringManager *clusteringManager;
 
-
-
 //@property(nonatomic, strong) NSMutableArray *annotationsWithoutRating;
 //@property(nonatomic, strong) NSMutableArray *annotationsWithGoodRating;
 //@property(nonatomic, strong) NSMutableArray *annotationsWithBadRating;
@@ -42,9 +40,13 @@
 - (id)initWithAnnotation:(id<MKAnnotation>)annotation
        clusteringManager:(FBClusteringManager *)clusteringManager;
 
-@property(nonatomic, strong) NSArray *sliceValues;
-- (id)initWithSliceValues:(NSArray *)sliceValues;
+- (id)initWithAnnotationAnimated:(FBAnnotationCluster *)annotation
+               clusteringManager:(FBClusteringManager *)clusteringManager;
 
-- (void)updateSlices;
+@property(nonatomic, strong) NSString *key;
+@property(nonatomic, strong) CATextLayer* textLayer;
+
+//@property(nonatomic, strong) NSArray *sliceValues;
+//- (id)initWithSliceValues:(NSArray *)sliceValues;
 
 @end

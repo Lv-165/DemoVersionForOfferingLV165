@@ -45,18 +45,21 @@
 @property(assign, nonatomic) CGPoint currentPointOnArc;
 @property(assign, nonatomic) CGFloat currentPointOnArcX;
 @property(assign, nonatomic) CGFloat currentPointOnArcY;
-@property(assign, nonatomic) CGFloat clusterAnnotationViewRadius;
-@property(assign, nonatomic) CGFloat clusteringFactor;
-@property(assign, nonatomic) CGFloat labelFontSize;
+@property(assign, nonatomic) NSUInteger clusterAnnotationViewRadius;
+@property(assign, nonatomic) NSUInteger clusteringFactor;
+@property(assign, nonatomic) NSUInteger labelFontSize;
 @property(strong, nonatomic) UIColor *strokeColour;
-@property(copy, nonatomic) NSArray * currentlyClusteredAnnotations;
 
-@property(assign, nonatomic) NSUInteger numOfClusteredAnnotations;
-@property (assign,nonatomic) NSUInteger numOfInitializedAnnotationViews;
+@property(copy, atomic) NSArray *currentlyClusteredAnnotations;
+@property(assign, atomic) NSUInteger numOfClusteredAnnotations;
+@property(assign, atomic) NSUInteger numOfInitializedAnnotationViews;
 
-@property(copy, nonatomic) NSMutableArray * slicesArray;
+@property(strong, nonatomic) NSMutableDictionary *annotationViewsCache;
 
--(void)firePieChartAnimation;
+@property(strong, nonatomic) NSMutableArray *slicesArray;
+//@property(strong, nonatomic) NSMutableSet * slicesSet;
+
+- (void)firePieChartAnimation;
 
 /**
  Creates a new instance of @c FBClusterManager with array of annotations.

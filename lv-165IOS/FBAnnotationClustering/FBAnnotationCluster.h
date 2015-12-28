@@ -26,4 +26,6 @@
 /// Array of the annotations that are representer with this cluster.
 @property(nonatomic, strong) NSArray *annotations;
 
+@property(nonatomic, assign) BOOL animated;
+
 @end
