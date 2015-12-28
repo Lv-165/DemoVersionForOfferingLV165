@@ -492,7 +492,13 @@
                             <constraint firstItem="l4Y-9a-8kH" firstAttribute="top" secondItem="jKo-3O-Eyf" secondAttribute="topMargin" id="u0g-UY-30W"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="IdD-gQ-R9w"/>
+                    <navigationItem key="navigationItem" id="IdD-gQ-R9w">
+                        <barButtonItem key="rightBarButtonItem" title="Save" id="ruj-ny-Lil">
+                            <connections>
+                                <action selector="actionSave:" destination="CdG-xf-SgX" id="Wli-kO-xGX"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="textViewForGoogleDirections" destination="l4Y-9a-8kH" id="Ezc-9q-VHv"/>
                     </connections>
@@ -570,6 +576,7 @@
                     <view key="view" contentMode="scaleToFill" id="r9T-0B-V3t">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <animations/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
                 </viewController>

@@ -39,7 +39,7 @@
         <attribute name="versions" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="descript" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Description" inverseName="descriptInfo" inverseEntity="Description" syncable="YES"/>
     </entity>
-    <entity name="DirectionBus" syncable="YES">
+    <entity name="DirectionBus" representedClassName="DirectionBus" syncable="YES">
         <attribute name="directionString" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Place" inverseName="directionBus" inverseEntity="Place" syncable="YES"/>
     </entity>

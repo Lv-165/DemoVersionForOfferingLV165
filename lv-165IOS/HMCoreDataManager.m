@@ -15,6 +15,7 @@
 #import "Comments.h"
 #import "User.h"
 #import "Waiting.h"
+#import "DirectionBus.h"
 
 @implementation HMCoreDataManager
 
@@ -180,9 +181,14 @@
 
 - (void)saveDirectionToCoreDataWithPlace:(Place *)place directionString:(NSString *)direction {
     
-    Waiting *waiting = [NSEntityDescription insertNewObjectForEntityForName:@"Waiting"
+    DirectionBus *directionBus = [NSEntityDescription insertNewObjectForEntityForName:@"DirectionBus"
                                                      inManagedObjectContext:[self managedObjectContext]];
     
+    directionBus.directionString = direction;
+    
+    place.directionBus = directionBus;
+    
+    [self saveContext];
 }
 
 - (void) deleteAllObjects {
