@@ -32,12 +32,21 @@
 //
 //@property(nonatomic) NSUInteger numberOfPieChartSegments;
 
-- (void)countAnnotationsByRating;
-- (void)groupAnnotationsByRating;
+// - (void)countAnnotationsByRating;
+// - (void)groupAnnotationsByRating;
 
 //@property(nonatomic) UILabel *annotationLabel;
 
 - (id)initWithAnnotation:(id<MKAnnotation>)annotation
        clusteringManager:(FBClusteringManager *)clusteringManager;
+
+- (id)initWithAnnotationAnimated:(FBAnnotationCluster *)annotation
+               clusteringManager:(FBClusteringManager *)clusteringManager;
+
+@property(nonatomic, strong) NSString *key;
+@property(nonatomic, strong) CATextLayer* textLayer;
+
+//@property(nonatomic, strong) NSArray *sliceValues;
+//- (id)initWithSliceValues:(NSArray *)sliceValues;
 
 @end
