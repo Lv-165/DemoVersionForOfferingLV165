@@ -72,9 +72,9 @@ static NSString const *baseURLString = @"http://api.openweathermap.org/data/2.5/
 - (void) getWeatherByCoordinate:(Place*)place
                       onSuccess:(void(^)(NSDictionary* places))success
                       onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
-
-    NSString *weatherCoord = [NSString stringWithFormat:@"%@lat=%.2f&lon=%.2f%@",baseURLString,[place.lon floatValue],[place.lat floatValue],appCode];
-
+    
+    NSString *weatherCoord = [NSString stringWithFormat:@"%@lat=%.3f&lon=%.3f%@",baseURLString,[place.lat floatValue],[place.lon floatValue],appCode];
+    
     [self.requestOperationManager
      GET:weatherCoord
      parameters:nil
@@ -87,5 +87,6 @@ static NSString const *baseURLString = @"http://api.openweathermap.org/data/2.5/
          
      }];
 }
+
 
 @end

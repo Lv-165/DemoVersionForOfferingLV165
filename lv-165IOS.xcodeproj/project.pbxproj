@@ -112,6 +112,7 @@
 		C01442F41C0333A5000F8F6F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C01442F21C0333A5000F8F6F /* LaunchScreen.storyboard */; };
 		C01442FF1C0333A6000F8F6F /* lv_165IOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C01442FE1C0333A6000F8F6F /* lv_165IOSTests.m */; };
 		C014430A1C0333A6000F8F6F /* lv_165IOSUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = C01443091C0333A6000F8F6F /* lv_165IOSUITests.m */; };
+		C05661641C3175EB00074CB5 /* HMWeatherViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C05661631C3175EB00074CB5 /* HMWeatherViewController.m */; };
 		C06A37B01C2C17FC00429F60 /* HMWeatherManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C06A37AF1C2C17FC00429F60 /* HMWeatherManager.m */; };
 		C0729E401C09FBF700ADF283 /* HMCountriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0729E3F1C09FBF700ADF283 /* HMCountriesViewController.m */; };
 		C0729E881C09FD9200ADF283 /* HMCoreDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0729E871C09FD9200ADF283 /* HMCoreDataViewController.m */; };
@@ -365,6 +366,8 @@
 		C01443051C0333A6000F8F6F /* lv-165IOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "lv-165IOSUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C01443091C0333A6000F8F6F /* lv_165IOSUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = lv_165IOSUITests.m; sourceTree = "<group>"; };
 		C014430B1C0333A6000F8F6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C05661621C3175EB00074CB5 /* HMWeatherViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMWeatherViewController.h; sourceTree = "<group>"; };
+		C05661631C3175EB00074CB5 /* HMWeatherViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMWeatherViewController.m; sourceTree = "<group>"; };
 		C06A37AE1C2C17FC00429F60 /* HMWeatherManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMWeatherManager.h; sourceTree = "<group>"; };
 		C06A37AF1C2C17FC00429F60 /* HMWeatherManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMWeatherManager.m; sourceTree = "<group>"; };
 		C0729E3E1C09FBF700ADF283 /* HMCountriesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMCountriesViewController.h; sourceTree = "<group>"; };
@@ -723,6 +726,7 @@
 		308D190E1C19FE17007CC26E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				C05661651C3175F100074CB5 /* WeatherController */,
 				A10B9E511C2AF20200A6B8D4 /* GoogleDirectionsController */,
 				843905881C18E65F00450FA8 /* CommentsController */,
 				308D190C1C19FDBA007CC26E /* SearchController */,
@@ -846,6 +850,15 @@
 				C014430B1C0333A6000F8F6F /* Info.plist */,
 			);
 			path = "lv-165IOSUITests";
+			sourceTree = "<group>";
+		};
+		C05661651C3175F100074CB5 /* WeatherController */ = {
+			isa = PBXGroup;
+			children = (
+				C05661621C3175EB00074CB5 /* HMWeatherViewController.h */,
+				C05661631C3175EB00074CB5 /* HMWeatherViewController.m */,
+			);
+			name = WeatherController;
 			sourceTree = "<group>";
 		};
 		C0E7DA8C1C08B3AA00541E5E /* Models */ = {
@@ -1122,6 +1135,7 @@
 				C0EF51A91C2957AA0098B4F8 /* Description+CoreDataProperties.m in Sources */,
 				139BEC841C3169A200EEC511 /* BranchUserCompletedActionRequest.m in Sources */,
 				7FAD6ED71C283010007E4B92 /* DescriptionInfo.m in Sources */,
+				C05661641C3175EB00074CB5 /* HMWeatherViewController.m in Sources */,
 				139BEC661C3169A200EEC511 /* BNCServerInterface.m in Sources */,
 				C0EF51AF1C29635F0098B4F8 /* Place+CoreDataProperties.m in Sources */,
 				302A11CF1C0371C3002F8FF0 /* AFURLResponseSerialization.m in Sources */,

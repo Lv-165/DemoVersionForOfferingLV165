@@ -189,19 +189,19 @@
                                         <rect key="frame" x="8" y="32" width="584" height="138"/>
                                         <animations/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                        <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                                 <animations/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
-                                    <constraint firstItem="QOQ-YD-1zy" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="32" id="BOx-4A-Q1T"/>
+                                    <constraint firstItem="QOQ-YD-1zy" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" priority="999" constant="32" id="BOx-4A-Q1T"/>
                                     <constraint firstItem="fTh-tc-eeU" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="8" id="EAw-D9-VK5"/>
                                     <constraint firstAttribute="trailing" secondItem="7SA-v6-wd0" secondAttribute="trailing" id="IMH-zh-eXW"/>
                                     <constraint firstAttribute="trailing" secondItem="QOQ-YD-1zy" secondAttribute="trailing" constant="8" id="L5P-f8-rzH"/>
                                     <constraint firstItem="rXC-0X-jfn" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="8" id="LLv-pv-0K1"/>
-                                    <constraint firstItem="QOQ-YD-1zy" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="32" id="Mt9-d5-B4n"/>
+                                    <constraint firstItem="QOQ-YD-1zy" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" priority="998" constant="32" id="Mt9-d5-B4n"/>
                                     <constraint firstAttribute="trailing" secondItem="fTh-tc-eeU" secondAttribute="trailing" constant="8" id="NGG-78-ADY"/>
                                     <constraint firstItem="QOQ-YD-1zy" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="UWU-yb-KeZ"/>
                                     <constraint firstAttribute="trailing" secondItem="fTh-tc-eeU" secondAttribute="trailing" constant="8" id="VbF-TD-h7H"/>
@@ -263,6 +263,7 @@
                         <segue destination="4Ib-ml-FoI" kind="show" identifier="Comments" id="Bf4-ER-3t1"/>
                         <segue destination="Hb2-hh-47C" kind="show" identifier="showFilterViewController" id="SQP-17-Yqa"/>
                         <segue destination="CdG-xf-SgX" kind="show" identifier="showGoogleDirectionsViewController" id="EZe-cK-2Y2"/>
+                        <segue destination="cZe-UE-SUR" kind="show" identifier="weather" id="9eE-kG-3be"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -558,6 +559,32 @@
             </objects>
             <point key="canvasLocation" x="-15" y="-1183"/>
         </scene>
+        <!--Weather View Controller-->
+        <scene sceneID="yGI-Mt-jNi">
+            <objects>
+                <viewController id="cZe-UE-SUR" customClass="HMWeatherViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="r2W-Ez-yXo"/>
+                        <viewControllerLayoutGuide type="bottom" id="IQK-QF-jF0"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="r9T-0B-V3t">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="qEy-3M-GRl">
+                                <rect key="frame" x="0.0" y="64" width="600" height="536"/>
+                                <connections>
+                                    <outlet property="delegate" destination="cZe-UE-SUR" id="hTH-Sg-DZh"/>
+                                </connections>
+                            </scrollView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LGQ-xb-TgI" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="640" y="-1200"/>
+        </scene>
         <!--Filters View Controller-->
         <scene sceneID="1TR-UB-K97">
             <objects>
@@ -683,7 +710,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="222"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Comments language" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gNs-Ua-5lr">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Clustering style" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gNs-Ua-5lr">
                                                     <rect key="frame" x="20" y="-8" width="145" height="96"/>
                                                     <animations/>
                                                     <constraints>
