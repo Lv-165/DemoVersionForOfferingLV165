@@ -44,40 +44,32 @@ static NSInteger sectionForHours;
 #pragma ParseData
 
 - (void)parseWeatherDictionary:(NSDictionary*)weather {
-    //convert date
-    
+
+    _hours = 0;
     self.weatherArray = [self.weatherDict objectForKey:@"list"];
 
     for (NSDictionary *dict in self.weatherArray) {
     
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:[[dict valueForKey:@"dt"]doubleValue]];
-       
-//        NSDate *currentDate = [NSDate date];
-//        NSCalendar *calendar = [NSCalendar currentCalendar];
-//        NSDateComponents *components = [calendar components:NSCalendarUnitDay fromDate:currentDate toDate:date options:0];
+
         BOOL today = [[NSCalendar currentCalendar] isDateInToday:date];
         if (today) {
             _hours = self.hours + 1;
-//            sectionForHours++;
+
         }
     }
-    NSMutableArray *tempArraMinMax;
+    NSMutableArray *tempArraMinMax = [[NSMutableArray alloc]init];
     NSArray *weatherArr = [self.weatherArray subarrayWithRange:NSMakeRange(0, self.hours)];
 
     for (NSDictionary *dict in weatherArr) {
         int temperature = [[[dict  objectForKey:@"main"]objectForKey:@"temp"] integerValue];
-        [tempArraMinMax addObject:[NSNumber numberWithInt:(int)(temperature - kelvinMinus)]];
+        int diff = (int)(temperature - kelvinMinus);
+        [tempArraMinMax addObject:[NSNumber numberWithInt:diff]];
         
     }
-    self.tempHigh = [tempArraMinMax valueForKeyPath:@"@max.intValue"];
-    self.tempLow = [tempArraMinMax valueForKeyPath:@"@min.intValue"];
-    
-//    NSLog(@"%ld",(long)self.hours);
-//    NSInteger tempHightFar = [[[[self.weatherArray firstObject]objectForKey:@"main"]objectForKey:@"temp_max"]integerValue];
-//    self.tempHigh = [NSNumber numberWithInt:(int)(tempHightFar - kelvinMinus)];
-//    
-//    NSInteger tempLowFar =[[[[self.weatherArray firstObject] objectForKey:@"main"]objectForKey:@"temp_min"]integerValue];
-//    self.tempLow = [NSNumber numberWithInt:(int)(tempLowFar - kelvinMinus)];
+ 
+    self.tempHigh = [tempArraMinMax valueForKeyPath:@"@max.integerValue"];
+    self.tempLow = [tempArraMinMax valueForKeyPath:@"@min.integerValue"];
     
     NSInteger temperature = [[[[self.weatherArray firstObject] objectForKey:@"main"]objectForKey:@"temp"] integerValue];
     int diff = (temperature - kelvinMinus);
@@ -86,8 +78,6 @@ static NSInteger sectionForHours;
     self.locationName = [NSString stringWithFormat:@"Humidity: %@%%",[[[self.weatherArray firstObject]objectForKey:@"main"]objectForKey:@"humidity"]];
     
     self.icon = [[[[self.weatherArray firstObject] objectForKey:@"weather"]firstObject] objectForKey:@"icon"];
-    
-//    self.condition = [NSString stringWithFormat:@"%@",[self.weatherDict objectForKey:@"description"]];
     self.condition = [[[[self.weatherArray firstObject] objectForKey:@"weather"]firstObject] objectForKey:@"description"];
 
 }
@@ -95,7 +85,7 @@ static NSInteger sectionForHours;
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self parseWeatherDictionary:self.weatherDict];
-
+    [[self navigationController] setNavigationBarHidden:NO animated:YES];
     
     sectionForHours = 0;
     self.screenHeight = [UIScreen mainScreen].bounds.size.height;
@@ -109,7 +99,6 @@ static NSInteger sectionForHours;
     self.myScrollView.pagingEnabled = YES;
     [self.myScrollView addSubview:self.backgroundImageView];
     self.myScrollView.contentSize = self.backgroundImageView.bounds.size;
-//    self.myScrollView.contentSize = CGSizeMake(scrollViewRect.size.width,scrollViewRect.size.height *3.0f);
     self.myScrollView.delegate = self;
     [self.view addSubview:self.myScrollView];
     
@@ -173,16 +162,17 @@ static NSInteger sectionForHours;
     UILabel *hiloLabel = [[UILabel alloc] initWithFrame:hiloFrame];
     hiloLabel.backgroundColor = [UIColor clearColor];
     hiloLabel.textColor = [UIColor whiteColor];
-    hiloLabel.text = [NSString stringWithFormat:@"max%@° /min%@°",[self.tempHigh stringValue],[self.tempLow stringValue]];
+    
+    hiloLabel.text = [NSString stringWithFormat:@"max %@° /min %@°",[self.tempHigh stringValue],[self.tempLow stringValue]];
     hiloLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:28];
     [header addSubview:hiloLabel];
     
     // top
-    UILabel *cityLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width/2, 40)];
+    UILabel *cityLabel = [[UILabel alloc] initWithFrame:CGRectMake(0,self.view.bounds.size.height/3, self.view.bounds.size.width/2, 40)];
     cityLabel.backgroundColor = [UIColor clearColor];
     cityLabel.textColor = [UIColor whiteColor];
     cityLabel.text = self.locationName;
-    cityLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:18];
+    cityLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:26];
     cityLabel.textAlignment = NSTextAlignmentCenter;
     [header addSubview:cityLabel];
     
@@ -255,9 +245,10 @@ static NSInteger sectionForHours;
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     
     if (section == 0) {
-        return self.hours;
+        return self.hours+1;
     }
-    return 5;
+    NSInteger i = (NSInteger)((self.weatherArray.count - self.hours)/8);
+    return i;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -277,11 +268,11 @@ static NSInteger sectionForHours;
     if (indexPath.section == 0) {
     
         if (indexPath.row == 0) {
-            [self configureHeaderCell:cell title:@"Hourly Forecast"];
+            [self configureHeaderCell:cell title:@"Today Forecast"];
         } else {
             
-            NSArray *weatherArr = [self.weatherArray subarrayWithRange:NSMakeRange(0, self.hours)];
-            
+            NSArray *weatherArr = [self.weatherArray subarrayWithRange:NSMakeRange(0, self.hours+1)];
+
             [self configureHourlyCell:cell weather:[weatherArr objectAtIndex:indexPath.row]];
             
         }
@@ -291,10 +282,29 @@ static NSInteger sectionForHours;
         if (indexPath.row == 0) {
             [self configureHeaderCell:cell title:@"Daily Forecast"];
         } else {
-
-            NSArray *weatherDays = [self.weatherArray subarrayWithRange:NSMakeRange(self.hours,self.weatherArray.count - self.hours)];
             
-             [self configureDailyCell:cell weather:[weatherDays objectAtIndex:indexPath.row]];
+            NSMutableArray *tempArraMinMax = [[NSMutableArray alloc]init];
+            NSMutableArray *weatherDays =[[NSMutableArray alloc]init];
+
+            if(indexPath.row == 1) {
+                
+            weatherDays = [[self.weatherArray subarrayWithRange:NSMakeRange(0,self.hours)]mutableCopy];
+            } else {
+                
+            weatherDays = [[self.weatherArray subarrayWithRange:NSMakeRange((self.hours + 8*(indexPath.row-1)),8)]mutableCopy];
+            }
+            
+            for (NSDictionary *dict in weatherDays) {
+                int temperature = [[[dict  objectForKey:@"main"]objectForKey:@"temp"] integerValue];
+                int diff = (int)(temperature - kelvinMinus);
+                [tempArraMinMax addObject:[NSNumber numberWithInt:diff]];
+            }
+            
+            NSNumber *max = [tempArraMinMax valueForKeyPath:@"@max.integerValue"];
+            NSNumber *min = [tempArraMinMax valueForKeyPath:@"@min.integerValue"];
+            NSMutableArray *tempArr = [[NSMutableArray alloc]initWithObjects:max,min, nil];
+            
+             [self configureDailyCell:cell weather:[weatherDays firstObject] temperature:tempArr];
             }
     }
     return cell;
@@ -318,10 +328,7 @@ static NSInteger sectionForHours;
     [dateFormatter setDateFormat:@"HH:mm"];
     NSDate *date = [NSDate dateWithTimeIntervalSince1970:[[weather valueForKey:@"dt"]doubleValue]];
     NSString *time = [dateFormatter stringFromDate:date];
-    NSLog(@"%@",time);
-    
     NSInteger temp = [[[weather objectForKey:@"main"]objectForKey:@"temp"]integerValue]-kelvinMinus;
-//    [self.tempArrMinMax addObject:temp];  //  calc min max???
 
     if (temp >0){
         cell.textLabel.text = [NSString stringWithFormat:@"Time:%@ T: +%ld°",time,temp];
@@ -334,14 +341,22 @@ static NSInteger sectionForHours;
     cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
 }
 
-- (void)configureDailyCell:(UITableViewCell *)cell weather:(NSDictionary *)weather {
+- (void)configureDailyCell:(UITableViewCell *)cell weather:(NSDictionary *)weather  temperature:(NSArray*)temperatuteArr {
+    
     cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
     cell.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
-//    cell.textLabel.text = [self.dailyFormatter stringFromDate:weather.date];
-//    cell.detailTextLabel.text = [NSString stringWithFormat:@"%.0f° / %.0f°",
-//                                 weather.tempHigh.floatValue,
-//                                 weather.tempLow.floatValue];
-    cell.imageView.image = [[[weather objectForKey:@"weather"]firstObject] objectForKey:@"icon"];
+    
+  
+    cell.textLabel.text = [NSString stringWithFormat:@"Max:%@°/ Min:%@°",[temperatuteArr objectAtIndex:0],[temperatuteArr objectAtIndex:1]];
+    
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterShortStyle];
+    [dateFormatter setDateFormat:@"EEEE"];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:[[weather valueForKey:@"dt"]doubleValue]];
+    NSString *dayInfo = [dateFormatter stringFromDate:date];
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",dayInfo],
+
+    cell.imageView.image = [UIImage imageNamed:[self setImage:[[[weather objectForKey:@"weather"]firstObject] objectForKey:@"icon"]]];
     cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
 }
 
@@ -356,12 +371,11 @@ static NSInteger sectionForHours;
 #pragma mark - UIScrollViewDelegate
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    // 1
+   
     CGFloat height = scrollView.bounds.size.height;
     CGFloat position = MAX(scrollView.contentOffset.y, 0.0);
-    // 2
     CGFloat percent = MIN(position / height, 1.0);
-    // 3
+
     self.blurredImageView.alpha = percent;
 }
 

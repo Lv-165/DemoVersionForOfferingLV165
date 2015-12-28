@@ -126,7 +126,8 @@ static bool isMainRoute;
                                      [self createColorButton:@"road30_30" selector:@selector(showRoudFromThisPlaceToMyLocation:)],
                                      flexibleItem,
                                      [self createColorButton:@"direction_compass" selector:@selector(showDirectionToThisAnnotation:)],
-                                      [self createColorButton:@"weather" selector:@selector(weatherShow:)]
+                                     flexibleItem,
+                                    [self createColorButton:@"weather" selector:@selector(weatherShow:)]
                                      ];
     
     [self.downToolBar setItems:buttonsForDownToolBar animated:YES];
