@@ -588,7 +588,7 @@ static bool isRoad;
 
         for (id objectInSteps in steps) {
             
-          if ([objectInSteps objectForKey:@"html_instructions"]) {
+            if ([objectInSteps objectForKey:@"html_instructions"] && ![[[objectInSteps objectForKey:@"html_instructions"] description] isEqualToString:@""]) {
 
             self.stringForGoogleDirectionsInstructions = [NSString
                 stringWithFormat:@"%@%@\n",
@@ -604,7 +604,7 @@ static bool isRoad;
 
             NSDictionary *inLines = [inTransitDetails objectForKey:@"line"];
 
-            if ([inLines objectForKey:@"url"]) {
+            if ([inLines objectForKey:@"url"] && ![[[inLines objectForKey:@"url"] description] isEqualToString:@""]) {
 
               self.stringForGoogleDirectionsInstructions = [NSString
                   stringWithFormat:@"%@%@\n",
