@@ -17,7 +17,7 @@
 #import "AFNetworking.h"
 
 static NSString const *appCode = @"&appid=7ac6f2fd306b7f23df52b396c5d83ba5";
-static NSString const *baseURLString = @"http://api.openweathermap.org/data/2.5/weather?";
+static NSString const *baseURLString = @"http://api.openweathermap.org/data/2.5/forecast?";
 
 
 @interface HMWeatherManager ()
@@ -63,7 +63,7 @@ static NSString const *baseURLString = @"http://api.openweathermap.org/data/2.5/
             
         };
         
-        NSURL* url = [NSURL URLWithString:@"http://api.openweathermap.org/data/2.5/weather?"];
+        NSURL* url = [NSURL URLWithString:@"http://api.openweathermap.org/data/2.5/forecast?"];
         self.requestOperationManager = [[AFHTTPRequestOperationManager alloc] initWithBaseURL:url];
     }
     return self;
@@ -73,7 +73,7 @@ static NSString const *baseURLString = @"http://api.openweathermap.org/data/2.5/
                       onSuccess:(void(^)(NSDictionary* places))success
                       onFailure:(void(^)(NSError* error, NSInteger statusCode)) failure {
 
-    NSString *weatherCoord = [NSString stringWithFormat:@"%@lat=%.2f&lon=%.2f%@",baseURLString,[place.lon floatValue],[place.lat floatValue],appCode];
+    NSString *weatherCoord = [NSString stringWithFormat:@"%@lat=%.3f&lon=%.3f%@",baseURLString,[place.lat floatValue],[place.lon floatValue],appCode];
 
     [self.requestOperationManager
      GET:weatherCoord

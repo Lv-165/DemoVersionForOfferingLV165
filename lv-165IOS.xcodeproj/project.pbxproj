@@ -85,7 +85,6 @@
 		CE4CC48A1C14EB6F002C4358 /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = CE4CC4891C14EB6F002C4358 /* Reachability.m */; };
 		CE9694811C2EFA5D00807DC1 /* UIImage+ImageEffects.m in Sources */ = {isa = PBXBuildFile; fileRef = CE96947E1C2EFA5D00807DC1 /* UIImage+ImageEffects.m */; settings = {ASSET_TAGS = (); }; };
 		CE9694821C2EFA5D00807DC1 /* UIImageView+LBBlurredImage.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9694801C2EFA5D00807DC1 /* UIImageView+LBBlurredImage.m */; settings = {ASSET_TAGS = (); }; };
-		CE9694851C2F131300807DC1 /* HMWeatherModel.m in Sources */ = {isa = PBXBuildFile; fileRef = CE9694841C2F131300807DC1 /* HMWeatherModel.m */; settings = {ASSET_TAGS = (); }; };
 		CEAE30391C2EF3E60056EA07 /* HMWeatherViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = CEAE30381C2EF3E60056EA07 /* HMWeatherViewController.m */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
@@ -270,8 +269,6 @@
 		CE96947E1C2EFA5D00807DC1 /* UIImage+ImageEffects.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImage+ImageEffects.m"; sourceTree = "<group>"; };
 		CE96947F1C2EFA5D00807DC1 /* UIImageView+LBBlurredImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIImageView+LBBlurredImage.h"; sourceTree = "<group>"; };
 		CE9694801C2EFA5D00807DC1 /* UIImageView+LBBlurredImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+LBBlurredImage.m"; sourceTree = "<group>"; };
-		CE9694831C2F131300807DC1 /* HMWeatherModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMWeatherModel.h; sourceTree = "<group>"; };
-		CE9694841C2F131300807DC1 /* HMWeatherModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMWeatherModel.m; sourceTree = "<group>"; };
 		CEAE30371C2EF3E60056EA07 /* HMWeatherViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMWeatherViewController.h; sourceTree = "<group>"; };
 		CEAE30381C2EF3E60056EA07 /* HMWeatherViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMWeatherViewController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -702,8 +699,6 @@
 			children = (
 				CEAE30371C2EF3E60056EA07 /* HMWeatherViewController.h */,
 				CEAE30381C2EF3E60056EA07 /* HMWeatherViewController.m */,
-				CE9694831C2F131300807DC1 /* HMWeatherModel.h */,
-				CE9694841C2F131300807DC1 /* HMWeatherModel.m */,
 			);
 			name = WeatherController;
 			sourceTree = "<group>";
@@ -855,7 +850,6 @@
 				302A11D61C0371C3002F8FF0 /* UIProgressView+AFNetworking.m in Sources */,
 				843905871C18E3DC00450FA8 /* HMCommentsTableViewController.m in Sources */,
 				7FAD6ED41C283010007E4B92 /* Country+CoreDataProperties.m in Sources */,
-				CE9694851C2F131300807DC1 /* HMWeatherModel.m in Sources */,
 				7FAD6ECD1C283010007E4B92 /* User.m in Sources */,
 				A10B9E541C2AF26700A6B8D4 /* HMGoogleDirectionsViewController.m in Sources */,
 				7FAD6EDB1C283010007E4B92 /* Waiting.m in Sources */,
@@ -1074,6 +1068,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/lv-165IOS",
 				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				INFOPLIST_FILE = "lv-165IOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -1093,6 +1088,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/lv-165IOS",
 				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = NO;
 				INFOPLIST_FILE = "lv-165IOS/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -936,7 +936,7 @@ static bool isMainRoute;
     [[HMWeatherManager sharedManager] getWeatherByCoordinate:place onSuccess:^(NSDictionary *weather) {
        
     self.weatherDict = weather;
-        NSLog(@"weatherDict %@",self.weatherDict);
+//        NSLog(@"weatherDict %@",self.weatherDict);
     } onFailure:^(NSError *error, NSInteger statusCode) {
     
     NSLog(@"%@%ld",error,(long)statusCode);

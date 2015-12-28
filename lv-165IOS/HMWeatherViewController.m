@@ -15,79 +15,103 @@
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, assign) CGFloat screenHeight;
 
-
-
 @property (nonatomic, strong) NSDate *date;
 @property (nonatomic, strong) NSNumber *humidity;
 @property (nonatomic, strong) NSNumber *temperature;
 @property (nonatomic, strong) NSNumber *tempHigh;
 @property (nonatomic, strong) NSNumber *tempLow;
-@property (nonatomic, strong) NSString *locationName;
-//@property (nonatomic, strong) NSDate *sunrise;
-//@property (nonatomic, strong) NSDate *sunset;
-//@property (nonatomic, strong) NSString *conditionDescription;
-//@property (nonatomic, strong) NSString *condition;
-//@property (nonatomic, strong) NSNumber *windBearing;
-//@property (nonatomic, strong) NSNumber *windSpeed;
+@property (nonatomic, strong) NSString *locationName;//humidity rename
+@property (nonatomic, strong) NSString *condition;
 @property (nonatomic, strong) NSString *icon;
 
+@property (nonatomic, strong) UIScrollView *myScrollView;
 
-
-
-// 3
-- (NSString *)imageName;
+@property (nonatomic, strong) NSMutableArray *weatherArray;
+@property (nonatomic ,assign) NSInteger hours;
+@property (nonatomic, copy) NSMutableArray *tempArrMinMax;
 
 
 @end
-static double kelvinMinus = 273.15;
-IBOutlet UILabel *temperatureLabel;
+
+
+static NSInteger kelvinMinus = 273;
+static NSInteger sectionForHours;
+
 
 @implementation HMWeatherViewController
-
 
 
 #pragma ParseData
 
 - (void)parseWeatherDictionary:(NSDictionary*)weather {
     //convert date
-    self.date = [NSDate dateWithTimeIntervalSince1970:[[self.weatherDict valueForKey:@"dt"]doubleValue]];
-    self.humidity = [[self.weatherDict objectForKey:@"main"]objectForKey:@"humidity"];
     
-    double tempHightFar =[[[self.weatherDict objectForKey:@"main"]valueForKey:@"temp_max"]doubleValue];
-    self.tempHigh = [NSNumber numberWithDouble:(tempHightFar - kelvinMinus)];
-    
-    double tempLowFar =[[[self.weatherDict objectForKey:@"main"]valueForKey:@"temp_min"]doubleValue];
-    self.tempLow = [NSNumber numberWithDouble:(tempLowFar - kelvinMinus)];
-    
-    double temperature = [[[self.weatherDict objectForKey:@"main"]objectForKey:@"temp"] doubleValue];
-    self.temperature = [NSNumber numberWithDouble:(temperature - kelvinMinus)];
+    self.weatherArray = [self.weatherDict objectForKey:@"list"];
 
-    self.locationName = [NSString stringWithFormat:@"%@",[self.weatherDict objectForKey:@"name"]];
-    self.icon = [[[self.weatherDict objectForKey:@"weather"]firstObject] objectForKey:@"icon"];
+    for (NSDictionary *dict in self.weatherArray) {
+    
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:[[dict valueForKey:@"dt"]doubleValue]];
+       
+//        NSDate *currentDate = [NSDate date];
+//        NSCalendar *calendar = [NSCalendar currentCalendar];
+//        NSDateComponents *components = [calendar components:NSCalendarUnitDay fromDate:currentDate toDate:date options:0];
+        BOOL today = [[NSCalendar currentCalendar] isDateInToday:date];
+        if (today) {
+            _hours = self.hours + 1;
+//            sectionForHours++;
+        }
+    }
+    NSMutableArray *tempArraMinMax;
+    NSArray *weatherArr = [self.weatherArray subarrayWithRange:NSMakeRange(0, self.hours)];
+
+    for (NSDictionary *dict in weatherArr) {
+        int temperature = [[[dict  objectForKey:@"main"]objectForKey:@"temp"] integerValue];
+        [tempArraMinMax addObject:[NSNumber numberWithInt:(int)(temperature - kelvinMinus)]];
+        
+    }
+    self.tempHigh = [tempArraMinMax valueForKeyPath:@"@max.intValue"];
+    self.tempLow = [tempArraMinMax valueForKeyPath:@"@min.intValue"];
+    
+//    NSLog(@"%ld",(long)self.hours);
+//    NSInteger tempHightFar = [[[[self.weatherArray firstObject]objectForKey:@"main"]objectForKey:@"temp_max"]integerValue];
+//    self.tempHigh = [NSNumber numberWithInt:(int)(tempHightFar - kelvinMinus)];
+//    
+//    NSInteger tempLowFar =[[[[self.weatherArray firstObject] objectForKey:@"main"]objectForKey:@"temp_min"]integerValue];
+//    self.tempLow = [NSNumber numberWithInt:(int)(tempLowFar - kelvinMinus)];
+    
+    NSInteger temperature = [[[[self.weatherArray firstObject] objectForKey:@"main"]objectForKey:@"temp"] integerValue];
+    int diff = (temperature - kelvinMinus);
+    self.temperature = [NSNumber numberWithInt:diff];
+
+    self.locationName = [NSString stringWithFormat:@"Humidity: %@%%",[[[self.weatherArray firstObject]objectForKey:@"main"]objectForKey:@"humidity"]];
+    
+    self.icon = [[[[self.weatherArray firstObject] objectForKey:@"weather"]firstObject] objectForKey:@"icon"];
+    
+//    self.condition = [NSString stringWithFormat:@"%@",[self.weatherDict objectForKey:@"description"]];
+    self.condition = [[[[self.weatherArray firstObject] objectForKey:@"weather"]firstObject] objectForKey:@"description"];
 
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     [self parseWeatherDictionary:self.weatherDict];
+
     
-    // 1
+    sectionForHours = 0;
     self.screenHeight = [UIScreen mainScreen].bounds.size.height;
-    NSLog(@"%f",self.screenHeight);
-    
-    UIImage *background = [UIImage imageNamed:@"bg"];
-    
-    // 2
+
+  //work good
+    UIImage *background = [UIImage imageNamed:@"bg2"];
     self.backgroundImageView = [[UIImageView alloc] initWithImage:background];
-    self.backgroundImageView.contentMode = UIViewContentModeScaleToFill;
-    [self.view addSubview:self.backgroundImageView];
     
-    // 3
-    self.blurredImageView = [[UIImageView alloc] init];
-    self.blurredImageView.contentMode = UIViewContentModeScaleAspectFill;
-    self.blurredImageView.alpha = 0;
-    [self.blurredImageView setImageToBlur:background blurRadius:10 completionBlock:nil];
-    [self.view addSubview:self.blurredImageView];
+    CGRect scrollViewRect = self.view.bounds;
+    self.myScrollView = [[UIScrollView alloc] initWithFrame:scrollViewRect];
+    self.myScrollView.pagingEnabled = YES;
+    [self.myScrollView addSubview:self.backgroundImageView];
+    self.myScrollView.contentSize = self.backgroundImageView.bounds.size;
+//    self.myScrollView.contentSize = CGSizeMake(scrollViewRect.size.width,scrollViewRect.size.height *3.0f);
+    self.myScrollView.delegate = self;
+    [self.view addSubview:self.myScrollView];
     
     // 4 не видны черточки
     self.tableView = [[UITableView alloc] init];
@@ -95,26 +119,24 @@ IBOutlet UILabel *temperatureLabel;
     self.tableView.delegate = self;
     self.tableView.dataSource = self;
     self.tableView.separatorColor = [UIColor colorWithWhite:1 alpha:0.2];
-//    self.tableView.separatorEffect = [UIVibrancyEffect blurEffect];
     self.tableView.pagingEnabled = YES;
     [self.view addSubview:self.tableView];
-    
-    // 1
+
     CGRect headerFrame = [UIScreen mainScreen].bounds;
-    // 2
+    
     CGFloat inset = 20;
-    // 3
+    
     CGFloat temperatureHeight = 110;
     CGFloat hiloHeight = 40;
     CGFloat iconHeight = 30;
-    // 4
+  
     CGRect hiloFrame = CGRectMake(inset,
-                                  headerFrame.size.height - hiloHeight,
+                                  headerFrame.size.height - (2 * hiloHeight),
                                   headerFrame.size.width - (2 * inset),
                                   hiloHeight);
     
     CGRect temperatureFrame = CGRectMake(inset,
-                                         headerFrame.size.height - (temperatureHeight + hiloHeight),
+                                         headerFrame.size.height - (temperatureHeight + (2 *hiloHeight)),
                                          headerFrame.size.width - (2 * inset),
                                          temperatureHeight);
     
@@ -122,45 +144,45 @@ IBOutlet UILabel *temperatureLabel;
                                   temperatureFrame.origin.y - iconHeight,
                                   iconHeight,
                                   iconHeight);
-    // 5
+    
     CGRect conditionsFrame = iconFrame;
     conditionsFrame.size.width = self.view.bounds.size.width - (((2 * inset) + iconHeight) + 10);
     conditionsFrame.origin.x = iconFrame.origin.x + (iconHeight + 10);
    
-    // 1
+   
     UIView *header = [[UIView alloc] initWithFrame:headerFrame];
     header.backgroundColor = [UIColor clearColor];
     self.tableView.tableHeaderView = header;
     
-    // 2
-    // bottom left fix size
+  
     UILabel *temperatureLabel = [[UILabel alloc] initWithFrame:temperatureFrame];
     temperatureLabel.backgroundColor = [UIColor clearColor];
     temperatureLabel.textColor = [UIColor whiteColor];
+    
     if (self.temperature >0) {
-       temperatureLabel.text = [NSString stringWithFormat:@"+%@%@",self.temperature ,@"0°"];
+       temperatureLabel.text = [NSString stringWithFormat:@"+%@%@",self.temperature ,@"°"];
     } else {
-        temperatureLabel.text = [NSString stringWithFormat:@"%@%@",self.temperature ,@"0°"];
+        temperatureLabel.text = [NSString stringWithFormat:@"%@%@",self.temperature ,@"°"];
     }
     
-    temperatureLabel.font = [UIFont fontWithName:@"HelveticaNeue-UltraLight" size:80];
-     [temperatureLabel sizeToFit];
+    temperatureLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:80];
+    [temperatureLabel sizeToFit];
     [header addSubview:temperatureLabel];
     
     // bottom left
     UILabel *hiloLabel = [[UILabel alloc] initWithFrame:hiloFrame];
     hiloLabel.backgroundColor = [UIColor clearColor];
     hiloLabel.textColor = [UIColor whiteColor];
-    hiloLabel.text = @"0° / 0°";
-    hiloLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:28];
+    hiloLabel.text = [NSString stringWithFormat:@"max%@° /min%@°",[self.tempHigh stringValue],[self.tempLow stringValue]];
+    hiloLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:28];
     [header addSubview:hiloLabel];
     
     // top
-    UILabel *cityLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width, 40)];
+    UILabel *cityLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 20, self.view.bounds.size.width/2, 40)];
     cityLabel.backgroundColor = [UIColor clearColor];
     cityLabel.textColor = [UIColor whiteColor];
     cityLabel.text = self.locationName;
-    cityLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+    cityLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:18];
     cityLabel.textAlignment = NSTextAlignmentCenter;
     [header addSubview:cityLabel];
     
@@ -168,9 +190,9 @@ IBOutlet UILabel *temperatureLabel;
     conditionsLabel.backgroundColor = [UIColor clearColor];
     conditionsLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
     conditionsLabel.textColor = [UIColor whiteColor];
+    conditionsLabel.text = self.condition;
     [header addSubview:conditionsLabel];
-    
-    // 3
+
     // bottom left
     UIImageView *iconView = [[UIImageView alloc] initWithFrame:iconFrame];
     iconView.contentMode = UIViewContentModeScaleAspectFit;
@@ -178,6 +200,7 @@ IBOutlet UILabel *temperatureLabel;
     iconView.image = [UIImage imageNamed:[self setImage:self.icon]];
     [header addSubview:iconView];
 }
+
 -(NSString*)setImage:(NSString*)code {
     
     NSDictionary *iconCodes = @{
@@ -204,8 +227,6 @@ IBOutlet UILabel *temperatureLabel;
 
 }
 
-
-
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
@@ -219,95 +240,129 @@ IBOutlet UILabel *temperatureLabel;
     CGRect bounds = self.view.bounds;
     
     self.backgroundImageView.frame = bounds;
-    self.blurredImageView.frame = bounds;
+//    self.blurredImageView.frame = bounds;
     self.tableView.frame = bounds;
 }
 
-
-// 1
 #pragma mark - UITableViewDataSource
 
-// 2
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    
     return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // TODO: Return count of forecast
-    return 0;
+    
+    if (section == 0) {
+        return self.hours;
+    }
+    return 5;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+   
     static NSString *CellIdentifier = @"CellIdentifier";
     UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
     
     if (!cell) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleValue1 reuseIdentifier:CellIdentifier];
     }
-    
-    // 3
-    cell.selectionStyle = UITableViewCellSelectionStyleNone;//change???
-    cell.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];// no changes
+
+    cell.selectionStyle = UITableViewCellSelectionStyleNone;
+    cell.backgroundColor = [UIColor colorWithWhite:0 alpha:0.2];
     cell.textLabel.textColor = [UIColor whiteColor];
     cell.detailTextLabel.textColor = [UIColor whiteColor];
     
-    // TODO: Setup the cell
+    if (indexPath.section == 0) {
     
+        if (indexPath.row == 0) {
+            [self configureHeaderCell:cell title:@"Hourly Forecast"];
+        } else {
+            
+            NSArray *weatherArr = [self.weatherArray subarrayWithRange:NSMakeRange(0, self.hours)];
+            
+            [self configureHourlyCell:cell weather:[weatherArr objectAtIndex:indexPath.row]];
+            
+        }
+    }
+    else if (indexPath.section == 1) {
+      
+        if (indexPath.row == 0) {
+            [self configureHeaderCell:cell title:@"Daily Forecast"];
+        } else {
+
+            NSArray *weatherDays = [self.weatherArray subarrayWithRange:NSMakeRange(self.hours,self.weatherArray.count - self.hours)];
+            
+             [self configureDailyCell:cell weather:[weatherDays objectAtIndex:indexPath.row]];
+            }
+    }
     return cell;
+}
+
+- (void)configureHeaderCell:(UITableViewCell *)cell title:(NSString *)title {
+    cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+    cell.textLabel.text = title;
+    cell.detailTextLabel.text = @"";
+    cell.imageView.image = nil;
+}
+
+
+- (void)configureHourlyCell:(UITableViewCell *)cell weather:(NSDictionary*)weather {
+    
+    cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+    cell.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+    
+    NSDateFormatter* dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateStyle:NSDateFormatterShortStyle];
+    [dateFormatter setDateFormat:@"HH:mm"];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970:[[weather valueForKey:@"dt"]doubleValue]];
+    NSString *time = [dateFormatter stringFromDate:date];
+    NSLog(@"%@",time);
+    
+    NSInteger temp = [[[weather objectForKey:@"main"]objectForKey:@"temp"]integerValue]-kelvinMinus;
+//    [self.tempArrMinMax addObject:temp];  //  calc min max???
+
+    if (temp >0){
+        cell.textLabel.text = [NSString stringWithFormat:@"Time:%@ T: +%ld°",time,temp];
+    } else {
+        cell.textLabel.text = [NSString stringWithFormat:@"Time:%@ T: %ld°",time,temp];
+    }
+    
+    cell.detailTextLabel.text = [NSString stringWithFormat:@"%@",[[[weather objectForKey:@"weather"]firstObject] objectForKey:@"description"]];
+    cell.imageView.image = [UIImage imageNamed:[self setImage:[[[weather objectForKey:@"weather"]firstObject] objectForKey:@"icon"]]];
+    cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
+}
+
+- (void)configureDailyCell:(UITableViewCell *)cell weather:(NSDictionary *)weather {
+    cell.textLabel.font = [UIFont fontWithName:@"HelveticaNeue-Light" size:18];
+    cell.detailTextLabel.font = [UIFont fontWithName:@"HelveticaNeue-Medium" size:18];
+//    cell.textLabel.text = [self.dailyFormatter stringFromDate:weather.date];
+//    cell.detailTextLabel.text = [NSString stringWithFormat:@"%.0f° / %.0f°",
+//                                 weather.tempHigh.floatValue,
+//                                 weather.tempLow.floatValue];
+    cell.imageView.image = [[[weather objectForKey:@"weather"]firstObject] objectForKey:@"icon"];
+    cell.imageView.contentMode = UIViewContentModeScaleAspectFit;
 }
 
 #pragma mark - UITableViewDelegate
 
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
-    // TODO: Determine cell height based on screen
-    return 44;
-}
+    
+    NSInteger cellCount = [self tableView:tableView numberOfRowsInSection:indexPath.section];
+    return self.screenHeight / (CGFloat)cellCount;
 
-+ (NSDictionary *)imageMap {
+}
+#pragma mark - UIScrollViewDelegate
+
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
     // 1
-    static NSDictionary *_imageMap = nil;
-    if (!_imageMap) {
-        // 2
-        _imageMap = @{
-                      @"01d" : @"weather-clear",
-                      @"02d" : @"weather-few",
-                      @"03d" : @"weather-few",
-                      @"04d" : @"weather-broken",
-                      @"09d" : @"weather-shower",
-                      @"10d" : @"weather-rain",
-                      @"11d" : @"weather-tstorm",
-                      @"13d" : @"weather-snow",
-                      @"50d" : @"weather-mist",
-                      @"01n" : @"weather-moon",
-                      @"02n" : @"weather-few-night",
-                      @"03n" : @"weather-few-night",
-                      @"04n" : @"weather-broken",
-                      @"09n" : @"weather-shower",
-                      @"10n" : @"weather-rain-night",
-                      @"11n" : @"weather-tstorm",
-                      @"13n" : @"weather-snow",
-                      @"50n" : @"weather-mist",
-                      };
-    }
-    return _imageMap;
+    CGFloat height = scrollView.bounds.size.height;
+    CGFloat position = MAX(scrollView.contentOffset.y, 0.0);
+    // 2
+    CGFloat percent = MIN(position / height, 1.0);
+    // 3
+    self.blurredImageView.alpha = percent;
 }
-//+ (NSDictionary *)JSONKeyPathsByPropertyKey {
-//    return @{
-//             @"date": @"dt",
-//             @"locationName": @"name",
-//             @"humidity": @"main.humidity",
-//             @"temperature": @"main.temp",
-//             @"tempHigh": @"main.temp_max",
-//             @"tempLow": @"main.temp_min",
-//             @"sunrise": @"sys.sunrise",
-//             @"sunset": @"sys.sunset",
-//             @"conditionDescription": @"weather.description",
-//             @"condition": @"weather.main",
-//             @"icon": @"weather.icon",
-//             @"windBearing": @"wind.deg",
-//             @"windSpeed": @"wind.speed"
-//             };
-//}
-
 
 @end
