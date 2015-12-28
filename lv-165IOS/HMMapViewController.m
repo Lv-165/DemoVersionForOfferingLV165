@@ -133,7 +133,10 @@ static bool isRoad;
                    selector:@selector(showRoudFromThisPlaceToMyLocation:)],
     flexibleItem,
     [self createColorButton:@"direction_compass"
-                   selector:@selector(showDirectionToThisAnnotation:)]
+                   selector:@selector(showDirectionToThisAnnotation:)],
+    flexibleItem,
+    [self createColorButton:@"weather"
+                   selector:@selector(weatherShow:)]
   ];
 
   [self.downToolBar setItems:buttonsForDownToolBar animated:YES];
@@ -614,6 +617,19 @@ static bool isRoad;
 
     destViewController.textForLabel =
         self.stringForGoogleDirectionsInstructions;
+  }else if ([[segue identifier] isEqualToString:@"weather"]) {
+      
+      if (!self.weatherDict) {
+          
+          [self showAlertWithTitle:@"Oops! No Internet"
+                        andMessage:@"Check your connection"
+                    andActionTitle:@"OK"];
+          
+      } else {
+          NSDictionary *weather = self.weatherDict;
+          HMWeatherViewController *weatherViewController = segue.destinationViewController;
+          weatherViewController.weatherDict = weather;
+      }
   }
 }
 
