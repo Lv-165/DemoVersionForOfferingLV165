@@ -25,7 +25,14 @@
 #import "Waiting.h"
 #import "Branch/BranchUniversalObject.h"
 #import "Branch/BranchLinkProperties.h"
-#import "FBAnnotationClustering/FBAnnotationClustering.h"
+#import "AFHTTPRequestOperation.h"
+#import "AFNetworking/AFHTTPSessionManager.h"
+#import "HMGoogleDirectionsViewController.h"
+#import "FBClusteringManager.h"
+#import "FBAnnotationCluster.h"
+#import "FBAnnotationClustering.h"
+#import "HMWeatherManager.h"
+#import "UILabel+HMdynamicSizeMe.h"
 
 @interface HMMapViewController ()
 
@@ -48,11 +55,16 @@
 @property(weak, nonatomic) MKAnnotationView *annotationView;
 @property(strong, nonatomic) FBClusteringManager *clusteringManager;
 @property(strong, nonatomic) NSMutableArray *clusteredAnnotations;
+@property (strong, nonatomic) NSDictionary *weatherDict;
+
+@property (strong, nonatomic) NSString *stringForGoogleDirectionsInstructions;
 
 @end
 
 static NSString *kSettingsComments = @"comments";
 static NSString *kSettingsRating = @"rating";
+
+static NSString* BaseURLForGoogleMDAPI = @"https://maps.googleapis.com/maps/api/directions/";
 
 @implementation HMMapViewController
 
@@ -70,89 +82,81 @@ static bool isMainRoute;
 
 - (void)viewDidLoad {
   [super viewDidLoad];
-  // Do any additional setup after loading the view, typically from a nib.
-
-  self.locationManager = [[CLLocationManager alloc] init];
-
-  [[NSNotificationCenter defaultCenter] addObserver:self
-                                           selector:@selector(showPlace:)
-                                               name:showPlaceNotificationCenter
-                                             object:nil];
-  NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
-  self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
-  self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
-  self.pointHasDescription = [userDefaults boolForKey:kSettingsComments];
-
-  // Check for iOS 8. Without this guard the code will crash with "unknown
-  // selector" on iOS 7.
-  if ([self.locationManager
-          respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-    [self.locationManager requestWhenInUseAuthorization];
-  }
-  UIBarButtonItem *flexibleItem = [[UIBarButtonItem alloc]
-      initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace
-                           target:nil
-                           action:nil];
-
-  NSArray *buttonsForDownToolBar = @[
-    [self createColorButton:@"compass"
-                   selector:@selector(showYourCurrentLocation:)],
-    flexibleItem,
-    [self createColorButton:@"Lupa" selector:@selector(buttonSearch:)],
-    flexibleItem,
-    [self createColorButton:@"filter"
-                   selector:@selector(moveToFilterController:)],
-    flexibleItem,
-    [self createColorButton:@"tools"
-                   selector:@selector(moveToToolsController:)]
-  ];
-
-  NSArray *buttonsForUpToolBar = @[
-    [self createColorButton:@"sharing30_30"
-                   selector:@selector(sharingForSocialNetworking:)],
-    flexibleItem,
-    [self createColorButton:@"favptite30_30"
-                   selector:@selector(addToFavourite:)],
-    flexibleItem,
-    [self createColorButton:@"info30_30" selector:@selector(infoMethod:)],
-    flexibleItem,
-    [self createColorButton:@"road30_30"
-                   selector:@selector(showRoudFromThisPlaceToMyLocation:)]
-  ];
-
-  [self.downToolBar setItems:buttonsForDownToolBar animated:YES];
-
-  [self.upToolBar setItems:buttonsForUpToolBar animated:YES];
-
-  self.constraitToShowUpToolBar.constant = 0.0f;
-  self.mapView.showsUserLocation = YES;
-
-  [self loadSettings];
-
-  self.locationManager.delegate = self;
-
-  [self startHeadingEvents];
-
-  [self.locationManager startUpdatingHeading];
-
-  self.mapView.showsScale = YES;
-
-  [self.viewForPinOfInfo setUserInteractionEnabled:YES];
-
-  UISwipeGestureRecognizer *swipeUp =
-      [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                action:@selector(handleSwipe:)];
-  UISwipeGestureRecognizer *swipeDown =
-      [[UISwipeGestureRecognizer alloc] initWithTarget:self
-                                                action:@selector(handleSwipe:)];
-
-  // Setting the swipe direction.
-  [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
-  [swipeDown setDirection:UISwipeGestureRecognizerDirectionDown];
-
-  // Adding the swipe gesture on image view
-  [self.viewForPinOfInfo addGestureRecognizer:swipeUp];
-  [self.viewForPinOfInfo addGestureRecognizer:swipeDown];
+  // Do any additional setup after loading the view, typically from a nib
+    
+    self.locationManager = [[CLLocationManager alloc] init];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(showPlace:)
+                                                 name:showPlaceNotificationCenter object:nil];
+    NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
+    self.ratingOfPoints = [userDefaults integerForKey:kSettingsRating];
+    self.pointHasComments = [userDefaults boolForKey:kSettingsComments];
+    self.pointHasDescription = [userDefaults boolForKey:kSettingsComments];
+    
+    // Check for iOS 8. Without this guard the code will crash with "unknown selector" on iOS 7.
+    if ([self.locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
+        [self.locationManager requestWhenInUseAuthorization];
+    }
+    UIBarButtonItem *flexibleItem =
+    [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:nil action:nil];
+    
+    NSArray *buttonsForDownToolBar = @[
+                         [self createColorButton:@"compass"
+                                        selector:@selector(showYourCurrentLocation:)],
+                         flexibleItem,
+                         [self createColorButton:@"Lupa"
+                                        selector:@selector(buttonSearch:)],
+                         flexibleItem,
+                         [self createColorButton:@"filter"
+                                        selector:@selector(moveToFilterController:)],
+                         flexibleItem,
+                         [self createColorButton:@"tools"
+                                        selector:@selector(moveToToolsController:)]
+                         ];
+    
+    NSArray *buttonsForUpToolBar = @[
+                                     [self createColorButton:@"filter" selector:@selector(sharingForSocialNetworking:)],
+                                     flexibleItem,
+                                     [self createColorButton:@"favptite30_30" selector:@selector(addToFavourite:)],
+                                     flexibleItem,
+                                     [self createColorButton:@"info30_30" selector:@selector(infoMethod:)],
+                                     flexibleItem,
+                                     [self createColorButton:@"road30_30" selector:@selector(showRoudFromThisPlaceToMyLocation:)],
+                                     flexibleItem,
+                                     [self createColorButton:@"direction_compass" selector:@selector(showDirectionToThisAnnotation:)]
+                                     ];
+    
+    [self.downToolBar setItems:buttonsForDownToolBar animated:YES];
+    
+    [self.upToolBar setItems:buttonsForUpToolBar animated:YES];
+    
+    self.constraitToShowUpToolBar.constant = 0.0f;
+    self.mapView.showsUserLocation = YES;
+    
+    [self loadSettings];
+    
+    self.locationManager.delegate = self;
+    
+    [self startHeadingEvents];
+    
+    [self.locationManager startUpdatingHeading];
+    
+    self.mapView.showsScale = YES;
+    
+    
+    [self.viewForPinOfInfo setUserInteractionEnabled:YES];
+    
+    UISwipeGestureRecognizer *swipeUp = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
+    UISwipeGestureRecognizer *swipeDown = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(handleSwipe:)];
+    
+    // Setting the swipe direction.
+    [swipeUp setDirection:UISwipeGestureRecognizerDirectionUp];
+    [swipeDown setDirection:UISwipeGestureRecognizerDirectionDown];
+    
+    // Adding the swipe gesture on image view
+    [self.viewForPinOfInfo addGestureRecognizer:swipeUp];
+    [self.viewForPinOfInfo addGestureRecognizer:swipeDown];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -184,7 +188,6 @@ static bool isMainRoute;
           clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
                               withZoomScale:scale];
       self.clusteringManager.scale = [[NSNumber alloc] initWithDouble:1.6];
-      ;
       [self.clusteringManager displayAnnotations:annotations
                                        onMapView:_mapView];
     }];
@@ -343,7 +346,6 @@ static bool isMainRoute;
                             NSLog(@"Success getting url: %@", url);
                           }
                         }];
-
   [branchUniversalObject showShareSheetWithLinkProperties:linkProperties
                                              andShareText:nil
                                        fromViewController:self
@@ -353,10 +355,125 @@ static bool isMainRoute;
 }
 
 - (void)addToFavourite:(UIBarButtonItem *)sender {
+    CLLocationCoordinate2D coordinate = self.annotationView.annotation.coordinate;
+    [SVGeocoder reverseGeocode:coordinate completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse, NSError *error) {
+        NSString* message = nil;
+        if (error) {
+            message = [error localizedDescription];
+        } else {
+            if ([placemarks count] > 0) {
+                SVPlacemark* placeMark = [placemarks firstObject];
+                NSString *stringOfPlace = [self creatingAObjectOfMassive:placeMark];
+                
+                NSNumber *latitude = [[NSNumber alloc] initWithDouble:placeMark.location.coordinate.latitude];
+                NSNumber *longitude = [[NSNumber alloc] initWithDouble:placeMark.location.coordinate.longitude];
+                
+                NSDictionary *coordinate = @{
+                                             @"latitude":latitude,
+                                             @"longitude":longitude
+                                             };
+                NSDictionary *place = @{
+                                        @"StringOfPlace":stringOfPlace,
+                                        @"Coordinate":coordinate,
+                                        };
+                NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+                NSArray *tempArrayOne = [userDefaults objectForKey:@"PlaceByFavourite"];
+                NSInteger i = 0;
+                for (NSDictionary *placeInDict in tempArrayOne) {
+                    if ([[placeInDict objectForKey:@"StringOfPlace"] isEqualToString:stringOfPlace]) {
+                        i++;
+                    }
+                }
+                if (i == 0) {
+                NSMutableArray *tempArrayTwo = [[NSMutableArray alloc] initWithArray:tempArrayOne];
+                [tempArrayTwo addObject:place];
+                [userDefaults removeObjectForKey:@"PlaceByFavourite"];
+                [userDefaults setObject:tempArrayTwo forKey:@"PlaceByFavourite"];
+            }
+            } else {
+                message = @"No Placemarks Found";
+            }
+        }
+    }];
+
+    
 }
+
 - (void)infoMethod:(UIBarButtonItem *)sender {
 }
+
 - (void)showRoudFromThisPlaceToMyLocation:(UIBarButtonItem *)sender {
+}
+
+- (void)showDirectionToThisAnnotation:(UIBarButtonItem *)sender {
+
+    NSString *string = [NSString stringWithFormat:@"%@json?origin=%f,%f&destination=%f,%f&mode=transit&alternatives=true&key=AIzaSyCi2xvtI8XRpu3ee6I35-HVenilkXXokEI", BaseURLForGoogleMDAPI, self.mapView.userLocation.location.coordinate.latitude, self.mapView.userLocation.location.coordinate.longitude, self.annotationView.annotation.coordinate.latitude, self.annotationView.annotation.coordinate.longitude];
+    
+    NSURL *url = [NSURL URLWithString:string];
+    NSURLRequest *request = [NSURLRequest requestWithURL:url];
+
+    AFHTTPRequestOperation *operation = [[AFHTTPRequestOperation alloc] initWithRequest:request];
+    operation.responseSerializer = [AFJSONResponseSerializer serializer];
+    
+    [operation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+        
+    NSArray* routes = [((NSDictionary*)responseObject) objectForKey:@"routes"];
+
+    for (id objectInRoutes in routes) {
+
+        NSArray* legs = [(NSDictionary*)objectInRoutes objectForKey:@"legs"];
+
+        for (id objectInLegs in legs) {
+
+            NSArray* steps = [(NSDictionary*)objectInLegs objectForKey:@"steps"];
+
+            for (id objectInSteps in steps) {
+                
+                if ([objectInSteps objectForKey:@"html_instructions"]) {
+                    
+                    self.stringForGoogleDirectionsInstructions = [NSString stringWithFormat:@"%@%@\n", self.stringForGoogleDirectionsInstructions, [objectInSteps objectForKey:@"html_instructions"]];
+                }
+                
+                if ([objectInSteps objectForKey:@"transit_details"]) {
+                    
+                    NSDictionary* inTransitDetails = [objectInSteps objectForKey:@"transit_details"];
+                    
+                    NSDictionary* inLines = [inTransitDetails objectForKey:@"line"];
+                    
+                    if ([inLines objectForKey:@"url"]) {
+                        
+                        self.stringForGoogleDirectionsInstructions = [NSString stringWithFormat:@"%@%@\n", self.stringForGoogleDirectionsInstructions, [inLines objectForKey:@"url"]];
+
+                    }
+                }
+                
+//                uncomment if other details needed
+//                NSArray* innerSteps = [(NSDictionary*)objectInSteps objectForKey:@"steps"];
+//                
+//                for (id objectInInnerSteps in innerSteps) {
+//
+////                    NSLog(@"%@", [objectInInnerSteps objectForKey:@"html_instructions"]);
+//                    
+//                    if ([objectInInnerSteps objectForKey:@"html_instructions"]) {
+//                        
+//                        self.stringForGoogleDirectionsInstructions = [NSString stringWithFormat:@"%@%@\n", self.stringForGoogleDirectionsInstructions, [objectInInnerSteps objectForKey:@"html_instructions"]];
+//                    }
+//                }
+            }
+        }
+    }
+
+    [self performSegueWithIdentifier:@"showGoogleDirectionsViewController"
+                                  sender:sender];
+        
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        NSLog(@"%@", error.description);
+        
+    }];
+
+    [operation start];
+
 }
 
 - (void)didReceiveMemoryWarning {
@@ -367,17 +484,22 @@ static bool isMainRoute;
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-
-  if ([segue.identifier isEqualToString:@"showSettingsViewController"]) {
-
-    // sending smth to destinationViewController
-
-  } else if ([[segue identifier] isEqualToString:@"Comments"]) {
-    Place *place = [self.placeArray firstObject];
-    HMCommentsTableViewController *createViewController =
-        segue.destinationViewController;
-    createViewController.create = place;
-  }
+    
+    if ([segue.identifier isEqualToString:@"showSettingsViewController"]) {
+        
+        // sending smth to destinationViewController
+        
+    } else if ([[segue identifier] isEqualToString:@"Comments"]) {
+        Place  *place = [self.placeArray firstObject];
+        HMCommentsTableViewController *createViewController = segue.destinationViewController;
+        createViewController.create = place;
+    } else if ([segue.identifier isEqualToString:@"showGoogleDirectionsViewController"]) {
+        
+        HMGoogleDirectionsViewController *destViewController = segue.destinationViewController;
+        
+        destViewController.textForLabel = self.stringForGoogleDirectionsInstructions;
+        
+    }
 }
 
 #pragma mark - Deallocation
@@ -717,7 +839,7 @@ static bool isMainRoute;
   }
 }
 
-#pragma mark - methods for Notification//latitude":latitude, @"longitude
+#pragma mark - methods for Notification
 
 - (void)showPlace:(NSNotification *)notification {
   [self.navigationController popViewControllerAnimated:YES];
@@ -780,24 +902,16 @@ static bool isMainRoute;
 
     static double delta = 1000000;
 
-    MKMapRect rect =
-        MKMapRectMake(center.x - delta, center.y - delta, delta * 2, delta * 2);
-    zoomRect = MKMapRectUnion(zoomRect, rect);
-    zoomRect = [self.mapView mapRectThatFits:zoomRect];
+//    MKMapRect rect =
+//        MKMapRectMake(center.x - delta, center.y - delta, delta * 2, delta * 2);
+//    zoomRect = MKMapRectUnion(zoomRect, rect);
+//    zoomRect = [self.mapView mapRectThatFits:zoomRect];
 
 //    [self.mapView setVisibleMapRect:zoomRect
 //                        edgePadding:UIEdgeInsetsMake(50, 50, 50, 50)
 //                           animated:YES];
 
     self.downToolBar.hidden = YES;
-    self.constraitToShowUpToolBar.constant = 210.f;
-    [self.viewToAnimate setNeedsUpdateConstraints];
-
-    [UIView animateWithDuration:1.f
-                     animations:^{
-                       [self.viewToAnimate layoutIfNeeded];
-                     }];
-
     NSString *stringId = [NSString
         stringWithFormat:@"%ld",
                          (long)((HMMapAnnotation *)view.annotation).idPlace];
@@ -807,17 +921,41 @@ static bool isMainRoute;
 
     Place *place = [self.placeArray firstObject];
     User *user = place.user;
+    
+    
+    
+#warning weather!!~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    
+    self.weatherDict = [[NSDictionary alloc]init];
+    [[HMWeatherManager sharedManager] getWeatherByCoordinate:place onSuccess:^(NSDictionary *weather) {
+       
+    self.weatherDict = weather;
+        NSLog(@"%@",self.weatherDict);
+    } onFailure:^(NSError *error, NSInteger statusCode) {
+    
+    NSLog(@"%@%ld",error,(long)statusCode);
+    }];
 
     self.autorDescriptionLable.text = user.name;
-
+    
     Description *desc = place.descript;
 
     self.descriptionTextView.text = desc.descriptionString;
-    //[self.descriptionLable sizeToFit];
-
     Waiting *waiting = place.waiting;
-    self.waitingTimeLable.text = [NSString
+     self.waitingTimeLable.text = [NSString
         stringWithFormat:@"Average waiting time: %@", waiting.avg_textual];
+      [self.descriptionTextView resizeHeightToFitForLabel:self.descriptionTextView];
+      
+      self.constraitToShowUpToolBar.constant = self.waitingTimeLable.frame.size.height +
+      self.descriptionTextView.frame.size.height + 60.f;
+      
+      [self.viewToAnimate setNeedsUpdateConstraints];
+      
+      [UIView animateWithDuration:1.f
+                       animations:^{
+                           [self.viewToAnimate layoutIfNeeded];
+                       }];
 
 }
 }
@@ -884,7 +1022,7 @@ static bool isMainRoute;
 }
 
 - (void)mapView:(MKMapView *)mapView
-    didDeselectAnnotationView:(MKAnnotationView *)view NS_AVAILABLE(10_9, 4_0) {
+    didDeselectAnnotationView:(MKAnnotationView *)view  {
 
   if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
     self.downToolBar.hidden = NO;
@@ -930,5 +1068,35 @@ static bool isMainRoute;
 
   return UIInterfaceOrientationMaskAll;
 }
+
+- (NSString *)creatingAObjectOfMassive:(SVPlacemark *)placeMark {
+    NSMutableArray *levelOfLocality = [NSMutableArray array];
+    if (placeMark.formattedAddress) {
+        [levelOfLocality addObject:placeMark.formattedAddress];
+    }
+    if (placeMark.administrativeArea) {
+        [levelOfLocality addObject:placeMark.administrativeArea];
+    }
+    if (placeMark.subAdministrativeArea) {
+        [levelOfLocality addObject:placeMark.subAdministrativeArea];
+    }
+    if (placeMark.thoroughfare) {
+        [levelOfLocality addObject:placeMark.thoroughfare];
+    }
+    NSInteger count = 0;
+    NSMutableString *str = [NSMutableString stringWithFormat:@""];
+    for (id dataOfLocality in levelOfLocality) {
+        if (count >= 3) {
+            break;
+        }
+        if (dataOfLocality) {
+            [str appendFormat:@", %@",dataOfLocality];
+            count ++;
+        }
+    }
+    [str deleteCharactersInRange:NSMakeRange(0, 1)];
+    return str;
+}
+
 
 @end

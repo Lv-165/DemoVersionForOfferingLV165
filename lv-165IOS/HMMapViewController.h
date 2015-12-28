@@ -11,10 +11,16 @@
 #import "HMCoreDataManager.h"
 #import "HMServerManager.h"
 
+extern NSString* const addToMyFavourite;
+extern NSString* const addToMyFavouriteInfoKey;
+
 @interface HMMapViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate>
+@property (weak, nonatomic) IBOutlet UILabel *descriptionTextView;
+
+@property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraitToShowUpToolBar;
 
 @property (weak, nonatomic) IBOutlet UIView *viewToAnimate;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *constraitToShowUpToolBar;
+
 @property (weak, nonatomic) IBOutlet UIToolbar *upToolBar;
 
 @property (weak, nonatomic) IBOutlet UIToolbar *downToolBar;
@@ -24,7 +30,6 @@
 @property (weak, nonatomic) IBOutlet UIView *viewForPinOfInfo;
 @property (weak, nonatomic) IBOutlet UILabel *waitingTimeLable;
 @property (weak, nonatomic) IBOutlet UILabel *autorDescriptionLable;
-@property (weak, nonatomic) IBOutlet UITextView *descriptionTextView;
 
 
 @end

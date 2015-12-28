@@ -58,7 +58,9 @@
 		843905871C18E3DC00450FA8 /* HMCommentsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 843905851C18E3DC00450FA8 /* HMCommentsTableViewController.m */; };
 		A10299261C0F153E00BA5896 /* HMMapAnnotation.m in Sources */ = {isa = PBXBuildFile; fileRef = A10299251C0F153E00BA5896 /* HMMapAnnotation.m */; };
 		A10299291C0F1A7800BA5896 /* UIView+MKAnnotationView.m in Sources */ = {isa = PBXBuildFile; fileRef = A10299281C0F1A7800BA5896 /* UIView+MKAnnotationView.m */; };
+		A10B9E541C2AF26700A6B8D4 /* HMGoogleDirectionsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A10B9E531C2AF26700A6B8D4 /* HMGoogleDirectionsViewController.m */; };
 		A14DBDF51C2087BB004446EA /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = A14DBDF71C2087BB004446EA /* Localizable.strings */; };
+		A14DD0C51C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.m in Sources */ = {isa = PBXBuildFile; fileRef = A14DD0C41C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.m */; };
 		A1C5EDE41C0CA7C900F94400 /* HMSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C5EDE21C0CA7C900F94400 /* HMSettingsViewController.m */; };
 		A1C5EDEB1C0CC4D500F94400 /* HMSearchViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A1C5EDEA1C0CC4D500F94400 /* HMSearchViewController.m */; };
 		C01442E31C0333A5000F8F6F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C01442E21C0333A5000F8F6F /* main.m */; };
@@ -70,6 +72,7 @@
 		C01442F41C0333A5000F8F6F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C01442F21C0333A5000F8F6F /* LaunchScreen.storyboard */; };
 		C01442FF1C0333A6000F8F6F /* lv_165IOSTests.m in Sources */ = {isa = PBXBuildFile; fileRef = C01442FE1C0333A6000F8F6F /* lv_165IOSTests.m */; };
 		C014430A1C0333A6000F8F6F /* lv_165IOSUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = C01443091C0333A6000F8F6F /* lv_165IOSUITests.m */; };
+		C06A37B01C2C17FC00429F60 /* HMWeatherManager.m in Sources */ = {isa = PBXBuildFile; fileRef = C06A37AF1C2C17FC00429F60 /* HMWeatherManager.m */; };
 		C0729E401C09FBF700ADF283 /* HMCountriesViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0729E3F1C09FBF700ADF283 /* HMCountriesViewController.m */; };
 		C0729E881C09FD9200ADF283 /* HMCoreDataViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = C0729E871C09FD9200ADF283 /* HMCoreDataViewController.m */; };
 		C09A7CF61C0A1ED300F6DEBC /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C09A7CF51C0A1ED300F6DEBC /* CoreData.framework */; };
@@ -151,6 +154,8 @@
 		302A11C51C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIRefreshControl+AFNetworking.m"; sourceTree = "<group>"; };
 		302A11C61C0371C3002F8FF0 /* UIWebView+AFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIWebView+AFNetworking.h"; sourceTree = "<group>"; };
 		302A11C71C0371C3002F8FF0 /* UIWebView+AFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIWebView+AFNetworking.m"; sourceTree = "<group>"; };
+		304B13F01C2C78330081AB13 /* UILabel+HMdynamicSizeMe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+HMdynamicSizeMe.h"; sourceTree = "<group>"; };
+		304B13F11C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+HMdynamicSizeMe.m"; sourceTree = "<group>"; };
 		308A5CD61C1735F4009DD439 /* SVGeocoder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVGeocoder.h; sourceTree = "<group>"; };
 		308A5CD71C1735F4009DD439 /* SVGeocoder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SVGeocoder.m; sourceTree = "<group>"; };
 		308A5CD81C1735F4009DD439 /* SVPlacemark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVPlacemark.h; sourceTree = "<group>"; };
@@ -207,10 +212,14 @@
 		A10299251C0F153E00BA5896 /* HMMapAnnotation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMMapAnnotation.m; sourceTree = "<group>"; };
 		A10299271C0F1A7800BA5896 /* UIView+MKAnnotationView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+MKAnnotationView.h"; sourceTree = "<group>"; };
 		A10299281C0F1A7800BA5896 /* UIView+MKAnnotationView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+MKAnnotationView.m"; sourceTree = "<group>"; };
+		A10B9E521C2AF26700A6B8D4 /* HMGoogleDirectionsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMGoogleDirectionsViewController.h; sourceTree = "<group>"; };
+		A10B9E531C2AF26700A6B8D4 /* HMGoogleDirectionsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMGoogleDirectionsViewController.m; sourceTree = "<group>"; };
 		A14DBDF31C2087AB004446EA /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Main.strings; sourceTree = "<group>"; };
 		A14DBDF41C2087AC004446EA /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		A14DBDF61C2087BB004446EA /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		A14DBDF81C2087BD004446EA /* uk */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = uk; path = uk.lproj/Localizable.strings; sourceTree = "<group>"; };
+		A14DD0C31C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UILabel+HMdynamicSizeMe.h"; sourceTree = "<group>"; };
+		A14DD0C41C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UILabel+HMdynamicSizeMe.m"; sourceTree = "<group>"; };
 		A1C5EDE11C0CA7C900F94400 /* HMSettingsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMSettingsViewController.h; sourceTree = "<group>"; };
 		A1C5EDE21C0CA7C900F94400 /* HMSettingsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMSettingsViewController.m; sourceTree = "<group>"; };
 		A1C5EDE91C0CC4D500F94400 /* HMSearchViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMSearchViewController.h; sourceTree = "<group>"; };
@@ -232,6 +241,8 @@
 		C01443051C0333A6000F8F6F /* lv-165IOSUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "lv-165IOSUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C01443091C0333A6000F8F6F /* lv_165IOSUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = lv_165IOSUITests.m; sourceTree = "<group>"; };
 		C014430B1C0333A6000F8F6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		C06A37AE1C2C17FC00429F60 /* HMWeatherManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMWeatherManager.h; sourceTree = "<group>"; };
+		C06A37AF1C2C17FC00429F60 /* HMWeatherManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMWeatherManager.m; sourceTree = "<group>"; };
 		C0729E3E1C09FBF700ADF283 /* HMCountriesViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMCountriesViewController.h; sourceTree = "<group>"; };
 		C0729E3F1C09FBF700ADF283 /* HMCountriesViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMCountriesViewController.m; sourceTree = "<group>"; };
 		C0729E861C09FD9200ADF283 /* HMCoreDataViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMCoreDataViewController.h; sourceTree = "<group>"; };
@@ -424,6 +435,8 @@
 			children = (
 				3018962E1C0895DC00178A04 /* HMServerManager.h */,
 				3018962F1C0895DC00178A04 /* HMServerManager.m */,
+				C06A37AE1C2C17FC00429F60 /* HMWeatherManager.h */,
+				C06A37AF1C2C17FC00429F60 /* HMWeatherManager.m */,
 			);
 			name = ServerManager;
 			sourceTree = "<group>";
@@ -487,6 +500,7 @@
 		308D190E1C19FE17007CC26E /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				A10B9E511C2AF20200A6B8D4 /* GoogleDirectionsController */,
 				843905881C18E65F00450FA8 /* CommentsController */,
 				308D190C1C19FDBA007CC26E /* SearchController */,
 				308D190A1C19FD83007CC26E /* FiltersController */,
@@ -529,6 +543,15 @@
 			name = CommentsController;
 			sourceTree = "<group>";
 		};
+		A10B9E511C2AF20200A6B8D4 /* GoogleDirectionsController */ = {
+			isa = PBXGroup;
+			children = (
+				A10B9E521C2AF26700A6B8D4 /* HMGoogleDirectionsViewController.h */,
+				A10B9E531C2AF26700A6B8D4 /* HMGoogleDirectionsViewController.m */,
+			);
+			name = GoogleDirectionsController;
+			sourceTree = "<group>";
+		};
 		C01442D51C0333A5000F8F6F = {
 			isa = PBXGroup;
 			children = (
@@ -554,6 +577,8 @@
 		C01442E01C0333A5000F8F6F /* lv-165IOS */ = {
 			isa = PBXGroup;
 			children = (
+				A14DD0C31C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.h */,
+				A14DD0C41C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.m */,
 				308D19031C19FC2D007CC26E /* HMAppDelegate */,
 				308D190E1C19FE17007CC26E /* Controllers */,
 				308D190D1C19FDF9007CC26E /* Managers */,
@@ -576,6 +601,8 @@
 			isa = PBXGroup;
 			children = (
 				C01442E21C0333A5000F8F6F /* main.m */,
+				304B13F01C2C78330081AB13 /* UILabel+HMdynamicSizeMe.h */,
+				304B13F11C2C78330081AB13 /* UILabel+HMdynamicSizeMe.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -793,9 +820,11 @@
 				843905871C18E3DC00450FA8 /* HMCommentsTableViewController.m in Sources */,
 				7FAD6ED41C283010007E4B92 /* Country+CoreDataProperties.m in Sources */,
 				7FAD6ECD1C283010007E4B92 /* User.m in Sources */,
+				A10B9E541C2AF26700A6B8D4 /* HMGoogleDirectionsViewController.m in Sources */,
 				7FAD6EDB1C283010007E4B92 /* Waiting.m in Sources */,
 				7FAD6ECE1C283010007E4B92 /* Comments+CoreDataProperties.m in Sources */,
 				7FAD6ECB1C283010007E4B92 /* Countries.m in Sources */,
+				C06A37B01C2C17FC00429F60 /* HMWeatherManager.m in Sources */,
 				C0729E881C09FD9200ADF283 /* HMCoreDataViewController.m in Sources */,
 				0C93B2801C11DECB0032A3AE /* FBClusteringManager.m in Sources */,
 				CE4CC48A1C14EB6F002C4358 /* Reachability.m in Sources */,
@@ -804,6 +833,7 @@
 				7FAD6ED61C283010007E4B92 /* DescriptionInfo+CoreDataProperties.m in Sources */,
 				302A11D71C0371C3002F8FF0 /* UIRefreshControl+AFNetworking.m in Sources */,
 				0C8537551C2C1BE30052ADC6 /* FBAnnotationClusterView.m in Sources */,
+				A14DD0C51C2D9E61003E6263 /* UILabel+HMdynamicSizeMe.m in Sources */,
 				7FAD6ED51C283010007E4B92 /* Country.m in Sources */,
 				A1C5EDEB1C0CC4D500F94400 /* HMSearchViewController.m in Sources */,
 				7FAD6ED11C283010007E4B92 /* Continent.m in Sources */,
