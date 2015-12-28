@@ -25,6 +25,7 @@
 #import "Waiting.h"
 #import "Branch/BranchUniversalObject.h"
 #import "Branch/BranchLinkProperties.h"
+#import "HMImgurManager.h"
 
 @interface HMMapViewController ()
 
@@ -244,7 +245,7 @@ static bool isMainRoute;
     [branchUniversalObject registerView];
     
     Place *place = [self.placeArray firstObject];
-  
+    
     branchUniversalObject.title = place.descript.descriptionString;
     branchUniversalObject.contentDescription = [NSString stringWithFormat:@"Lat: %@, Lon: %@", place.lat, place.lon];
     
@@ -260,14 +261,43 @@ static bool isMainRoute;
     [data writeToURL:imageUrlPath atomically:YES];
 //    NSURL *dataURL = [[NSBundle mainBundle] URLForResource: @"locationImage" withExtension:@"png"];
     
-    branchUniversalObject.imageUrl = [imageUrlPath absoluteString];
+    NSString *clientId = @"ba6022d743eb49c";
+    
+    NSString *title = @"Screen for sharing";
+    NSString *description = [NSString stringWithFormat:@"Lat: %@, Lon: %@", place.lat, place.lon];
+    
+    [HMImgurManager uploadPhoto:data title:title description:description imgurClientId:clientId completionBlock:^(NSString *result) {
+        
+        branchUniversalObject.imageUrl = result;
+        NSLog(@"%@", result);
+        
+    } failureBlock:^(NSURLResponse *response, NSError *error, NSInteger status) {
+        
+        [[[UIAlertView alloc] initWithTitle:@"Upload Failed"
+                                    message:[NSString stringWithFormat:@"%@ (Status code %ld)",
+                                             [error localizedDescription], (long)status]
+                                   delegate:nil
+                          cancelButtonTitle:nil
+                          otherButtonTitles:@"OK", nil] show];
+        
+    }];
+
+    
+    //branchUniversalObject.imageUrl = [imageUrlPath absoluteString];
+    //branchUniversalObject.imageUrl = @"http://i.imgur.com/R9xMSXL.png";
+    [branchUniversalObject addMetadataKey:@"place_id" value:[NSString stringWithFormat:@"%@", place.id]];
     
     BranchLinkProperties *linkProperties = [[BranchLinkProperties alloc] init];
     
     linkProperties.feature = @"sharing";
-    linkProperties.channel = @"default";
-    [linkProperties addControlParam:@"$desktop_url" withValue:@"http://hitchwiki.org/"];
-    [linkProperties addControlParam:@"$ios_url" withValue:@"hitchwiki.iosmobile://"];
+    linkProperties.channel = @"facebook";
+    [linkProperties addControlParam:@"$desktop_url"
+                          withValue:[NSString stringWithFormat:@"http://hitchwiki.org/maps/?zoom=15&lat=%@&lon=%@",
+                                     place.lat, place.lon]];
+    [linkProperties addControlParam:@"$ios_url"
+                          withValue:@"hitchwiki.iosmobile://"];
+//    [linkProperties addControlParam:@"$ios_deeplink_path"
+//                          withValue:[NSString stringWithFormat:@"content/%@", place.id]];
     
     [branchUniversalObject getShortUrlWithLinkProperties:linkProperties
                                              andCallback:^(NSString *url, NSError *error) {

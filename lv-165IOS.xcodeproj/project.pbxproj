@@ -50,6 +50,7 @@
 		13759B871C2AFA4C00870D08 /* BranchUniversalObject.m in Sources */ = {isa = PBXBuildFile; fileRef = 13759B5E1C2AFA4C00870D08 /* BranchUniversalObject.m */; };
 		13759B881C2AFA4C00870D08 /* BranchUserCompletedActionRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 13759B601C2AFA4C00870D08 /* BranchUserCompletedActionRequest.m */; };
 		13759B891C2AFA4C00870D08 /* BranchValidatePromoCodeRequest.m in Sources */ = {isa = PBXBuildFile; fileRef = 13759B621C2AFA4C00870D08 /* BranchValidatePromoCodeRequest.m */; };
+		139BEC0C1C3142FD00EEC511 /* HMImgurManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 139BEC0B1C3142FD00EEC511 /* HMImgurManager.m */; };
 		301896301C0895DC00178A04 /* HMServerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 3018962F1C0895DC00178A04 /* HMServerManager.m */; };
 		302A11C81C0371C3002F8FF0 /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11A31C0371C3002F8FF0 /* AFHTTPRequestOperation.m */; };
 		302A11C91C0371C3002F8FF0 /* AFHTTPRequestOperationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 302A11A51C0371C3002F8FF0 /* AFHTTPRequestOperationManager.m */; };
@@ -228,6 +229,8 @@
 		13759B601C2AFA4C00870D08 /* BranchUserCompletedActionRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BranchUserCompletedActionRequest.m; sourceTree = "<group>"; };
 		13759B611C2AFA4C00870D08 /* BranchValidatePromoCodeRequest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BranchValidatePromoCodeRequest.h; sourceTree = "<group>"; };
 		13759B621C2AFA4C00870D08 /* BranchValidatePromoCodeRequest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BranchValidatePromoCodeRequest.m; sourceTree = "<group>"; };
+		139BEC0A1C3142FD00EEC511 /* HMImgurManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HMImgurManager.h; sourceTree = "<group>"; };
+		139BEC0B1C3142FD00EEC511 /* HMImgurManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HMImgurManager.m; sourceTree = "<group>"; };
 		3018962E1C0895DC00178A04 /* HMServerManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = HMServerManager.h; path = HMServerManager/HMServerManager.h; sourceTree = "<group>"; };
 		3018962F1C0895DC00178A04 /* HMServerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = HMServerManager.m; path = HMServerManager/HMServerManager.m; sourceTree = "<group>"; };
 		302A11A21C0371C3002F8FF0 /* AFHTTPRequestOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AFHTTPRequestOperation.h; sourceTree = "<group>"; };
@@ -500,6 +503,15 @@
 			path = Branch;
 			sourceTree = "<group>";
 		};
+		139BEC091C31428200EEC511 /* ImgurManager */ = {
+			isa = PBXGroup;
+			children = (
+				139BEC0A1C3142FD00EEC511 /* HMImgurManager.h */,
+				139BEC0B1C3142FD00EEC511 /* HMImgurManager.m */,
+			);
+			name = ImgurManager;
+			sourceTree = "<group>";
+		};
 		302A119C1C037143002F8FF0 /* Libs */ = {
 			isa = PBXGroup;
 			children = (
@@ -679,6 +691,7 @@
 		308D190D1C19FDF9007CC26E /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				139BEC091C31428200EEC511 /* ImgurManager */,
 				308D19081C19FD55007CC26E /* Core Date Manager */,
 				308D19071C19FD44007CC26E /* ServerManager */,
 			);
@@ -1051,6 +1064,7 @@
 				302A11C81C0371C3002F8FF0 /* AFHTTPRequestOperation.m in Sources */,
 				A10299261C0F153E00BA5896 /* HMMapAnnotation.m in Sources */,
 				301896301C0895DC00178A04 /* HMServerManager.m in Sources */,
+				139BEC0C1C3142FD00EEC511 /* HMImgurManager.m in Sources */,
 				13759B7F1C2AFA4C00870D08 /* BranchLogRequest.m in Sources */,
 				7FA55BE81C0DB08200B99CC1 /* UIView+HMUItableViewCell.m in Sources */,
 				13759B861C2AFA4C00870D08 /* BranchSpotlightUrlRequest.m in Sources */,

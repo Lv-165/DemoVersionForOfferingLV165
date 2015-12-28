@@ -130,7 +130,19 @@
     if (shareText) {
         [items addObject:shareText];
     }
+    NSArray *excludedActivityTypes = @[UIActivityTypeMessage,
+                                       UIActivityTypeMail,
+                                       UIActivityTypePrint,
+                                       UIActivityTypeCopyToPasteboard,
+                                       UIActivityTypeAssignToContact,
+                                       UIActivityTypeSaveToCameraRoll,
+                                       UIActivityTypeAddToReadingList,
+                                       UIActivityTypeAirDrop,
+                                       UIActivityTypeOpenInIBooks];
+    
     UIActivityViewController *shareViewController = [[UIActivityViewController alloc] initWithActivityItems:items applicationActivities:nil];
+    
+    shareViewController.excludedActivityTypes = excludedActivityTypes;
     
     UIViewController *presentingViewController;
     if (viewController && [viewController respondsToSelector:@selector(presentViewController:animated:completion:)]) {
