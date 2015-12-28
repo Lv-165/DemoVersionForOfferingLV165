@@ -349,8 +349,8 @@
         NSNumber *segmentSize = segment[@"size"];
         double segmentSizeDouble = segmentSize.doubleValue;
 
-        CGFloat startAngle;
-        CGFloat endAngle;
+        CGFloat startAngle = 0;
+        CGFloat endAngle = 0;
 
         if (idx == 0) {
           startAngle = 0;
@@ -372,7 +372,7 @@
 
         [aPath moveToPoint:CGPointMake(center.x, center.y)];
 
-        [aPath addArcWithCenter:CGPointMake(center.x, center.y)
+        [aPath addArcWithCenter:center
                          radius:rect.size.width / 2
                      startAngle:startAngle
                        endAngle:endAngle
