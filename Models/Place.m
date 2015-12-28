@@ -2,7 +2,7 @@
 //  Place.m
 //  lv-165IOS
 //
-//  Created by AG on 12/22/15.
+//  Created by Ihor Zabrotsky on 12/28/15.
 //  Copyright © 2015 SS. All rights reserved.
 //
 
@@ -10,6 +10,7 @@
 #import "Comments.h"
 #import "Countries.h"
 #import "Description.h"
+#import "DirectionBus.h"
 #import "Location.h"
 #import "User.h"
 #import "Waiting.h"

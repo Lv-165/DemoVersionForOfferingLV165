@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9057" systemVersion="14F27" minimumToolsVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="9057" systemVersion="15B42" minimumToolsVersion="Automatic">
     <entity name="Comments" representedClassName="Comments" syncable="YES">
         <attribute name="comment" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="datetime" optional="YES" attributeType="Date" syncable="YES"/>
@@ -39,6 +39,10 @@
         <attribute name="versions" optional="YES" attributeType="Integer 16" defaultValueString="0" syncable="YES"/>
         <relationship name="descript" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Description" inverseName="descriptInfo" inverseEntity="Description" syncable="YES"/>
     </entity>
+    <entity name="DirectionBus" representedClassName="DirectionBus" syncable="YES">
+        <attribute name="directionString" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="place" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Place" inverseName="directionBus" inverseEntity="Place" syncable="YES"/>
+    </entity>
     <entity name="Location" representedClassName="Location" syncable="YES">
         <attribute name="city" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="continent" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Continent" inverseName="location" inverseEntity="Continent" syncable="YES"/>
@@ -57,6 +61,7 @@
         <relationship name="comments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Comments" inverseName="place" inverseEntity="Comments" syncable="YES"/>
         <relationship name="countries" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Countries" inverseName="place" inverseEntity="Countries" syncable="YES"/>
         <relationship name="descript" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Description" inverseName="place" inverseEntity="Description" syncable="YES"/>
+        <relationship name="directionBus" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="DirectionBus" inverseName="place" inverseEntity="DirectionBus" syncable="YES"/>
         <relationship name="location" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Location" inverseName="place" inverseEntity="Location" syncable="YES"/>
         <relationship name="user" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="User" inverseName="place" inverseEntity="User" syncable="YES"/>
         <relationship name="waiting" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="Waiting" inverseName="place" inverseEntity="Waiting" syncable="YES"/>
@@ -81,8 +86,9 @@
         <element name="Description" positionX="-83" positionY="-198" width="128" height="148"/>
         <element name="DescriptionInfo" positionX="90" positionY="-226" width="128" height="118"/>
         <element name="Location" positionX="-101" positionY="-36" width="128" height="103"/>
-        <element name="Place" positionX="-290" positionY="-225" width="128" height="253"/>
+        <element name="Place" positionX="-290" positionY="-225" width="128" height="268"/>
         <element name="User" positionX="-110" positionY="104" width="128" height="103"/>
         <element name="Waiting" positionX="-119" positionY="230" width="128" height="103"/>
+        <element name="DirectionBus" positionX="-126" positionY="351" width="128" height="73"/>
     </elements>
 </model>

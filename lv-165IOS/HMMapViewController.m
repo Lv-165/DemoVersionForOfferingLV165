@@ -37,7 +37,7 @@
 #import "UILabel+HMdynamicSizeMe.h"
 #import "HMImgurManager.h"
 #import "HMWeatherViewController.h"
-//#import "CLL"/
+#import "DirectionBus.h"
 
 @interface HMMapViewController ()
 
@@ -254,10 +254,8 @@ static bool isRoad;
   if (swipe.direction == UISwipeGestureRecognizerDirectionUp) {
     NSLog(@"Up Swipe");
 
-    NSString *stringId = [NSString
-        stringWithFormat:@"%ld", (long)((HMMapAnnotation *)
-                                            self.annotationView.annotation)
-                                     .idPlace];
+      NSString *stringId = [NSString stringWithFormat:@"%ld",
+                            (long)((HMMapAnnotation *)self.annotationView.annotation).idPlace];
 
     self.placeArray =
         [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
@@ -550,7 +548,7 @@ static bool isRoad;
         NSArray *steps = [(NSDictionary *)objectInLegs objectForKey:@"steps"];
 
         for (id objectInSteps in steps) {
-
+            
           if ([objectInSteps objectForKey:@"html_instructions"]) {
 
             self.stringForGoogleDirectionsInstructions = [NSString
@@ -573,18 +571,49 @@ static bool isRoad;
                   stringWithFormat:@"%@%@\n",
                                    self.stringForGoogleDirectionsInstructions,
                                    [inLines objectForKey:@"url"]];
+                    }
+                }
             }
           }
         }
-      }
-    }
 
-    [self performSegueWithIdentifier:@"showGoogleDirectionsViewController"
-                              sender:sender];
+        NSString *stringId = [NSString stringWithFormat:@"%ld",
+                              (long)((HMMapAnnotation *)self.annotationView.annotation).idPlace];
+        
+        self.placeArray =
+        [[HMCoreDataManager sharedManager] getPlaceWithStringId:stringId];
+        
+        [self performSegueWithIdentifier:@"showGoogleDirectionsViewController"
+                                  sender:sender];
+        self.stringForGoogleDirectionsInstructions = @"";
+      
+    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+        
+        NSLog(@"%@", error.description);
+        
+        NSString *stringId = [NSString stringWithFormat:@"%ld",
+                              (long)((HMMapAnnotation *)self.annotationView.annotation).idPlace];
+        
+        NSArray *tempArray = [[HMCoreDataManager sharedManager]
+                              getPlaceWithStringId:stringId];
+        
+        Place *place = [tempArray firstObject];
+        
+        DirectionBus *directionBus = place.directionBus;
+        
+        if (directionBus.directionString) {
+            self.stringForGoogleDirectionsInstructions = directionBus.directionString;
+        }
+        else {
+            NSLog(@"no directionBus.directionString");
+        }
+        
+        [self performSegueWithIdentifier:@"showGoogleDirectionsViewController"
+                                  sender:sender];
+        
+        self.stringForGoogleDirectionsInstructions = @"";
 
-  } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-
-    NSLog(@"%@", error.description);
+        NSLog(@"%@", error.description);
 
   }];
 
@@ -599,38 +628,52 @@ static bool isRoad;
 #pragma mark - Segues
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-
-  if ([segue.identifier isEqualToString:@"showSettingsViewController"]) {
-
-    // sending smth to destinationViewController
-
-  } else if ([[segue identifier] isEqualToString:@"Comments"]) {
-    Place *place = [self.placeArray firstObject];
-    HMCommentsTableViewController *createViewController =
-        segue.destinationViewController;
-    createViewController.create = place;
-  } else if ([segue.identifier
-                 isEqualToString:@"showGoogleDirectionsViewController"]) {
-
-    HMGoogleDirectionsViewController *destViewController =
-        segue.destinationViewController;
-
-    destViewController.textForLabel =
-        self.stringForGoogleDirectionsInstructions;
-  }else if ([[segue identifier] isEqualToString:@"weather"]) {
-      
-      if (!self.weatherDict) {
-          
-          [self showAlertWithTitle:@"Oops! No Internet"
-                        andMessage:@"Check your connection"
-                    andActionTitle:@"OK"];
-          
-      } else {
-          NSDictionary *weather = self.weatherDict;
-          HMWeatherViewController *weatherViewController = segue.destinationViewController;
-          weatherViewController.weatherDict = weather;
-      }
-  }
+    
+    if ([segue.identifier isEqualToString:@"showSettingsViewController"]) {
+        
+        // sending smth to destinationViewController
+        
+    } else if ([[segue identifier] isEqualToString:@"Comments"]) {
+        Place  *place = [self.placeArray firstObject];
+        HMCommentsTableViewController *createViewController = segue.destinationViewController;
+        createViewController.create = place;
+    } else if ([segue.identifier isEqualToString:@"showGoogleDirectionsViewController"]) {
+        
+        Place *place = [self.placeArray firstObject];
+        HMGoogleDirectionsViewController *destViewController = segue.destinationViewController;
+        
+        destViewController.place = place;
+        destViewController.textForLabel = self.stringForGoogleDirectionsInstructions;
+        
+    } else if ([[segue identifier] isEqualToString:@"weather"]) {
+        
+        if (!self.weatherDict) {
+            
+            [self showAlertWithTitle:@"Oops! No Internet"
+                          andMessage:@"Check your connection"
+                      andActionTitle:@"OK"];
+            
+        } if ([[segue identifier] isEqualToString:@"showGoogleDirectionsViewControllerCoreData"]) {
+           
+            HMGoogleDirectionsViewController *destViewController = segue.destinationViewController;
+            
+            Place *place = [self.placeArray firstObject];
+            
+            DirectionBus *directionBus = place.directionBus;
+            
+            if (directionBus.directionString) {
+                destViewController.textForLabel = directionBus.directionString;
+            }
+            else {
+                NSLog(@"no directionBus.directionString");
+            }
+            
+        } else {
+            NSDictionary *weather = self.weatherDict;
+            HMWeatherViewController *weatherViewController = segue.destinationViewController;
+            weatherViewController.weatherDict = weather;
+        }
+    }
 }
 
 #pragma mark - Deallocation
@@ -960,14 +1003,7 @@ static bool isRoad;
 
   if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
 
-    MKMapRect zoomRect = MKMapRectNull;
-
     self.annotationView = view;
-
-    CLLocationCoordinate2D location = view.annotation.coordinate;
-    MKMapPoint center = MKMapPointForCoordinate(location);
-
-    static double delta = 1000000;
 
     self.downToolBar.hidden = YES;
     NSString *stringId = [NSString

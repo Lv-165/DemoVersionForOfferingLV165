@@ -15,6 +15,7 @@
 #import "Comments.h"
 #import "User.h"
 #import "Waiting.h"
+#import "DirectionBus.h"
 
 @implementation HMCoreDataManager
 
@@ -63,7 +64,8 @@
     
     //NSLog(@"savePlaceToCoreDataWithNSArray");
     
-    Place* place = [NSEntityDescription insertNewObjectForEntityForName:@"Place"  inManagedObjectContext:[self managedObjectContext]];
+    Place* place = [NSEntityDescription insertNewObjectForEntityForName:@"Place"
+                                                 inManagedObjectContext:[self managedObjectContext]];
         
     NSInteger tempInteger = [[placeNSDictionary valueForKey:@"id"] integerValue];
      place.id = [NSNumber numberWithInteger:tempInteger];
@@ -174,6 +176,18 @@
     place.waiting = waiting;
     [countries addPlaceObject:place];
 
+    [self saveContext];
+}
+
+- (void)saveDirectionToCoreDataWithPlace:(Place *)place directionString:(NSString *)direction {
+    
+    DirectionBus *directionBus = [NSEntityDescription insertNewObjectForEntityForName:@"DirectionBus"
+                                                     inManagedObjectContext:[self managedObjectContext]];
+    
+    directionBus.directionString = direction;
+    
+    place.directionBus = directionBus;
+    
     [self saveContext];
 }
 
