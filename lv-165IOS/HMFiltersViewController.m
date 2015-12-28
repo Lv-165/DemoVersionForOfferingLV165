@@ -25,6 +25,8 @@ static NSString* kSettingsClastering = @"clastering";
     
     self.view.translatesAutoresizingMaskIntoConstraints = NO;
     UIImage *remontImage = [UIImage imageNamed:@"remont"];
+    [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kSettingsClastering];
+
     self.commentImage = [[UIImageView alloc] initWithImage:remontImage];
     [self.view addSubview:self.commentImage];
     [self loadSettings];
@@ -75,7 +77,6 @@ static NSString* kSettingsClastering = @"clastering";
 - (void) loadSettings {
     
     NSUserDefaults* userDefaults = [NSUserDefaults standardUserDefaults];
-    
     self.commentsSwitch.on = [userDefaults boolForKey:kSettingsComments];
     self.ratingControl.selectedSegmentIndex = [userDefaults integerForKey:kSettingsRating];
     [self.pickerView selectRow:[userDefaults integerForKey:kSettingsClastering]inComponent:0 animated:NO];
