@@ -31,14 +31,11 @@
 #import "AFHTTPRequestOperation.h"
 #import "AFNetworking/AFHTTPSessionManager.h"
 #import "HMGoogleDirectionsViewController.h"
-#import "FBClusteringManager.h"
-#import "FBAnnotationCluster.h"
-#import "FBAnnotationClustering.h"
 #import "UILabel+HMdynamicSizeMe.h"
 #import "HMImgurManager.h"
 #import "HMWeatherViewController.h"
 #import "DirectionBus.h"
-
+#import "FBAnnotationClustering.h"
 @interface HMMapViewController ()
 
 @property(strong, nonatomic) CLLocationManager *locationManager;
@@ -192,7 +189,6 @@ static bool isRoad;
 
   [self loadSettings];
 
-  // Clustering Manager
   if (!self.clusteringManager) {
 
     [[NSOperationQueue new] addOperationWithBlock:^{
@@ -206,12 +202,11 @@ static bool isRoad;
       NSArray *annotations = [self.clusteringManager
           clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
                               withZoomScale:scale];
-
       [self.clusteringManager displayAnnotations:annotations
                                        onMapView:_mapView];
     }];
   } else {
-    //    _clusteringManager.clusteringFactor = 10;
+
     [self reloadClusteringAnimated:NO];
   }
 }
@@ -224,23 +219,20 @@ static bool isRoad;
         clusteredAnnotationsWithinMapRect:_mapView.visibleMapRect
                             withZoomScale:scale];
     if (animated) {
-
       for (HMMapAnnotation *annotation in annotations) {
         if ([annotation isMemberOfClass:[FBAnnotationCluster class]]) {
-
           FBAnnotationCluster *clusterAnnotation =
               (FBAnnotationCluster *)annotation;
           clusterAnnotation.animated = YES;
         }
       }
     }
-
+      
     [self.clusteringManager displayAnnotations:annotations onMapView:_mapView];
   }];
 }
 
 - (void)mapView:(MKMapView *)mapView regionDidChangeAnimated:(BOOL)animated {
-
   [self reloadClusteringAnimated:animated];
 }
 
@@ -806,7 +798,6 @@ static bool isRoad;
 
 - (UIAlertController *)createAlertControllerWithTitle:(NSString *)title
                                               message:(NSString *)message {
-
   UIAlertController *alert =
       [UIAlertController alertControllerWithTitle:title
                                           message:message
@@ -1059,9 +1050,7 @@ static bool isRoad;
       FBAnnotationClusterView *selectedAnnotationView;
 
       if ([touch.view isMemberOfClass:[FBAnnotationClusterView class]]) {
-
         selectedAnnotationView = (FBAnnotationClusterView *)touch.view;
-
         [self showClusterAnimated:selectedAnnotationView];
       }
     }
@@ -1090,11 +1079,10 @@ static bool isRoad;
         clusterAnnotation.animated = YES;
       }
     }
-
-    [_mapView removeAnnotation:annotationView.annotation];
-
+      
     [_mapView setVisibleMapRect:zoomRect animated:YES];
-
+    [_mapView removeAnnotation:annotationView.annotation];
+      
   }];
 }
 

@@ -194,7 +194,6 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
 
   _currentlyClusteredAnnotations =
       [NSArray arrayWithArray:clusteredAnnotations];
-
   _numOfClusteredAnnotations = _currentlyClusteredAnnotations.count;
 
   return [NSArray arrayWithArray:clusteredAnnotations];
@@ -240,9 +239,7 @@ CGFloat FBCellSizeForZoomScale(MKZoomScale zoomScale) {
 }
 
 - (void)firePieChartAnimation {
-
   for (PieSliceLayer *slice in self.slicesArray) {
-
     slice.startAngle = slice.startAngleAnimated;
     slice.endAngle = slice.endAngleAnimated;
   }

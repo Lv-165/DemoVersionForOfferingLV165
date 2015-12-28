@@ -58,6 +58,7 @@
 
     CATextLayer *textLayer =
         [self constructTextLayerAtPoint:point WithString:string];
+      
     [self.layer addSublayer:textLayer];
   }
   return self;
@@ -82,22 +83,16 @@
   [self calculatePieChartSegmentSizes];
 
   __block CGFloat previousSegmentAngle;
-  __block CGFloat currentPointOnArcX;
-  __block CGFloat currentPointOnArcY;
-
+    CGPoint center =
+    CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
   [_segmentsArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx,
                                                BOOL *stop) {
-
+      
     NSMutableDictionary *segment = [obj mutableCopy];
-
-    CGPoint center =
-        CGPointMake(CGRectGetMidX(self.bounds), CGRectGetMidY(self.bounds));
 
     NSNumber *segmentType = segment[@"type"];
 
     NSNumber *segmentSize = segment[@"size"];
-
-    NSNumber *numberOfAnnotations = segment[@"annotationsCount"];
 
     UIColor *color = coloursArray[segmentType.unsignedIntegerValue];
 
@@ -114,8 +109,6 @@
     if (idx == _segmentsArray.count - 1) {
       endAngle = 2 * M_PI;
       previousSegmentAngle = 0;
-      currentPointOnArcX = 0;
-      currentPointOnArcY = 0;
 
     } else {
       endAngle = 2 * M_PI * segmentSize.doubleValue;
@@ -127,16 +120,11 @@
 
     slice.startAngleAnimated = startAngle;
     slice.endAngleAnimated = endAngle;
-
     slice.segmentSize = segmentSize;
-    slice.numberOfAnnotations = numberOfAnnotations;
-
+    
     slice.fillColor = color;
     slice.strokeColor = [_clusteringManager strokeColour];
     slice.strokeWidth = 1;
-
-    NSString *string = [[NSString alloc]
-        initWithFormat:@"%ld", (long)numberOfAnnotations.integerValue];
 
     UIBezierPath *aPath = [UIBezierPath bezierPath];
 
@@ -148,33 +136,8 @@
                    endAngle:endAngle
                   clockwise:YES];
 
-    CGPoint currentPoint = [aPath currentPoint];
-
-    CGPoint midPoint = CGPointMake(center.x + radius / 1.5 * cosf(startAngle),
-                                   center.y + radius / 1.5 * sinf(startAngle));
-
-    if (segmentSize.doubleValue > 0.6) {
-
-      CATextLayer *textLayer =
-          [self constructTextLayerAtPoint:midPoint WithString:string];
-
-      [_containerLayer insertSublayer:textLayer atIndex:0];
-
-    } else if (segmentSize.doubleValue > 0.4 && segmentSize.doubleValue < 0.6) {
-      _textLayer = [self constructTextLayerAtPoint:midPoint WithString:string];
-      [_containerLayer addSublayer:_textLayer];
-
-    } else {
-      // not putting text for very small area
-    }
-
-    currentPointOnArcX = currentPoint.x;
-    currentPointOnArcY = currentPoint.y;
-
-    [_clusteringManager.slicesArray addObject:slice];
-
-    [_containerLayer addSublayer:slice];
-
+      [_clusteringManager.slicesArray addObject:slice];
+      [_containerLayer addSublayer:slice];
   }];
 }
 

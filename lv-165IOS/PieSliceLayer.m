@@ -15,18 +15,14 @@
 
 - (id<CAAction>)actionForKey:(NSString *)event {
 
-  if ([event isEqualToString:@"startAngle"] ||
-      [event isEqualToString:@"endAngle"]) {
-
+  if ([event isEqualToString:@"endAngle"]) {
     CABasicAnimation *endAngleAnimation =
         [CABasicAnimation animationWithKeyPath:@"endAngle"];
 
     endAngleAnimation.toValue = @(self.endAngle);
-
     endAngleAnimation.fillMode = kCAFillModeForwards;
     endAngleAnimation.removedOnCompletion = NO;
     endAngleAnimation.duration = 1.0;
-
     return endAngleAnimation;
   }
 
@@ -41,7 +37,6 @@
       self.startAngle = other.startAngle;
       self.endAngle = other.endAngle;
       self.fillColor = other.fillColor;
-
       self.strokeColor = other.strokeColor;
       self.strokeWidth = other.strokeWidth;
     }
@@ -52,8 +47,7 @@
 
 + (BOOL)needsDisplayForKey:(NSString *)key {
 
-  if ([key isEqualToString:@"startAngle"] ||
-      [key isEqualToString:@"endAngle"]) {
+  if ( [key isEqualToString:@"endAngle"]) {
 
     return YES;
   }
@@ -70,9 +64,9 @@
   CGContextBeginPath(ctx);
   CGContextMoveToPoint(ctx, center.x, center.y);
 
-  CGPoint p1 = CGPointMake(center.x + radius * cosf(self.startAngle),
+  CGPoint point = CGPointMake(center.x + radius * cosf(self.startAngle),
                            center.y + radius * sinf(self.startAngle));
-  CGContextAddLineToPoint(ctx, p1.x, p1.y);
+  CGContextAddLineToPoint(ctx, point.x, point.y);
 
   int clockwise = self.startAngle < self.endAngle;
   CGContextAddArc(ctx, center.x, center.y, radius, self.startAngle,
