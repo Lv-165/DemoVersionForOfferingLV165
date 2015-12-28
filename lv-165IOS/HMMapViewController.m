@@ -36,6 +36,7 @@
 #import "FBAnnotationClustering.h"
 #import "HMWeatherManager.h"
 #import "UILabel+HMdynamicSizeMe.h"
+//#import "CLL"/
 
 @interface HMMapViewController ()
 
@@ -54,6 +55,8 @@
 @property(strong, nonatomic) NSArray *placeArray;
 
 @property(weak, nonatomic) MKAnnotationView *userLocationPin;
+@property(weak, nonatomic) MKAnnotationView *aciveAnnotationView;
+@property(assign, nonatomic) CLLocationCoordinate2D coordinateToPin;
 
 @property(weak, nonatomic) MKAnnotationView *annotationView;
 @property(strong, nonatomic) FBClusteringManager *clusteringManager;
@@ -73,21 +76,15 @@ static NSString* BaseURLForGoogleMDAPI = @"https://maps.googleapis.com/maps/api/
 
 static NSMutableArray *nameCountries;
 static bool isMainRoute;
-
-//- (NSManagedObjectContext*) managedObjectContext {
-//
-//    if (!_managedObjectContext) {
-//        _managedObjectContext = [[HMCoreDataManager sharedManager]
-//        managedObjectContext];
-//    }
-//    return _managedObjectContext;
-//}
+static bool isRoad;
 
 - (void)viewDidLoad {
   [super viewDidLoad];
   // Do any additional setup after loading the view, typically from a nib
     
     self.locationManager = [[CLLocationManager alloc] init];
+    self.locationManager.desiredAccuracy = kCLLocationAccuracyBestForNavigation;
+    
     
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(showPlace:)
@@ -144,6 +141,7 @@ static bool isMainRoute;
     [self startHeadingEvents];
     
     [self.locationManager startUpdatingHeading];
+    [self.locationManager startUpdatingLocation];
     
     self.mapView.showsScale = YES;
     
@@ -442,9 +440,39 @@ static bool isMainRoute;
 }
 
 - (void)infoMethod:(UIBarButtonItem *)sender {
+    [self performSegueWithIdentifier:@"Comments" sender:self];
 }
 
 - (void)showRoudFromThisPlaceToMyLocation:(UIBarButtonItem *)sender {
+    
+    if ([self.mapView.overlays count]) {
+        [self.mapView removeOverlays:self.mapView.overlays];
+        isRoad = NO;
+        return;
+    }
+    
+    if (self.mapView.userLocation.location) {
+        
+        if (!self.aciveAnnotationView) {
+            return;
+        }
+        isRoad = YES;
+        
+        self.coordinateToPin = self.aciveAnnotationView.annotation.coordinate;
+        CLLocationCoordinate2D coordinate = self.aciveAnnotationView.annotation.coordinate;
+        
+        isMainRoute = YES;
+        [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
+                                startCoordinate:coordinate];
+        isMainRoute = NO;
+        [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
+                                startCoordinate:coordinate];
+    } else {
+        
+        [self showAlertWithTitle:@"No User Location"
+                      andMessage:@"You didn't allow to get your current location"
+                  andActionTitle:@"OK"];
+    }
 }
 
 - (void)showDirectionToThisAnnotation:(UIBarButtonItem *)sender {
@@ -633,21 +661,6 @@ static bool isMainRoute;
     }
     }
     pin.animatesDrop = NO;
-    pin.canShowCallout = YES;
-
-    UIButton *descriptionButton =
-        [UIButton buttonWithType:UIButtonTypeDetailDisclosure];
-    [descriptionButton addTarget:self
-                          action:@selector(actionDescription:)
-                forControlEvents:UIControlEventTouchUpInside];
-    pin.rightCalloutAccessoryView = descriptionButton;
-
-    UIButton *directionButton =
-        [UIButton buttonWithType:UIButtonTypeContactAdd];
-    [directionButton addTarget:self
-                        action:@selector(actionDirection:)
-              forControlEvents:UIControlEventTouchUpInside];
-    pin.leftCalloutAccessoryView = directionButton;
 
     return pin;
   }
@@ -759,64 +772,7 @@ static bool isMainRoute;
   }];
 }
 
-- (void)removeRoutes {
-  [self.mapView removeOverlays:self.mapView.overlays];
-}
-
-#pragma mark Action to pin button
-
-- (void)actionDescription:(UIButton *)sender {
-  //    MKAnnotationView* annotationView = [sender superAnnotationView];
-  //    NSString *stringId = [NSString stringWithFormat:@"%ld",
-  //                     (long)((HMMapAnnotation
-  //                     *)annotationView.annotation).idPlace];
-  //
-  //    self.placeArray = [[HMCoreDataManager sharedManager]
-  //    getPlaceWithStringId:stringId];
-
-  [self performSegueWithIdentifier:@"Comments" sender:self];
-}
-
-- (void)actionDirection:(UIButton *)sender {
-
-  if (self.mapView.userLocation.location) {
-    [self removeRoutes];
-    MKAnnotationView *annotationView = [sender superAnnotationView];
-    if (!annotationView) {
-      return;
-    }
-    CLLocationCoordinate2D coordinate = annotationView.annotation.coordinate;
-
-    isMainRoute = YES;
-    [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
-                            startCoordinate:coordinate];
-    isMainRoute = NO;
-    [self createRouteForAnotationCoordinate:self.mapView.userLocation.coordinate
-                            startCoordinate:coordinate];
-  } else {
-
-    [self showAlertWithTitle:@"No User Location"
-                  andMessage:@"You didn't allow to get your current location"
-              andActionTitle:@"OK"];
-  }
-}
-
-- (void)actionRemoveRoute:(UIButton *)sender {
-  MKAnnotationView *annotationView = [sender superAnnotationView];
-  UIButton *directionButton = [UIButton buttonWithType:UIButtonTypeContactAdd];
-  [directionButton addTarget:self
-                      action:@selector(actionDirection:)
-            forControlEvents:UIControlEventTouchUpInside];
-  annotationView.leftCalloutAccessoryView = directionButton;
-
-  [self removeRoutes];
-}
-
 - (void)printPointWithContinent {
-  //    NSManagedObjectContext *managedObjectContext = [self
-  //    managedObjectContext];
-  //    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc]
-  //    initWithEntityName:@"Place"];
 
   NSInteger minForPoint = 0;
   NSInteger maxForPoint = 5;
@@ -929,10 +885,6 @@ static bool isMainRoute;
     self.locationManager.delegate = self;
   }
 
-  self.locationManager.distanceFilter = 1000;
-  self.locationManager.desiredAccuracy = kCLLocationAccuracyKilometer;
-  [self.locationManager startUpdatingLocation];
-
   if ([CLLocationManager headingAvailable]) {
     self.locationManager.headingFilter = 5;
     [self.locationManager startUpdatingHeading];
@@ -941,6 +893,8 @@ static bool isMainRoute;
 
 - (void)mapView:(MKMapView *)mapView
     didSelectAnnotationView:(MKAnnotationView *)view NS_AVAILABLE(10_9, 4_0) {
+
+    self.aciveAnnotationView = view;
 
   if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
 
@@ -1099,6 +1053,29 @@ static bool isMainRoute;
                        [self.viewToAnimate layoutIfNeeded];
                      }];
   }
+}
+
+- (void)locationManager:(CLLocationManager *)manager
+    didUpdateToLocation:(CLLocation *)newLocation
+           fromLocation:(CLLocation *)oldLocation {
+    
+    if (isRoad) {
+        
+        if (!CLLocationCoordinate2DIsValid(self.coordinateToPin)) {
+            return;
+        }
+        
+        CLLocationCoordinate2D coordinate = self.coordinateToPin;
+        
+        NSLog(@"");
+        
+        isMainRoute = YES;
+        [self createRouteForAnotationCoordinate:newLocation.coordinate
+                                startCoordinate:coordinate];
+        isMainRoute = NO;
+        [self createRouteForAnotationCoordinate:newLocation.coordinate
+                                startCoordinate:coordinate];
+    }
 }
 
 - (void)locationManager:(CLLocationManager *)manager
