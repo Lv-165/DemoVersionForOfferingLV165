@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="14F1021" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="MnQ-Mm-xcN">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="9060" systemVersion="15B42" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="MnQ-Mm-xcN">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="9051"/>
         <capability name="Alignment constraints to the first baseline" minToolsVersion="6.0"/>
@@ -66,6 +66,7 @@
                                         </label>
                                         <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="02y-eR-PXD">
                                             <rect key="frame" x="0.0" y="47" width="600" height="2"/>
+                                            <animations/>
                                         </progressView>
                                     </subviews>
                                     <animations/>
@@ -166,7 +167,7 @@
                                         <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
-                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="Autor" textAlignment="right" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="fTh-tc-eeU">
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="749" text="Autor" textAlignment="right" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" minimumFontSize="9" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fTh-tc-eeU">
                                         <rect key="frame" x="312" y="8" width="280" height="25"/>
                                         <animations/>
                                         <constraints>
@@ -186,6 +187,7 @@
                                     </toolbar>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" minimumFontSize="12" adjustsLetterSpacingToFitWidth="YES" translatesAutoresizingMaskIntoConstraints="NO" id="QOQ-YD-1zy">
                                         <rect key="frame" x="8" y="32" width="584" height="138"/>
+                                        <animations/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                         <nil key="highlightedColor"/>
@@ -209,9 +211,8 @@
                                     <constraint firstItem="7SA-v6-wd0" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" id="btR-4B-e3f"/>
                                     <constraint firstItem="rXC-0X-jfn" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="hcb-Lz-vig"/>
                                     <constraint firstItem="fTh-tc-eeU" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="8" id="hmD-qi-VWH"/>
-                                    <constraint firstItem="7SA-v6-wd0" firstAttribute="centerX" secondItem="FYm-s8-iZT" secondAttribute="centerX" id="kzz-dk-p9R"/>
-                                    <constraint firstItem="rXC-0X-jfn" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" constant="8" id="l0v-sa-pp8"/>
-                                    <constraint firstItem="fTh-tc-eeU" firstAttribute="top" secondItem="FYm-s8-iZT" secondAttribute="top" constant="8" id="yKB-Ny-Jh3"/>
+                                    <constraint firstAttribute="bottom" secondItem="7SA-v6-wd0" secondAttribute="bottom" id="hu6-fx-Bgq"/>
+                                    <constraint firstItem="7SA-v6-wd0" firstAttribute="leading" secondItem="FYm-s8-iZT" secondAttribute="leading" id="u8i-6r-dMV"/>
                                 </constraints>
                             </view>
                             <toolbar clearsContextBeforeDrawing="NO" tag="1" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cpQ-J0-Ekk">
@@ -261,6 +262,7 @@
                         <segue destination="7bs-0b-0Y2" kind="show" identifier="showSettingsViewController" id="FIo-P1-Pcd"/>
                         <segue destination="4Ib-ml-FoI" kind="show" identifier="Comments" id="Bf4-ER-3t1"/>
                         <segue destination="Hb2-hh-47C" kind="show" identifier="showFilterViewController" id="SQP-17-Yqa"/>
+                        <segue destination="CdG-xf-SgX" kind="show" identifier="showGoogleDirectionsViewController" id="EZe-cK-2Y2"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -458,6 +460,45 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="mAC-a1-2dR" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="835" y="343"/>
+        </scene>
+        <!--Google Directions View Controller-->
+        <scene sceneID="WOv-qf-3WE">
+            <objects>
+                <viewController id="CdG-xf-SgX" customClass="HMGoogleDirectionsViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="RMv-FV-Fdt"/>
+                        <viewControllerLayoutGuide type="bottom" id="tlK-6G-W8M"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="jKo-3O-Eyf">
+                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleAspectFill" editable="NO" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="l4Y-9a-8kH">
+                                <rect key="frame" x="20" y="0.0" width="560" height="600"/>
+                                <animations/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                <dataDetectorType key="dataDetectorTypes" phoneNumber="YES" link="YES" address="YES" calendarEvent="YES"/>
+                            </textView>
+                        </subviews>
+                        <animations/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="l4Y-9a-8kH" firstAttribute="leading" secondItem="jKo-3O-Eyf" secondAttribute="leadingMargin" id="1oi-JN-2KR"/>
+                            <constraint firstItem="tlK-6G-W8M" firstAttribute="top" secondItem="l4Y-9a-8kH" secondAttribute="bottom" id="F1S-Hb-eLK"/>
+                            <constraint firstItem="l4Y-9a-8kH" firstAttribute="trailing" secondItem="jKo-3O-Eyf" secondAttribute="trailingMargin" id="cjW-GB-96x"/>
+                            <constraint firstItem="l4Y-9a-8kH" firstAttribute="top" secondItem="jKo-3O-Eyf" secondAttribute="topMargin" id="u0g-UY-30W"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="IdD-gQ-R9w"/>
+                    <connections>
+                        <outlet property="textViewForGoogleDirections" destination="l4Y-9a-8kH" id="Ezc-9q-VHv"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="glm-Ns-So4" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1480" y="327"/>
         </scene>
         <!--Comments Table View Controller-->
         <scene sceneID="tn2-zX-1YO">
