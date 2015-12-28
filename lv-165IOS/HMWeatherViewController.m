@@ -148,11 +148,9 @@ static NSInteger sectionForHours;
     temperatureLabel.backgroundColor = [UIColor clearColor];
     temperatureLabel.textColor = [UIColor whiteColor];
     
-    if (self.temperature >0) {
-       temperatureLabel.text = [NSString stringWithFormat:@"+%@%@",self.temperature ,@"°"];
-    } else {
-        temperatureLabel.text = [NSString stringWithFormat:@"%@%@",self.temperature ,@"°"];
-    }
+  
+    temperatureLabel.text = [NSString stringWithFormat:@"%@°",self.temperature];
+  
     
     temperatureLabel.font = [UIFont fontWithName:@"HelveticaNeue" size:80];
     [temperatureLabel sizeToFit];
@@ -295,7 +293,7 @@ static NSInteger sectionForHours;
             }
             
             for (NSDictionary *dict in weatherDays) {
-                int temperature = [[[dict  objectForKey:@"main"]objectForKey:@"temp"] integerValue];
+                int temperature = (int)[[[dict  objectForKey:@"main"]objectForKey:@"temp"] integerValue];
                 int diff = (int)(temperature - kelvinMinus);
                 [tempArraMinMax addObject:[NSNumber numberWithInt:diff]];
             }

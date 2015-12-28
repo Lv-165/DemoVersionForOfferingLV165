@@ -24,9 +24,7 @@ static NSString* kSettingsClastering = @"clastering";
     [super viewDidLoad];
     
     self.view.translatesAutoresizingMaskIntoConstraints = NO;
-    UIImage *remontImage = [UIImage imageNamed:@"remont"];
-    [[NSUserDefaults standardUserDefaults] setInteger:1 forKey:kSettingsClastering];
-
+    UIImage *remontImage = [UIImage imageNamed:@"cluster"];
     self.commentImage = [[UIImageView alloc] initWithImage:remontImage];
     [self.view addSubview:self.commentImage];
     [self loadSettings];
@@ -36,6 +34,8 @@ static NSString* kSettingsClastering = @"clastering";
     self.dataSource = [NSArray arrayWithObjects:@"High",@"Middle",@"Low", nil];
     self.pickerView.delegate = self;
     self.pickerView.dataSource = self;
+    [self.pickerView selectRow:[[NSUserDefaults standardUserDefaults] integerForKey:kSettingsClastering]inComponent:0 animated:NO];
+
 }
 
 - (void)viewDidUnload
@@ -98,6 +98,10 @@ static NSString* kSettingsClastering = @"clastering";
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+-(void) viewDidDisappear:(BOOL)animated {
+    [self saveSettings];
+    animated =  YES;
 }
 
 
