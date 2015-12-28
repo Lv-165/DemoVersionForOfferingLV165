@@ -7,6 +7,7 @@
 //
 
 @import Foundation;
+@import QuartzCore;
 #import "FBAnnotationCluster.h"
 #import "FBQuadTreeNode.h"
 
@@ -41,7 +42,24 @@
 @property(strong, nonatomic) UIColor *goodRatingColour;
 @property(strong, nonatomic) UIColor *veryGoodRatingColour;
 
+@property(assign, nonatomic) CGPoint currentPointOnArc;
+@property(assign, nonatomic) CGFloat currentPointOnArcX;
+@property(assign, nonatomic) CGFloat currentPointOnArcY;
+@property(assign, nonatomic) NSUInteger clusterAnnotationViewRadius;
+@property(assign, nonatomic) NSUInteger clusteringFactor;
+@property(assign, nonatomic) NSUInteger labelFontSize;
 @property(strong, nonatomic) UIColor *strokeColour;
+
+@property(copy, atomic) NSArray *currentlyClusteredAnnotations;
+@property(assign, atomic) NSUInteger numOfClusteredAnnotations;
+@property(assign, atomic) NSUInteger numOfInitializedAnnotationViews;
+
+@property(strong, nonatomic) NSMutableDictionary *annotationViewsCache;
+
+@property(strong, nonatomic) NSMutableArray *slicesArray;
+//@property(strong, nonatomic) NSMutableSet * slicesSet;
+
+- (void)firePieChartAnimation;
 
 /**
  Creates a new instance of @c FBClusterManager with array of annotations.
