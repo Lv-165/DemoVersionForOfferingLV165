@@ -14,9 +14,9 @@
 extern NSString *const addToMyFavourite;
 extern NSString *const addToMyFavouriteInfoKey;
 
-@interface HMMapViewController
-    : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate>
-@property(weak, nonatomic) IBOutlet UILabel *descriptionTextView;
+@interface HMMapViewController : UIViewController <MKMapViewDelegate, CLLocationManagerDelegate>
+
+@property (weak, nonatomic) IBOutlet UILabel *descriptionTextView;
 
 @property(weak, nonatomic)
     IBOutlet NSLayoutConstraint *constraitToShowUpToolBar;
@@ -28,10 +28,9 @@ extern NSString *const addToMyFavouriteInfoKey;
 @property(weak, nonatomic) IBOutlet UIToolbar *downToolBar;
 @property(weak, nonatomic) IBOutlet MKMapView *mapView;
 
-// viewForPinOfInfo
-@property(weak, nonatomic) IBOutlet UIView *viewForPinOfInfo;
-@property(weak, nonatomic) IBOutlet UILabel *waitingTimeLable;
-@property(weak, nonatomic) IBOutlet UILabel *autorDescriptionLable;
+@property (weak, nonatomic) IBOutlet UIView *viewForPinOfInfo;
+@property (weak, nonatomic) IBOutlet UILabel *waitingTimeLable;
+@property (weak, nonatomic) IBOutlet UILabel *autorDescriptionLable;
 
 - (void)reloadClusteringAnimated:(BOOL)animated;
 
