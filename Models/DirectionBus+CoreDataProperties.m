@@ -1,5 +1,5 @@
 //
-//  Waiting+CoreDataProperties.m
+//  DirectionBus+CoreDataProperties.m
 //  lv-165IOS
 //
 //  Created by Ihor Zabrotsky on 12/28/15.
@@ -9,13 +9,11 @@
 //  to delete and recreate this implementation file for your updated model.
 //
 
-#import "Waiting+CoreDataProperties.h"
+#import "DirectionBus+CoreDataProperties.h"
 
-@implementation Waiting (CoreDataProperties)
+@implementation DirectionBus (CoreDataProperties)
 
-@dynamic avg;
-@dynamic avg_textual;
-@dynamic count;
+@dynamic directionString;
 @dynamic place;
 
 @end
