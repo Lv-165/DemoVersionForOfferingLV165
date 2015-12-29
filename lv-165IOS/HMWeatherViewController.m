@@ -282,7 +282,7 @@ static NSInteger sectionForHours;
         } else {
             
             NSMutableArray *tempArraMinMax = [[NSMutableArray alloc]init];
-            NSMutableArray *weatherDays =[[NSMutableArray alloc]init];
+            NSMutableArray *weatherDays;
 
             if(indexPath.row == 1) {
                 

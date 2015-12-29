@@ -15,8 +15,6 @@
 
 @property (strong, nonatomic) UIWindow *window;
 @property (assign, nonatomic,readonly) BOOL isServerReachable;
-- (void) checkServerConnection;
-
 
 @end
 

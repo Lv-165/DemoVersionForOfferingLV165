@@ -100,8 +100,11 @@ static NSString* kSettingsClastering = @"clastering";
     // Dispose of any resources that can be recreated.
 }
 -(void) viewDidDisappear:(BOOL)animated {
+    [super viewDidDisappear:animated];
+    
     [self saveSettings];
-    animated =  YES;
+    
+    
 }
 
 

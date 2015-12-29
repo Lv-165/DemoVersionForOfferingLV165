@@ -470,9 +470,8 @@ static bool isRoad;
 - (void)addToFavourite:(UIBarButtonItem *)sender {
     CLLocationCoordinate2D coordinate = self.annotationView.annotation.coordinate;
     [SVGeocoder reverseGeocode:coordinate completion:^(NSArray *placemarks, NSHTTPURLResponse *urlResponse, NSError *error) {
-        NSString* message = [[NSString alloc] init];
         if (error) {
-            message = [error localizedDescription];
+            NSLog(@"%@", [error localizedDescription]);
         } else {
             if ([placemarks count] > 0) {
                 SVPlacemark* placeMark = [placemarks firstObject];
@@ -512,7 +511,7 @@ static bool isRoad;
                 [userDefaults setObject:tempArrayTwo forKey:@"PlaceByFavourite"];
             }
             } else {
-                message = @"No Placemarks Found";
+                NSLog(@"No Placemarks Found");
               }
             }
           }];
