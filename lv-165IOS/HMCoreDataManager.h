@@ -19,15 +19,14 @@
 
 - (void)saveContext;
 - (NSURL *)applicationDocumentsDirectory;
-//- (void) printCountryA;
-//- (void) deleteAllObjects;
 
 + (HMCoreDataManager*) sharedManager;
 
 - (void) saveCountriesToCoreDataWithNSArray:(NSArray*) countryArray;
 - (void) savePlaceToCoreDataWithNSArray:(NSDictionary*) placeNSDictionary
                                contries:(Countries*)countries;
-//- (void) saveCountriesToCoreDataWithCountries:(Countries*) countriess;
+- (void)saveDirectionToCoreDataWithPlace:(Place *)place
+                         directionString:(NSString *)direction;
 
 #pragma mark - Get Objects
 

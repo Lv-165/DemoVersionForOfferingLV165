@@ -8,10 +8,16 @@
 
 #import <UIKit/UIKit.h>
 
+@class Place;
+
 @interface HMGoogleDirectionsViewController : UIViewController
+
+@property (strong, nonatomic) Place *place;
 
 @property (weak, nonatomic) IBOutlet UITextView *textViewForGoogleDirections;
 
 @property (strong, nonatomic) NSString *textForLabel;
+
+- (IBAction)actionSave:(id)sender;
 
 @end

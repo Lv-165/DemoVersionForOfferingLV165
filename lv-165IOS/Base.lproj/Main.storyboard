@@ -492,7 +492,13 @@
                             <constraint firstItem="l4Y-9a-8kH" firstAttribute="top" secondItem="jKo-3O-Eyf" secondAttribute="topMargin" id="u0g-UY-30W"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="IdD-gQ-R9w"/>
+                    <navigationItem key="navigationItem" id="IdD-gQ-R9w">
+                        <barButtonItem key="rightBarButtonItem" title="Save" id="ruj-ny-Lil">
+                            <connections>
+                                <action selector="actionSave:" destination="CdG-xf-SgX" id="Wli-kO-xGX"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
                     <connections>
                         <outlet property="textViewForGoogleDirections" destination="l4Y-9a-8kH" id="Ezc-9q-VHv"/>
                     </connections>
@@ -710,7 +716,7 @@
                                             <rect key="frame" x="0.0" y="0.0" width="600" height="222"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Comments language" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gNs-Ua-5lr">
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Clustering style" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="gNs-Ua-5lr">
                                                     <rect key="frame" x="20" y="-8" width="145" height="96"/>
                                                     <animations/>
                                                     <constraints>
@@ -728,7 +734,7 @@
                                                         <outlet property="delegate" destination="Hb2-hh-47C" id="N7s-BE-2jz"/>
                                                     </connections>
                                                 </pickerView>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="remont" translatesAutoresizingMaskIntoConstraints="NO" id="zcf-fW-agJ">
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="cluster" translatesAutoresizingMaskIntoConstraints="NO" id="zcf-fW-agJ">
                                                     <rect key="frame" x="20" y="86" width="135" height="128"/>
                                                     <animations/>
                                                     <constraints>
@@ -777,7 +783,7 @@
         </scene>
     </scenes>
     <resources>
-        <image name="remont" width="300" height="200"/>
+        <image name="cluster" width="170" height="130"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="ST5-gB-6jr"/>

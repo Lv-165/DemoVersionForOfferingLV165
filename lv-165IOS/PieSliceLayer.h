@@ -17,12 +17,9 @@
 @property(nonatomic, assign) CGFloat endAngleAnimated;
 
 @property(nonatomic, strong) NSNumber *segmentSize;
-@property(nonatomic, strong) NSNumber *numberOfAnnotations;
-@property(nonatomic, strong) UIColor *color;
 
 @property(nonatomic, strong) UIColor *fillColor;
 @property(nonatomic) CGFloat strokeWidth;
 @property(nonatomic, strong) UIColor *strokeColor;
-@property(nonatomic) CGPoint midPoint;
 
 @end
