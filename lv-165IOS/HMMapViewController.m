@@ -180,6 +180,7 @@ static bool isRoad;
 }
 
 - (void)showPlaceAnnotation:(NSNumber *)placeId {
+    
     self.placeArray =
     [[HMCoreDataManager sharedManager] getPlaceWithStringId:[NSString stringWithFormat:@"%@", placeId]];
     
@@ -927,13 +928,13 @@ static bool isRoad;
     break;
   }
   case 1: {
-    minForPoint = 4;
+    minForPoint = 5;
     maxForPoint = 5;
     break;
   }
   case 2: {
     minForPoint = 1;
-    maxForPoint = 3;
+    maxForPoint = 4;
     break;
   }
   default:
@@ -1138,6 +1139,7 @@ static bool isRoad;
 
   if (![view isMemberOfClass:[FBAnnotationClusterView class]]) {
     self.downToolBar.hidden = NO;
+    self.constraitToShowUpToolBar.constant = 0.f;
     [self.viewToAnimate setNeedsUpdateConstraints];
 
     [UIView animateWithDuration:1.f
